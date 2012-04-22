@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SwingBeats">
+      <UniqueIdentifier>{EEE42984-BB5E-84A9-3D00-E6DD8F6E6736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SwingBeats\BinaryData">
+      <UniqueIdentifier>{22C6FD83-9C49-4CCE-43D6-BEFA488A1498}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SwingBeats\Source">
+      <UniqueIdentifier>{C062722A-E702-41D7-94B6-023136E40C58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Library Code">
+      <UniqueIdentifier>{8B4D1BAA-6DB4-CAEC-A0FA-271F354D5C61}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\BinaryData\bafen.png">
+      <Filter>SwingBeats\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\erfen.png">
+      <Filter>SwingBeats\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\tuzi.png">
+      <Filter>SwingBeats\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\wugui.png">
+      <Filter>SwingBeats\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\icon.png">
+      <Filter>SwingBeats\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TrackPanel.cpp">
+      <Filter>SwingBeats\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TrackSpace.cpp">
+      <Filter>SwingBeats\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\WorkSpace.cpp">
+      <Filter>SwingBeats\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\ControlBar.cpp">
+      <Filter>SwingBeats\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\BaseComp.cpp">
+      <Filter>SwingBeats\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MainWindow.cpp">
+      <Filter>SwingBeats\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Main.cpp">
+      <Filter>SwingBeats\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_core\juce_core.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_events\juce_events.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\juce_graphics.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_opengl\juce_opengl.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\TrackPanel.h">
+      <Filter>SwingBeats\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TrackSpace.h">
+      <Filter>SwingBeats\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\WorkSpace.h">
+      <Filter>SwingBeats\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\ControlBar.h">
+      <Filter>SwingBeats\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\BaseComp.h">
+      <Filter>SwingBeats\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MainWindow.h">
+      <Filter>SwingBeats\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
+      <Filter>Juce Library Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h">
+      <Filter>Juce Library Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
+      <Filter>Juce Library Code</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".\icon.ico">
+      <Filter>Juce Library Code</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include=".\resources.rc">
+      <Filter>Juce Library Code</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

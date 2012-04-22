@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="I8gK7d" name="SwingBeats" projectType="guiapp" version="0.0.1"
+              bundleIdentifier="https://github.com/SwingCoder" jucerVersion="3.0.0">
+  <EXPORTFORMATS>
+    <VS2010 targetFolder="Builds/VisualStudio2010" libraryType="1" juceFolder="..\JUCE\modules"
+            smallIcon="dtaWVZ" bigIcon="dtaWVZ">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="SwingBeats"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="2" targetName="SwingBeats"/>
+      </CONFIGURATIONS>
+    </VS2010>
+  </EXPORTFORMATS>
+  <MAINGROUP id="wONY6Q" name="SwingBeats">
+    <GROUP id="{6B455626-5975-DEDE-464A-C31BD06CABA2}" name="BinaryData">
+      <FILE id="Q1XI9q" name="bafen.png" compile="0" resource="1" file="BinaryData/bafen.png"/>
+      <FILE id="OIoznl" name="erfen.png" compile="0" resource="1" file="BinaryData/erfen.png"/>
+      <FILE id="x15x78" name="tuzi.png" compile="0" resource="1" file="BinaryData/tuzi.png"/>
+      <FILE id="qhgn6o" name="wugui.png" compile="0" resource="1" file="BinaryData/wugui.png"/>
+      <FILE id="dtaWVZ" name="icon.png" compile="0" resource="1" file="BinaryData/icon.png"/>
+    </GROUP>
+    <GROUP id="{2A74A279-B0C3-E227-D2CB-0DE8C660A193}" name="Source">
+      <FILE id="BuxvxW" name="TrackPanel.cpp" compile="1" resource="0" file="Source/TrackPanel.cpp"/>
+      <FILE id="s3B0u6" name="TrackPanel.h" compile="0" resource="0" file="Source/TrackPanel.h"/>
+      <FILE id="cWggDb" name="TrackSpace.cpp" compile="1" resource="0" file="Source/TrackSpace.cpp"/>
+      <FILE id="Vc9Qx4" name="TrackSpace.h" compile="0" resource="0" file="Source/TrackSpace.h"/>
+      <FILE id="eccuQK" name="WorkSpace.cpp" compile="1" resource="0" file="Source/WorkSpace.cpp"/>
+      <FILE id="ppatzn" name="WorkSpace.h" compile="0" resource="0" file="Source/WorkSpace.h"/>
+      <FILE id="N3lTZm" name="ControlBar.cpp" compile="1" resource="0" file="Source/ControlBar.cpp"/>
+      <FILE id="ADL1zC" name="ControlBar.h" compile="0" resource="0" file="Source/ControlBar.h"/>
+      <FILE id="TZ0IoV" name="BaseComp.cpp" compile="1" resource="0" file="Source/BaseComp.cpp"/>
+      <FILE id="wcAryT" name="BaseComp.h" compile="0" resource="0" file="Source/BaseComp.h"/>
+      <FILE id="NN6Kb7" name="MainWindow.cpp" compile="1" resource="0" file="Source/MainWindow.cpp"/>
+      <FILE id="E836VH" name="MainWindow.h" compile="0" resource="0" file="Source/MainWindow.h"/>
+      <FILE id="VyQeZG" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_core" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_events" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_graphics" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_data_structures" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_opengl" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="0" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>
