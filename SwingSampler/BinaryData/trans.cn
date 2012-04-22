@@ -1,0 +1,32 @@
+﻿language: Chinese
+countries: cn
+
+"Help" = "帮助"
+"About" = "关于"
+"Switch languge: " = "切换语言："
+"Show About info: " = "关于本程序："
+"Author: SwingCoder" = "作者：SwingCoder"
+"Copyright (C) 2012" = "(C) 2012 版权所有"
+
+"Preset: " = "预置："
+"Root: " = "根音："
+"Setup" = "设置"
+"Load..." = "加载..."
+"Reset" = "重置"
+"Languge" = "语言"
+"Open an audio file..." = "打开一个音频文件..."
+"Sorry" = "抱歉"
+"I can't digest this food..." = "我无法消化此美味..."
+
+"ok" = "确定"
+"Quit" = "退出"
+"audio device type:" = "音频驱动："
+"output:" = "音频输出："
+"input:" = "音频输入："
+"active output channels:" = "选择输出通道："
+"sample rate:" = "采样率："
+"audio buffer size:" = "缓冲大小："
+"active midi inputs:" = "选择MIDI输入："
+"Midi Output:" = "MIDI输出："
+"<< none >>" = "<< 无 >>"
+"Test" = "测试"
