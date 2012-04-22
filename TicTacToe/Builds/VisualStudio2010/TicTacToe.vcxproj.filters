@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="TicTacToe">
+      <UniqueIdentifier>{B5623468-94CB-81BA-B1FC-B8E4FB28B599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TicTacToe\BinaryData">
+      <UniqueIdentifier>{FB2D856E-DA20-41CE-6634-2E70A5F40E01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TicTacToe\Source">
+      <UniqueIdentifier>{14F8210C-AEDA-66BA-23FC-2E553C6BFBD3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Library Code">
+      <UniqueIdentifier>{8B4D1BAA-6DB4-CAEC-A0FA-271F354D5C61}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\BinaryData\trans.cn">
+      <Filter>TicTacToe\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\cpter.mp3">
+      <Filter>TicTacToe\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\human.mp3">
+      <Filter>TicTacToe\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\human.png">
+      <Filter>TicTacToe\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\lost.mp3">
+      <Filter>TicTacToe\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\remove.mp3">
+      <Filter>TicTacToe\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\start.mp3">
+      <Filter>TicTacToe\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BinaryData\win.mp3">
+      <Filter>TicTacToe\BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\BaseComp.cpp">
+      <Filter>TicTacToe\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Chessboard.cpp">
+      <Filter>TicTacToe\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Main.cpp">
+      <Filter>TicTacToe\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MainWindow.cpp">
+      <Filter>TicTacToe\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\SoundPlayer.cpp">
+      <Filter>TicTacToe\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_core\juce_core.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_events\juce_events.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\juce_graphics.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\BaseComp.h">
+      <Filter>TicTacToe\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Chessboard.h">
+      <Filter>TicTacToe\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\HelpAndAbout.h">
+      <Filter>TicTacToe\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MainWindow.h">
+      <Filter>TicTacToe\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\SoundPlayer.h">
+      <Filter>TicTacToe\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
+      <Filter>Juce Library Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h">
+      <Filter>Juce Library Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
+      <Filter>Juce Library Code</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".\icon.ico">
+      <Filter>Juce Library Code</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include=".\resources.rc">
+      <Filter>Juce Library Code</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
