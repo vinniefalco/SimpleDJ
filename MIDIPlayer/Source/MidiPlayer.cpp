@@ -51,6 +51,10 @@ void MidiPlayer::playMidi(File& file)
     // midi file convert to MidiBuffer
     MidiBuffer buffer;
 
+    // samples per second. sendBlockOfMessages() will use this double value.
+    // 960 ticks and 120BPM..
+    double samples = 1920;
+
     // Loop over all tracks
     for (int trackIndex = 0; trackIndex < midiFile.getNumTracks (); ++trackIndex)
     {
@@ -59,15 +63,34 @@ void MidiPlayer::playMidi(File& file)
       // Loop over all events of current track.
       for (int i = 0; i < messageSequence->getNumEvents (); ++i)
       {
-        // Add the message, preserving the time stamp
+        // Add every message to buffer..
         MidiMessage message = messageSequence->getEventPointer (i)->message;
         buffer.addEvent (message, int(message.getTimeStamp ()));
+
+        // get samples per second base on midi file's time-base(ticks) and
+        // seconds per quarter note. 
+        if (message.isTempoMetaEvent())
+        {
+           DBG("\n-------------Tempo changed---------------")
+           
+           DBG("This song's time-base(ticks): " + String(midiFile.getTimeFormat()))
+           
+           DBG("MIDI's tempo(milliseconds per quarter note): " + String
+               (message.getTempoSecondsPerQuarterNote() * 1000))
+           
+           DBG("Current tempo: " + String(60 / message.getTempoSecondsPerQuarterNote()))
+
+           // this formula very important!!!! I finally got it!!!!!!!!!!!!!
+           samples = midiFile.getTimeFormat() / message.getTempoSecondsPerQuarterNote();
+        }
       }
     }
-    // Start the background thread right away
+
+    // Start the background thread
     midiOutput->startBackgroundThread();
-    // Now send the entire block of messages, have it start 0.1 seconds from now.
-    midiOutput->sendBlockOfMessages(buffer, Time::getMillisecondCounter() + 50, 1000);
+
+    // Now send the entire block of messages, have it start 0.05 seconds from now.
+    midiOutput->sendBlockOfMessages(buffer, Time::getMillisecondCounter() + 50, samples);
   }
 }
 
