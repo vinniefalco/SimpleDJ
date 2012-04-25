@@ -39,43 +39,35 @@ void MidiPlayer::selectMidiDevice()
 }
 //=================================================================================
 
-void MidiPlayer::playMidi()
+void MidiPlayer::playMidi(File& file)
 {
   if (midiOutput != nullptr)
   {
-    // Start the background thread right away
-    midiOutput->startBackgroundThread();
-
-    // Open up our file
-    FileInputStream fileStream (File ("E://00.mid")); 
-
-    // Now read the MIDI data
+     // get MidiFile..
+    FileInputStream fileStream (file); 
     MidiFile midiFile;
     midiFile.readFrom (fileStream);  
 
-    // We will convert the entire file into one MidiBuffer
-    MidiBuffer b;
+    // midi file convert to MidiBuffer
+    MidiBuffer buffer;
 
     // Loop over all tracks
     for (int trackIndex = 0; trackIndex < midiFile.getNumTracks (); ++trackIndex)
     {
-      MidiMessageSequence const* track = midiFile.getTrack (trackIndex);
+      const MidiMessageSequence* messageSequence = midiFile.getTrack (trackIndex);
 
-      // Loop over all events
-      for (int index = 0; index < track->getNumEvents (); ++index)
+      // Loop over all events of current track.
+      for (int i = 0; i < messageSequence->getNumEvents (); ++i)
       {
         // Add the message, preserving the time stamp
-
-        MidiMessage m = track->getEventPointer (index)->message;
-        b.addEvent (m, m.getTimeStamp ());
-
-        // For debugging
-        //Logger::outputDebugString (String (m.getTimeStamp ()));
+        MidiMessage message = messageSequence->getEventPointer (i)->message;
+        buffer.addEvent (message, int(message.getTimeStamp ()));
       }
     }
-
+    // Start the background thread right away
+    midiOutput->startBackgroundThread();
     // Now send the entire block of messages, have it start 0.1 seconds from now.
-    midiOutput->sendBlockOfMessages(b, Time::getMillisecondCounter() + 100, 1000);
+    midiOutput->sendBlockOfMessages(buffer, Time::getMillisecondCounter() + 50, 1000);
   }
 }
 

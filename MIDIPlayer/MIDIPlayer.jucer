@@ -23,15 +23,6 @@
     </XCODE_MAC>
   </EXPORTFORMATS>
   <MAINGROUP id="BA5Qal" name="MIDIPlayer">
-    <GROUP id="{A24C8FE6-5E18-F6B1-F4B3-1FD60FCB9772}" name="BinaryData">
-      <FILE id="ls65JK" name="about.gif" compile="0" resource="1" file="BinaryData/about.gif"/>
-      <FILE id="yz54fK" name="back.gif" compile="0" resource="1" file="BinaryData/back.gif"/>
-      <FILE id="HYXxbX" name="icon.gif" compile="0" resource="1" file="BinaryData/icon.gif"/>
-      <FILE id="aPrzw5" name="open.gif" compile="0" resource="1" file="BinaryData/open.gif"/>
-      <FILE id="QjGC4K" name="pause.gif" compile="0" resource="1" file="BinaryData/pause.gif"/>
-      <FILE id="XAnAWO" name="play.gif" compile="0" resource="1" file="BinaryData/play.gif"/>
-      <FILE id="ueNtCT" name="setup.gif" compile="0" resource="1" file="BinaryData/setup.gif"/>
-    </GROUP>
     <GROUP id="{0EBE4C08-EE79-16B8-6977-6EA825F70F1D}" name="Source">
       <FILE id="AgUs54" name="HelpAndAbout.h" compile="0" resource="0" file="Source/HelpAndAbout.h"/>
       <FILE id="B363oY" name="MidiPlayer.cpp" compile="1" resource="0" file="Source/MidiPlayer.cpp"/>

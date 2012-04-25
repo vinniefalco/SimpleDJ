@@ -5,9 +5,6 @@
     <Filter Include="MIDIPlayer">
       <UniqueIdentifier>{92189D4D-1AAB-C04E-6466-AF35289F2237}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MIDIPlayer\BinaryData">
-      <UniqueIdentifier>{E32CE10C-6A17-B723-5F58-3F67C68FEA0A}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MIDIPlayer\Source">
       <UniqueIdentifier>{F0E7BAD1-9135-EEA4-C13F-B769786DB96F}</UniqueIdentifier>
     </Filter>
@@ -16,27 +13,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\BinaryData\about.gif">
-      <Filter>MIDIPlayer\BinaryData</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\BinaryData\back.gif">
-      <Filter>MIDIPlayer\BinaryData</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\BinaryData\icon.gif">
-      <Filter>MIDIPlayer\BinaryData</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\BinaryData\open.gif">
-      <Filter>MIDIPlayer\BinaryData</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\BinaryData\pause.gif">
-      <Filter>MIDIPlayer\BinaryData</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\BinaryData\play.gif">
-      <Filter>MIDIPlayer\BinaryData</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\BinaryData\setup.gif">
-      <Filter>MIDIPlayer\BinaryData</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\MidiPlayer.cpp">
       <Filter>MIDIPlayer\Source</Filter>
     </ClCompile>
@@ -51,9 +27,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>MIDIPlayer\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp">
-      <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp">
       <Filter>Juce Library Code</Filter>
@@ -108,17 +81,9 @@
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
       <Filter>Juce Library Code</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h">
-      <Filter>Juce Library Code</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
       <Filter>Juce Library Code</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".\icon.ico">
-      <Filter>Juce Library Code</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc">
