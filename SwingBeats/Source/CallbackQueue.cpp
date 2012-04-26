@@ -1,27 +1,39 @@
-﻿// thread queue for callback functor..
+﻿/*
+====================================================================================
+            Swing Beats
+
+    Author: SwingCoder
+    Email: SwingCoder2@gmail.com
+    Github: https://github.com/SwingCoder
+
+    License: MIT License, Copyright (c) 2012 by SwingCoder
+====================================================================================
+*/
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "ThreadQueue.h"
+#include "CallbackQueue.h"
 
-ThreadQueue::ThreadQueue () : isClosed (false), headNode (0), tailNode (0)
+//==================================================================================
+CallbackQueue::CallbackQueue () : isClosed (false), headNode (0), tailNode (0)
 {
 }
 
-ThreadQueue::~ThreadQueue ()
+//==================================================================================
+CallbackQueue::~CallbackQueue ()
 {
     jassert (isClosed)
 
     jassert (headNode == nullptr && tailNode == nullptr)
 }
 
-//====================================================
-// interface and core function...  
+//==================================================================================
+/* interface and core function...  
 
-// 1. lock() and unlock() CriticalSection object.
-// 2. iterating the queue, handling each node (functor).
-// 3. all of nodes (functor) leave queue.
-
-void ThreadQueue::process ()
+ 1) lock() and unlock() CriticalSection object.
+ 2) iterating the queue, handling each node (functor).
+ 3) all of nodes (functor) leave queue.
+*/
+void CallbackQueue::process ()
 {
     Node* headPtr;
     lock ();
@@ -51,21 +63,21 @@ void ThreadQueue::process ()
     }
 }
 
-//====================================================
-void ThreadQueue::lock ()
+//==================================================================================
+void CallbackQueue::lock ()
 {
     mutex.enter();
 }
 
-void ThreadQueue::unlock ()
+//==================================================================================
+void CallbackQueue::unlock ()
 {
     mutex.exit();
 }
 
-// =======================================
-
+//==================================================================================
 // put functor to queue...
-void ThreadQueue::put (Node* node)
+void CallbackQueue::put (Node* node)
 {
     lock ();
 

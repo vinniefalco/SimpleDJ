@@ -31,6 +31,12 @@
     <ClCompile Include="..\..\BinaryData\icon.png">
       <Filter>SwingBeats\BinaryData</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\GuiCallbackQueue.cpp">
+      <Filter>SwingBeats\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\CallbackQueue.cpp">
+      <Filter>SwingBeats\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\TrackPanel.cpp">
       <Filter>SwingBeats\Source</Filter>
     </ClCompile>
@@ -93,6 +99,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\GuiCallbackQueue.h">
+      <Filter>SwingBeats\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\CallbackQueue.h">
+      <Filter>SwingBeats\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\TrackPanel.h">
       <Filter>SwingBeats\Source</Filter>
     </ClInclude>

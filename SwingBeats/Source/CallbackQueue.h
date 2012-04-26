@@ -1,14 +1,26 @@
-﻿// thread queue for callback functor..
+﻿/*
+====================================================================================
+            Swing Beats
+
+    Author: SwingCoder
+    Email: SwingCoder2@gmail.com
+    Github: https://github.com/SwingCoder
+
+    License: MIT License, Copyright (c) 2012 by SwingCoder
+====================================================================================
+*/
+
+// the queue for callback functor..
 
 #ifndef _THREADQUEUE_H
 #define _THREADQUEUE_H
 
-class ThreadQueue
+class CallbackQueue
 {
 public:
-    //============================================
-    ThreadQueue ();
-    ~ThreadQueue ();
+    //==============================================================================
+    CallbackQueue ();
+    ~CallbackQueue ();
 
     void process ();
 
@@ -24,7 +36,7 @@ public:
     }
 
 private:
-    //==============================================
+    //==============================================================================
     // nested class 1, ADT
     class Node
     {
@@ -35,7 +47,7 @@ private:
         Node* nextNode;
         Node* prevNode;
     };  
-    //===============================================
+    //==============================================================================
     // nested class 2 inherits class 1, class template.
     template<class T>
     class FunctorNode : public Node
@@ -49,7 +61,7 @@ private:
         T functor;
     }; 
     
-    //===============================================
+    //==============================================================================
     void put (Node* functorNode);
 
     void lock ();
@@ -58,7 +70,7 @@ private:
     virtual void signal () = 0;
     virtual void reset () = 0;
 
-    //===============================================
+    //==============================================================================
     CriticalSection mutex;
 
     bool isClosed;

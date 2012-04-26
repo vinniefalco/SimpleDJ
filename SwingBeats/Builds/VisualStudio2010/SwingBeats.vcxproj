@@ -126,6 +126,8 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\GuiCallbackQueue.cpp"/>
+    <ClCompile Include="..\..\Source\CallbackQueue.cpp"/>
     <ClCompile Include="..\..\Source\TrackPanel.cpp"/>
     <ClCompile Include="..\..\Source\TrackSpace.cpp"/>
     <ClCompile Include="..\..\Source\WorkSpace.cpp"/>
@@ -148,6 +150,8 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_opengl\juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\GuiCallbackQueue.h"/>
+    <ClInclude Include="..\..\Source\CallbackQueue.h"/>
     <ClInclude Include="..\..\Source\TrackPanel.h"/>
     <ClInclude Include="..\..\Source\TrackSpace.h"/>
     <ClInclude Include="..\..\Source\WorkSpace.h"/>
