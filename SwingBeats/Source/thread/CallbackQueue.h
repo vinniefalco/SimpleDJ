@@ -12,8 +12,8 @@
 
 // the queue for callback functor..
 
-#ifndef _THREADQUEUE_H
-#define _THREADQUEUE_H
+#ifndef _CALLBACKQUEUE_H_
+#define _CALLBACKQUEUE_H_
 
 class CallbackQueue
 {
@@ -77,6 +77,8 @@ private:
 
     Node* headNode;
     Node* tailNode;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CallbackQueue)
 };
 
-#endif  // _THREADQUEUE_H_
+#endif  // _CALLBACKQUEUE_H_

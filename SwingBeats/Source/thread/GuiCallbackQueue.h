@@ -10,23 +10,26 @@
 ====================================================================================
 */
 
-#ifndef GUICALLBACKQUEUE_H_
-#define GUICALLBACKQUEUE_H_
+#ifndef _GUICALLBACKQUEUE_H_
+#define _GUICALLBACKQUEUE_H_
 
+class CallbackQueue;
+//==================================================================================
 class GuiCallbackQueue : public AsyncUpdater, public CallbackQueue
 {
 public:
     GuiCallbackQueue();
     ~GuiCallbackQueue();
 
-    virtual void handleAsyncUpdate();
+    void handleAsyncUpdate();
 
-    virtual void signal();
-    virtual void reset();
+    void signal();
+    void reset();
 
-
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GuiCallbackQueue)
 };
 
 
 
-#endif // GUICALLBACKQUEUE_H_
+#endif // _GUICALLBACKQUEUE_H_
