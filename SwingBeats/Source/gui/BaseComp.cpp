@@ -10,7 +10,7 @@
 ================================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "../../JuceLibraryCode/JuceHeader.h"
 #include "WorkSpace.h"
 #include "ControlBar.h"
 #include "BaseComp.h"
