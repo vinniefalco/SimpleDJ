@@ -24,7 +24,7 @@ public:
 
     void selectMidiDevice();
 
-    void playMidi();
+    void playMidi(File& file);
     void stopMidi();
 
 private:

@@ -28,6 +28,9 @@ namespace BinaryData
     extern const char*   setup_gif;
     const int            setup_gifSize = 1843;
 
+    extern const char*   stop_gif;
+    const int            stop_gifSize = 1745;
+
     // If you provide the name of one of the binary resource variables above, this function will
     // return the corresponding data and its size (or a null pointer if the name isn't found).
     const char* getNamedResource (const char* resourceNameUTF8, int& dataSizeInBytes) throw();

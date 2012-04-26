@@ -28,11 +28,14 @@ public:
 
 private:
     //==========================================================================
-    enum {SETUP = 0, OPEN_FILE, PLAY, PAUSE, BACK, ABOUT, BTSNUM};
+    enum {OPEN_FILE = 0, PLAY/*, PAUSE, BACK, SETUP*/, ABOUT, BTSNUM};
 
     OwnedArray<ImageButton> bts;
     MidiPlayer* midiPlayer;
-    
+
+    bool isPlaying;
+    File midiFile;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControlBar)
 
 };

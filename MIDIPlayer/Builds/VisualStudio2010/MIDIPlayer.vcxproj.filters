@@ -37,6 +37,9 @@
     <ClCompile Include="..\..\BinaryData\setup.gif">
       <Filter>MIDIPlayer\BinaryData</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\BinaryData\stop.gif">
+      <Filter>MIDIPlayer\BinaryData</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MidiPlayer.cpp">
       <Filter>MIDIPlayer\Source</Filter>
     </ClCompile>
