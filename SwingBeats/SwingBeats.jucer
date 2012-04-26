@@ -36,18 +36,6 @@
         <FILE id="AiA8p1" name="WorkSpace.cpp" compile="1" resource="0" file="Source/gui/WorkSpace.cpp"/>
         <FILE id="iQpfDF" name="WorkSpace.h" compile="0" resource="0" file="Source/gui/WorkSpace.h"/>
       </GROUP>
-      <GROUP id="{E2D8B8D8-1B4F-4682-0C46-45DC192DE831}" name="thread">
-        <FILE id="pT1FD1" name="CallbackQueue.cpp" compile="1" resource="0"
-              file="Source/thread/CallbackQueue.cpp"/>
-        <FILE id="MfDEhP" name="CallbackQueue.h" compile="0" resource="0" file="Source/thread/CallbackQueue.h"/>
-        <FILE id="DdU8nb" name="GuiCallbackQueue.cpp" compile="1" resource="0"
-              file="Source/thread/GuiCallbackQueue.cpp"/>
-        <FILE id="bbxHBq" name="GuiCallbackQueue.h" compile="0" resource="0"
-              file="Source/thread/GuiCallbackQueue.h"/>
-        <FILE id="C7ZyL6" name="MidiSequencer.cpp" compile="1" resource="0"
-              file="Source/thread/MidiSequencer.cpp"/>
-        <FILE id="H4NB3j" name="MidiSequencer.h" compile="0" resource="0" file="Source/thread/MidiSequencer.h"/>
-      </GROUP>
       <FILE id="VyQeZG" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
   </MAINGROUP>

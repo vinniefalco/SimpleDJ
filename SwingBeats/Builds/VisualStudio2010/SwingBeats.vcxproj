@@ -132,9 +132,6 @@
     <ClCompile Include="..\..\Source\gui\TrackPanel.cpp"/>
     <ClCompile Include="..\..\Source\gui\TrackSpace.cpp"/>
     <ClCompile Include="..\..\Source\gui\WorkSpace.cpp"/>
-    <ClCompile Include="..\..\Source\thread\CallbackQueue.cpp"/>
-    <ClCompile Include="..\..\Source\thread\GuiCallbackQueue.cpp"/>
-    <ClCompile Include="..\..\Source\thread\MidiSequencer.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp"/>
     <ClCompile Include="..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp"/>
@@ -157,9 +154,6 @@
     <ClInclude Include="..\..\Source\gui\TrackPanel.h"/>
     <ClInclude Include="..\..\Source\gui\TrackSpace.h"/>
     <ClInclude Include="..\..\Source\gui\WorkSpace.h"/>
-    <ClInclude Include="..\..\Source\thread\CallbackQueue.h"/>
-    <ClInclude Include="..\..\Source\thread\GuiCallbackQueue.h"/>
-    <ClInclude Include="..\..\Source\thread\MidiSequencer.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>

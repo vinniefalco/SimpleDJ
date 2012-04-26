@@ -14,9 +14,6 @@
     <Filter Include="SwingBeats\Source\gui">
       <UniqueIdentifier>{2527DC3A-A26F-8408-0843-853D25254AA7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SwingBeats\Source\thread">
-      <UniqueIdentifier>{B51FB771-D6AA-D548-B904-067852DC3B25}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Juce Library Code">
       <UniqueIdentifier>{8B4D1BAA-6DB4-CAEC-A0FA-271F354D5C61}</UniqueIdentifier>
     </Filter>
@@ -54,15 +51,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\gui\WorkSpace.cpp">
       <Filter>SwingBeats\Source\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\thread\CallbackQueue.cpp">
-      <Filter>SwingBeats\Source\thread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\thread\GuiCallbackQueue.cpp">
-      <Filter>SwingBeats\Source\thread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\thread\MidiSequencer.cpp">
-      <Filter>SwingBeats\Source\thread</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>SwingBeats\Source</Filter>
@@ -125,15 +113,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\gui\WorkSpace.h">
       <Filter>SwingBeats\Source\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\thread\CallbackQueue.h">
-      <Filter>SwingBeats\Source\thread</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\thread\GuiCallbackQueue.h">
-      <Filter>SwingBeats\Source\thread</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\thread\MidiSequencer.h">
-      <Filter>SwingBeats\Source\thread</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
       <Filter>Juce Library Code</Filter>
