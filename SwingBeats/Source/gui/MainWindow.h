@@ -13,6 +13,9 @@
 #ifndef __MAINWINDOW_H_
 #define __MAINWINDOW_H_
 
+class GuiCallbackQueue;
+class MidiSequencer;
+
 //==============================================================================
 class MainAppWindow   : public DocumentWindow
 {
@@ -23,6 +26,7 @@ public:
     void closeButtonPressed();
 
 private:
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainAppWindow)
 };
 

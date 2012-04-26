@@ -126,12 +126,12 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\TrackPanel.cpp"/>
-    <ClCompile Include="..\..\Source\TrackSpace.cpp"/>
-    <ClCompile Include="..\..\Source\WorkSpace.cpp"/>
-    <ClCompile Include="..\..\Source\ControlBar.cpp"/>
-    <ClCompile Include="..\..\Source\BaseComp.cpp"/>
-    <ClCompile Include="..\..\Source\MainWindow.cpp"/>
+    <ClCompile Include="..\..\Source\gui\BaseComp.cpp"/>
+    <ClCompile Include="..\..\Source\gui\ControlBar.cpp"/>
+    <ClCompile Include="..\..\Source\gui\MainWindow.cpp"/>
+    <ClCompile Include="..\..\Source\gui\TrackPanel.cpp"/>
+    <ClCompile Include="..\..\Source\gui\TrackSpace.cpp"/>
+    <ClCompile Include="..\..\Source\gui\WorkSpace.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp"/>
     <ClCompile Include="..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp"/>
@@ -148,12 +148,12 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_opengl\juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\TrackPanel.h"/>
-    <ClInclude Include="..\..\Source\TrackSpace.h"/>
-    <ClInclude Include="..\..\Source\WorkSpace.h"/>
-    <ClInclude Include="..\..\Source\ControlBar.h"/>
-    <ClInclude Include="..\..\Source\BaseComp.h"/>
-    <ClInclude Include="..\..\Source\MainWindow.h"/>
+    <ClInclude Include="..\..\Source\gui\BaseComp.h"/>
+    <ClInclude Include="..\..\Source\gui\ControlBar.h"/>
+    <ClInclude Include="..\..\Source\gui\MainWindow.h"/>
+    <ClInclude Include="..\..\Source\gui\TrackPanel.h"/>
+    <ClInclude Include="..\..\Source\gui\TrackSpace.h"/>
+    <ClInclude Include="..\..\Source\gui\WorkSpace.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>

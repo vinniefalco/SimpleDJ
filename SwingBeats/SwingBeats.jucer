@@ -22,18 +22,20 @@
       <FILE id="dtaWVZ" name="icon.png" compile="0" resource="1" file="BinaryData/icon.png"/>
     </GROUP>
     <GROUP id="{2A74A279-B0C3-E227-D2CB-0DE8C660A193}" name="Source">
-      <FILE id="BuxvxW" name="TrackPanel.cpp" compile="1" resource="0" file="Source/TrackPanel.cpp"/>
-      <FILE id="s3B0u6" name="TrackPanel.h" compile="0" resource="0" file="Source/TrackPanel.h"/>
-      <FILE id="cWggDb" name="TrackSpace.cpp" compile="1" resource="0" file="Source/TrackSpace.cpp"/>
-      <FILE id="Vc9Qx4" name="TrackSpace.h" compile="0" resource="0" file="Source/TrackSpace.h"/>
-      <FILE id="eccuQK" name="WorkSpace.cpp" compile="1" resource="0" file="Source/WorkSpace.cpp"/>
-      <FILE id="ppatzn" name="WorkSpace.h" compile="0" resource="0" file="Source/WorkSpace.h"/>
-      <FILE id="N3lTZm" name="ControlBar.cpp" compile="1" resource="0" file="Source/ControlBar.cpp"/>
-      <FILE id="ADL1zC" name="ControlBar.h" compile="0" resource="0" file="Source/ControlBar.h"/>
-      <FILE id="TZ0IoV" name="BaseComp.cpp" compile="1" resource="0" file="Source/BaseComp.cpp"/>
-      <FILE id="wcAryT" name="BaseComp.h" compile="0" resource="0" file="Source/BaseComp.h"/>
-      <FILE id="NN6Kb7" name="MainWindow.cpp" compile="1" resource="0" file="Source/MainWindow.cpp"/>
-      <FILE id="E836VH" name="MainWindow.h" compile="0" resource="0" file="Source/MainWindow.h"/>
+      <GROUP id="{E4F6AB18-5A55-37D2-9BF7-4D8E14272C7D}" name="gui">
+        <FILE id="m412H6" name="BaseComp.cpp" compile="1" resource="0" file="Source/gui/BaseComp.cpp"/>
+        <FILE id="LHV5dv" name="BaseComp.h" compile="0" resource="0" file="Source/gui/BaseComp.h"/>
+        <FILE id="aIKyqO" name="ControlBar.cpp" compile="1" resource="0" file="Source/gui/ControlBar.cpp"/>
+        <FILE id="mT7PPo" name="ControlBar.h" compile="0" resource="0" file="Source/gui/ControlBar.h"/>
+        <FILE id="nk5F5H" name="MainWindow.cpp" compile="1" resource="0" file="Source/gui/MainWindow.cpp"/>
+        <FILE id="Z3xazq" name="MainWindow.h" compile="0" resource="0" file="Source/gui/MainWindow.h"/>
+        <FILE id="MOgUMj" name="TrackPanel.cpp" compile="1" resource="0" file="Source/gui/TrackPanel.cpp"/>
+        <FILE id="YGxbs9" name="TrackPanel.h" compile="0" resource="0" file="Source/gui/TrackPanel.h"/>
+        <FILE id="gXLS5h" name="TrackSpace.cpp" compile="1" resource="0" file="Source/gui/TrackSpace.cpp"/>
+        <FILE id="S2TTFk" name="TrackSpace.h" compile="0" resource="0" file="Source/gui/TrackSpace.h"/>
+        <FILE id="AiA8p1" name="WorkSpace.cpp" compile="1" resource="0" file="Source/gui/WorkSpace.cpp"/>
+        <FILE id="iQpfDF" name="WorkSpace.h" compile="0" resource="0" file="Source/gui/WorkSpace.h"/>
+      </GROUP>
       <FILE id="VyQeZG" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
   </MAINGROUP>

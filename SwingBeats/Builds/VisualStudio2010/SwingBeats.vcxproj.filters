@@ -11,6 +11,9 @@
     <Filter Include="SwingBeats\Source">
       <UniqueIdentifier>{C062722A-E702-41D7-94B6-023136E40C58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SwingBeats\Source\gui">
+      <UniqueIdentifier>{2527DC3A-A26F-8408-0843-853D25254AA7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Library Code">
       <UniqueIdentifier>{8B4D1BAA-6DB4-CAEC-A0FA-271F354D5C61}</UniqueIdentifier>
     </Filter>
@@ -31,23 +34,23 @@
     <ClCompile Include="..\..\BinaryData\icon.png">
       <Filter>SwingBeats\BinaryData</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TrackPanel.cpp">
-      <Filter>SwingBeats\Source</Filter>
+    <ClCompile Include="..\..\Source\gui\BaseComp.cpp">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TrackSpace.cpp">
-      <Filter>SwingBeats\Source</Filter>
+    <ClCompile Include="..\..\Source\gui\ControlBar.cpp">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\WorkSpace.cpp">
-      <Filter>SwingBeats\Source</Filter>
+    <ClCompile Include="..\..\Source\gui\MainWindow.cpp">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControlBar.cpp">
-      <Filter>SwingBeats\Source</Filter>
+    <ClCompile Include="..\..\Source\gui\TrackPanel.cpp">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\BaseComp.cpp">
-      <Filter>SwingBeats\Source</Filter>
+    <ClCompile Include="..\..\Source\gui\TrackSpace.cpp">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\MainWindow.cpp">
-      <Filter>SwingBeats\Source</Filter>
+    <ClCompile Include="..\..\Source\gui\WorkSpace.cpp">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>SwingBeats\Source</Filter>
@@ -93,23 +96,23 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\TrackPanel.h">
-      <Filter>SwingBeats\Source</Filter>
+    <ClInclude Include="..\..\Source\gui\BaseComp.h">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TrackSpace.h">
-      <Filter>SwingBeats\Source</Filter>
+    <ClInclude Include="..\..\Source\gui\ControlBar.h">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\WorkSpace.h">
-      <Filter>SwingBeats\Source</Filter>
+    <ClInclude Include="..\..\Source\gui\MainWindow.h">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControlBar.h">
-      <Filter>SwingBeats\Source</Filter>
+    <ClInclude Include="..\..\Source\gui\TrackPanel.h">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\BaseComp.h">
-      <Filter>SwingBeats\Source</Filter>
+    <ClInclude Include="..\..\Source\gui\TrackSpace.h">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MainWindow.h">
-      <Filter>SwingBeats\Source</Filter>
+    <ClInclude Include="..\..\Source\gui\WorkSpace.h">
+      <Filter>SwingBeats\Source\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
       <Filter>Juce Library Code</Filter>

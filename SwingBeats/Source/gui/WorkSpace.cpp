@@ -10,7 +10,7 @@
 ================================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "../../JuceLibraryCode/JuceHeader.h"
 #include "TrackPanel.h"
 #include "TrackSpace.h"
 #include "WorkSpace.h"

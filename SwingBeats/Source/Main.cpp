@@ -11,7 +11,7 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "MainWindow.h"
+#include "gui/MainWindow.h"
 
 //==============================================================================
 class SwingBeatsApplication  : public JUCEApplication
