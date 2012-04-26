@@ -30,7 +30,7 @@ private:
     //==========================================================================
     enum {OPEN_FILE = 0, PLAY/*, PAUSE, BACK, SETUP*/, ABOUT, BTSNUM};
 
-    OwnedArray<TextButton> bts;
+    OwnedArray<ImageButton> bts;
     MidiPlayer* midiPlayer;
 
     bool isPlaying;

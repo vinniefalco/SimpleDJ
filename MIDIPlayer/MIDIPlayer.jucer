@@ -4,7 +4,7 @@
               bundleIdentifier="com.yourcompany.MIDIPlayer" jucerVersion="3.0.0">
   <EXPORTFORMATS>
     <VS2010 targetFolder="Builds/VisualStudio2010" libraryType="1" juceFolder="..\JUCE\modules"
-            vstFolder="..\..\SDK\Include" smallIcon="HYXxbX" bigIcon="HYXxbX">
+            vstFolder="..\..\SDK\Include" smallIcon="A2i6ab" bigIcon="A2i6ab">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="1" optimisation="1" targetName="MIDIPlayer"/>
@@ -23,6 +23,16 @@
     </XCODE_MAC>
   </EXPORTFORMATS>
   <MAINGROUP id="BA5Qal" name="MIDIPlayer">
+    <GROUP id="{A24C8FE6-5E18-F6B1-F4B3-1FD60FCB9772}" name="BinaryData">
+      <FILE id="jXi3UN" name="about.gif" compile="0" resource="1" file="BinaryData/about.gif"/>
+      <FILE id="X6kfGd" name="back.gif" compile="0" resource="1" file="BinaryData/back.gif"/>
+      <FILE id="A2i6ab" name="icon.gif" compile="0" resource="1" file="BinaryData/icon.gif"/>
+      <FILE id="Q11nto" name="open.gif" compile="0" resource="1" file="BinaryData/open.gif"/>
+      <FILE id="WnGUsI" name="pause.gif" compile="0" resource="1" file="BinaryData/pause.gif"/>
+      <FILE id="u7TMrW" name="play.gif" compile="0" resource="1" file="BinaryData/play.gif"/>
+      <FILE id="k7PC54" name="setup.gif" compile="0" resource="1" file="BinaryData/setup.gif"/>
+      <FILE id="o7lv5D" name="stop.gif" compile="0" resource="1" file="BinaryData/stop.gif"/>
+    </GROUP>
     <GROUP id="{0EBE4C08-EE79-16B8-6977-6EA825F70F1D}" name="Source">
       <FILE id="AgUs54" name="HelpAndAbout.h" compile="0" resource="0" file="Source/HelpAndAbout.h"/>
       <FILE id="B363oY" name="MidiPlayer.cpp" compile="1" resource="0" file="Source/MidiPlayer.cpp"/>
