@@ -50,7 +50,7 @@ public:
   {
     // Do your application's initialisation code here..
 
-    m_mixer = new Mixer;
+    m_mixer = Mixer::New ();
 
     m_window = new CMainWindow;
 

@@ -29,29 +29,76 @@
 #ifndef MIXER_HEADER
 #define MIXER_HEADER
 
-class Mixer : private AudioIODeviceCallback
+/** Mixer for audio output.
+*/
+class Mixer
 {
 public:
-  Mixer ();
-  ~Mixer ();
+  /** Describes a channel's output level.
+  */
+  struct Level
+  {
+    float peak; //! Post-compressor level, range [0,1]
+    bool clip;  //! true if channel caused clipping.
+  };
 
-  AudioDeviceManager& getAudioDeviceManager();
+  /** Output level for a stereo signal.
+  */
+  struct StereoLevel
+  {
+    Level left;   //! left channel level
+    Level right;  //! right channel level
+  };
 
-protected:
-  void audioDeviceAboutToStart (AudioIODevice* device);
+  /** Audio provider for Mixer.
+  */
+  class Source
+    : public vf::ConcurrentObject
+    , public AudioSource
+  {
+  public:
+    typedef ReferenceCountedObjectPtr <Source> Ptr;
 
-  void audioDeviceIOCallback (const float** inputChannelData,
-                              int numInputChannels,
-                              float** outputChannelData,
-                              int numOutputChannels,
-                              int numSamples);
+    explicit Source (vf::CallQueue& mixerThread) : m_thread (mixerThread)
+    {
+    }
 
-  void audioDeviceStopped ();
+  protected:
+    vf::CallQueue& getThread ()
+    {
+      return m_thread;
+    }
 
-private:
-  vf::ManualCallQueue m_thread;
-  ScopedPointer <AudioDeviceManager> m_audioDeviceManager;
-  AudioIODevice* m_device;
+  private:
+    vf::CallQueue& m_thread;
+  };
+
+  /** Synchronizes the Mixer state
+  */
+  class Listener
+  {
+  public:
+    virtual void onMixerOutputLevel (StereoLevel const level) { }
+  };
+
+public:
+  static Mixer* New ();
+
+  virtual ~Mixer () { }
+
+  /** Get the raw AudioDeviceManager.
+  */
+  virtual AudioDeviceManager& getAudioDeviceManager() = 0;
+
+  /** Add or remove a Mixer::Listener.
+  */
+  virtual void addListener (Listener* listener, vf::CallQueue& thread) = 0;
+  virtual void removeListener (Listener* listener) = 0;
+
+  /** Add or remove a Source.
+  */
+  virtual void addSource (Source::Ptr source) = 0;
+  virtual void removeSource (Source::Ptr source) = 0;
 };
 
 #endif
