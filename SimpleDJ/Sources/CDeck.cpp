@@ -31,10 +31,14 @@
 #include "CSpeedControl.h"
 #include "FileManager.h"
 
-CDeck::CDeck ()
+CDeck::CDeck (Mixer& mixer)
   : vf::ResizableLayout (this)
+  , m_deck (Deck::New (mixer.getThread ()))
   , m_hasDropFocus (false)
 {
+  // Add the Deck to the Mixer.
+  mixer.addSource (m_deck);
+
   setOpaque (true);
   setSize (500, 300);
 
@@ -51,7 +55,7 @@ CDeck::CDeck ()
     addToLayout (c, anchorTopLeft, anchorBottomRight);
     addAndMakeVisible (c);
 
-    m_helpText = c;
+    m_text = c;
   }
 
   activateLayout ();
@@ -112,6 +116,27 @@ void CDeck::filesDropped (const StringArray& files, int x, int y)
 {
   if (m_hasDropFocus)
   {
+    if (files.size () == 1)
+    {
+      String path = files [0];
+
+      Playable::Ptr playable;
+      
+      playable = FileManager::getInstance ().createPlayableFromFile (path);
+
+      if (playable != nullptr)
+      {
+        m_deck->selectPlayable (playable);
+        m_deck->setPlay (true);
+
+        m_text->setText (String::empty, false);
+      }
+      else
+      {
+        // display some sort of error message
+      }
+    }
+
     m_hasDropFocus = false;
     repaint ();
   }

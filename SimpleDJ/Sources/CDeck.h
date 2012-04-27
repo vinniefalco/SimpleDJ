@@ -29,13 +29,16 @@
 #ifndef CDECK_HEADER
 #define CDECK_HEADER
 
+#include "Deck.h"
+
 class CDeck
   : public Component
   , public FileDragAndDropTarget
   , public vf::ResizableLayout
+  , private Deck::Listener
 {
 public:
-  CDeck ();
+  explicit CDeck (Mixer& mixer);
   ~CDeck ();
 
   void paint (Graphics& g);
@@ -48,8 +51,9 @@ protected:
   void filesDropped (const StringArray& files, int x, int y);
 
 private:
+  Deck::Ptr m_deck;
   ScopedPointer <Component> m_speedControl;
-  ScopedPointer <Component> m_helpText;
+  ScopedPointer <Label> m_text;
 
   bool m_hasDropFocus;
 

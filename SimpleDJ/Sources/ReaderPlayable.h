@@ -26,34 +26,30 @@
   ==============================================================================
 */
 
-#include "StandardIncludes.h"
-#include "CDeck.h"
-#include "CMain.h"
+#ifndef READERPLAYABLE_HEADER
+#define READERPLAYABLE_HEADER
 
-CMain::CMain (Mixer& mixer)
-  : vf::ResizableLayout (this)
+#include "Playable.h"
+
+/** A Playable that wraps an AudioFormatReader with a resampler.
+*/
+class ReaderPlayable : public Playable
 {
-  setSize (1024, 768);
+public:
+  // reader will be automatically deleted
+  explicit ReaderPlayable (AudioFormatReader* formatReader);
 
-  m_deck = new CDeck (mixer);
-  m_deck->setBounds (0, 0, 1024, 768);
-  addToLayout (m_deck, anchorTopLeft, anchorBottomRight);
-  addAndMakeVisible (m_deck);
+  ~ReaderPlayable ();
 
-  activateLayout ();
-}
+  void prepareToPlay (int samplesPerBlockExpected, double sampleRate);
 
-CMain::~CMain()
-{
-}
+  void releaseResources();
 
-void CMain::paint (Graphics& g)
-{
-  g.fillAll (Colours::black);
+  void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill);
 
-  Rectangle <int> r (getLocalBounds ());
-  g.setFont (r.getHeight ()/3);
-  g.setColour (Colours::white);
-  g.drawText ("SimpleDJ", r.getX (), r.getY (), r.getWidth(), r.getHeight (),
-    Justification::centred, true);
-}
+private:
+  ScopedPointer <ResamplingAudioSource> m_resampler;
+  AudioFormatReader& m_formatReader;
+};
+
+#endif

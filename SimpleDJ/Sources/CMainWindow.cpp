@@ -30,14 +30,14 @@
 #include "CMain.h"
 #include "CMainWindow.h"
 
-CMainWindow::CMainWindow() : DocumentWindow (
+CMainWindow::CMainWindow (Mixer& mixer) : DocumentWindow (
   JUCEApplication::getInstance()->getApplicationName(),
   Colour(0xff333333),
   DocumentWindow::allButtons,
   true)
 {
   setSize (640, 480);
-  setContentOwned (new CMain, true);
+  setContentOwned (new CMain (mixer), true);
 
   centreWithSize (800, 500);
   setResizable (true, false);

@@ -128,6 +128,7 @@
     <ClCompile Include="..\..\Sources\FileManager.cpp" />
     <ClCompile Include="..\..\Sources\MainApp.cpp" />
     <ClCompile Include="..\..\Sources\Mixer.cpp" />
+    <ClCompile Include="..\..\Sources\ReaderPlayable.cpp" />
     <ClCompile Include="..\..\Sources\CDeck.cpp" />
     <ClCompile Include="..\..\Sources\CMain.cpp" />
     <ClCompile Include="..\..\Sources\CMainWindow.cpp" />
@@ -1121,6 +1122,8 @@
     <ClInclude Include="..\..\Sources\FileManager.h" />
     <ClInclude Include="..\..\Sources\MainApp.h" />
     <ClInclude Include="..\..\Sources\Mixer.h" />
+    <ClInclude Include="..\..\Sources\Playable.h" />
+    <ClInclude Include="..\..\Sources\ReaderPlayable.h" />
     <ClInclude Include="..\..\Sources\CDeck.h" />
     <ClInclude Include="..\..\Sources\CMain.h" />
     <ClInclude Include="..\..\Sources\CMainWindow.h" />

@@ -285,6 +285,9 @@
     <ClCompile Include="..\..\Sources\Mixer.cpp">
       <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Sources\ReaderPlayable.cpp">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Sources\CDeck.cpp">
       <Filter>SimpleDJ\Gui</Filter>
     </ClCompile>
@@ -1320,6 +1323,12 @@
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\Mixer.h">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\Playable.h">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\ReaderPlayable.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\CDeck.h">

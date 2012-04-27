@@ -26,34 +26,17 @@
   ==============================================================================
 */
 
-#include "StandardIncludes.h"
-#include "CDeck.h"
-#include "CMain.h"
+#ifndef PLAYABLE_HEADER
+#define PLAYABLE_HEADER
 
-CMain::CMain (Mixer& mixer)
-  : vf::ResizableLayout (this)
+/** Consumable audio data.
+*/
+class Playable
+  : public vf::ConcurrentObject
+  , public AudioSource
 {
-  setSize (1024, 768);
+public:
+  typedef ReferenceCountedObjectPtr <Playable> Ptr;
+};
 
-  m_deck = new CDeck (mixer);
-  m_deck->setBounds (0, 0, 1024, 768);
-  addToLayout (m_deck, anchorTopLeft, anchorBottomRight);
-  addAndMakeVisible (m_deck);
-
-  activateLayout ();
-}
-
-CMain::~CMain()
-{
-}
-
-void CMain::paint (Graphics& g)
-{
-  g.fillAll (Colours::black);
-
-  Rectangle <int> r (getLocalBounds ());
-  g.setFont (r.getHeight ()/3);
-  g.setColour (Colours::white);
-  g.drawText ("SimpleDJ", r.getX (), r.getY (), r.getWidth(), r.getHeight (),
-    Justification::centred, true);
-}
+#endif

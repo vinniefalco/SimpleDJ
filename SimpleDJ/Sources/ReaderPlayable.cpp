@@ -27,33 +27,31 @@
 */
 
 #include "StandardIncludes.h"
-#include "CDeck.h"
-#include "CMain.h"
+#include "ReaderPlayable.h"
 
-CMain::CMain (Mixer& mixer)
-  : vf::ResizableLayout (this)
-{
-  setSize (1024, 768);
-
-  m_deck = new CDeck (mixer);
-  m_deck->setBounds (0, 0, 1024, 768);
-  addToLayout (m_deck, anchorTopLeft, anchorBottomRight);
-  addAndMakeVisible (m_deck);
-
-  activateLayout ();
-}
-
-CMain::~CMain()
+ReaderPlayable::ReaderPlayable (AudioFormatReader* formatReader)
+  : m_resampler (new ResamplingAudioSource (
+      new AudioFormatReaderSource (formatReader, true), true, 2))
+  , m_formatReader (*formatReader)
 {
 }
 
-void CMain::paint (Graphics& g)
+ReaderPlayable::~ReaderPlayable ()
 {
-  g.fillAll (Colours::black);
+}
 
-  Rectangle <int> r (getLocalBounds ());
-  g.setFont (r.getHeight ()/3);
-  g.setColour (Colours::white);
-  g.drawText ("SimpleDJ", r.getX (), r.getY (), r.getWidth(), r.getHeight (),
-    Justification::centred, true);
+void ReaderPlayable::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+{
+  m_resampler->prepareToPlay (samplesPerBlockExpected, sampleRate);
+  m_resampler->setResamplingRatio (sampleRate / m_formatReader.sampleRate);
+}
+
+void ReaderPlayable::releaseResources()
+{
+  m_resampler->releaseResources ();
+}
+
+void ReaderPlayable::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
+{
+  m_resampler->getNextAudioBlock (bufferToFill);
 }

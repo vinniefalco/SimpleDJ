@@ -29,10 +29,13 @@
 #ifndef CMAINWINDOW_HEADER
 #define CMAINWINDOW_HEADER
 
+#include "Mixer.h"
+
 class CMainWindow : public DocumentWindow
 {
 public:
-    CMainWindow();
+    explicit CMainWindow (Mixer& mixer);
+
     ~CMainWindow();
 
     void closeButtonPressed();

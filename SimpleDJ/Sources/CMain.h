@@ -29,6 +29,8 @@
 #ifndef CMAIN_HEADER
 #define CMAIN_HEADER
 
+#include "Mixer.h"
+
 /** Content component that holds all the "stuff".
 */
 class CMain
@@ -36,7 +38,7 @@ class CMain
   , vf::ResizableLayout
 {
 public:
-  CMain ();
+  explicit CMain (Mixer& mixer);
   ~CMain ();
 
   void paint (Graphics& g);

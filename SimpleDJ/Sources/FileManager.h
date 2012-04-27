@@ -29,6 +29,8 @@
 #ifndef FILEMANAGER_HEADER
 #define FILEMANAGER_HEADER
 
+#include "Playable.h"
+
 /** Singleton to handles file audio formats.
 */
 class FileManager
@@ -37,6 +39,8 @@ public:
   static FileManager& getInstance ();
 
   bool canHandleFile (String path);
+
+  Playable::Ptr createPlayableFromFile (String path);
 
 protected:
   FileManager ();

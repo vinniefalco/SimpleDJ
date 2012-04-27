@@ -28,6 +28,7 @@
 
 #include "StandardIncludes.h"
 #include "FileManager.h"
+#include "ReaderPlayable.h"
 
 FileManager::FileManager ()
 {
@@ -48,4 +49,26 @@ FileManager& FileManager::getInstance ()
 bool FileManager::canHandleFile (String path)
 {
   return m_formatManager.findFormatForFileExtension (File (path).getFileExtension ()) != nullptr;
+}
+
+Playable::Ptr FileManager::createPlayableFromFile (String path)
+{
+  Playable::Ptr playable;
+
+  AudioFormat* format = m_formatManager.findFormatForFileExtension (
+    File (path).getFileExtension ());
+
+  if (format != nullptr)
+  {
+    InputStream* inputStream = new FileInputStream (path);
+
+    AudioFormatReader* formatReader = format->createReaderFor (inputStream, true);
+
+    if (formatReader != nullptr)
+    {
+      playable = new ReaderPlayable (formatReader);
+    }
+  }
+
+  return playable;
 }

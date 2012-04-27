@@ -52,7 +52,7 @@ public:
 
     m_mixer = Mixer::New ();
 
-    m_window = new CMainWindow;
+    m_window = new CMainWindow (*m_mixer);
 
     m_window->setVisible (true);
   }

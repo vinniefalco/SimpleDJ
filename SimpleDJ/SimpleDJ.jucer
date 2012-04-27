@@ -22,6 +22,11 @@
       <FILE id="J1Lybt" name="MainApp.h" compile="0" resource="0" file="Sources/MainApp.h"/>
       <FILE id="HFkRhF" name="Mixer.cpp" compile="1" resource="0" file="Sources/Mixer.cpp"/>
       <FILE id="s6zIPd" name="Mixer.h" compile="0" resource="0" file="Sources/Mixer.h"/>
+      <FILE id="uum5uB" name="Playable.h" compile="0" resource="0" file="Sources/Playable.h"/>
+      <FILE id="q6gBxw" name="ReaderPlayable.cpp" compile="1" resource="0"
+            file="Sources/ReaderPlayable.cpp"/>
+      <FILE id="y20oN3" name="ReaderPlayable.h" compile="0" resource="0"
+            file="Sources/ReaderPlayable.h"/>
     </GROUP>
     <GROUP id="{39393AB3-F8BC-4C3E-EE99-A7352D177923}" name="Gui">
       <FILE id="Zb1HtA" name="CDeck.cpp" compile="1" resource="0" file="Sources/CDeck.cpp"/>

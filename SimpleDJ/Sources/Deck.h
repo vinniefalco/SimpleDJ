@@ -30,24 +30,15 @@
 #define DECK_HEADER
 
 #include "Mixer.h"
+#include "Playable.h"
 
-/** A Mixer Source for playing audio files.
+/** A Mixer Source that streams a Playable.
 */
 class Deck
   : public Mixer::Source
 {
 public:
   typedef Mixer::Levels Levels;
-
-  /** Can be played in the deck.
-  */
-  class Playable
-    : public vf::ConcurrentObject
-    , public AudioSource
-  {
-  public:
-    typedef ReferenceCountedObjectPtr <Playable> Ptr;
-  };
 
   /** Synchronizes the Deck state.
   */
