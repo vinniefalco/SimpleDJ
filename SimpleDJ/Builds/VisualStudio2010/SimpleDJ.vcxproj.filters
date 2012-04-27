@@ -267,6 +267,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Sources\CDeck.cpp">
+      <Filter>SimpleDJ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CMain.cpp">
+      <Filter>SimpleDJ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CMainWindow.cpp">
+      <Filter>SimpleDJ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CSpeedControl.cpp">
+      <Filter>SimpleDJ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\MainApp.cpp">
+      <Filter>SimpleDJ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Mixer.cpp">
+      <Filter>SimpleDJ</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\VFLib\modules\vf_concurrent\vf_concurrent.cpp">
       <Filter>SimpleDJ\VFLib Modules</Filter>
     </ClCompile>
@@ -278,15 +296,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\VFLib\modules\vf_gui\vf_gui.cpp">
       <Filter>SimpleDJ\VFLib Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Sources\MainApplication.cpp">
-      <Filter>SimpleDJ</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Sources\MainComponent.cpp">
-      <Filter>SimpleDJ</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Sources\MainWindow.cpp">
-      <Filter>SimpleDJ</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>
@@ -1289,10 +1298,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Sources\MainComponent.h">
+    <ClInclude Include="..\..\Sources\CDeck.h">
       <Filter>SimpleDJ</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Sources\MainWindow.h">
+    <ClInclude Include="..\..\Sources\CMain.h">
+      <Filter>SimpleDJ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CMainWindow.h">
+      <Filter>SimpleDJ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CSpeedControl.h">
+      <Filter>SimpleDJ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\MainApp.h">
+      <Filter>SimpleDJ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\Mixer.h">
+      <Filter>SimpleDJ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\StandardIncludes.h">
       <Filter>SimpleDJ</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">

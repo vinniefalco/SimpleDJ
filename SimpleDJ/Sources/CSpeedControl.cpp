@@ -26,62 +26,18 @@
   ==============================================================================
 */
 
-#include "JuceHeader.h"
-#include "MainWindow.h"
+#include "StandardIncludes.h"
+#include "CSpeedControl.h"
 
-class MainApplication  : public JUCEApplication
+CSpeedControl::CSpeedControl ()
+  : Slider ("Speed")
 {
-private:
-  ScopedPointer <MainWindow> m_window;
+  setSliderStyle (Slider::LinearVertical);
+  setTextBoxStyle (Slider::NoTextBox, true, 0, 0);
+  setRange (-1, 1);
+  setValue (0);
+}
 
-public:
-  MainApplication()
-  {
-  }
-
-  ~MainApplication()
-  {
-  }
-
-  void initialise (const String&)
-  {
-    // Do your application's initialisation code here..
-
-    m_window = new MainWindow;
-
-    m_window->setVisible (true);
-  }
-
-  void shutdown()
-  {
-    // Do your application's shutdown code here..
-
-  }
-
-  void systemRequestedQuit()
-  {
-    quit();
-  }
-
-  const String getApplicationName()
-  {
-    return "SimpleDJ";
-  }
-
-  const String getApplicationVersion()
-  {
-    return ProjectInfo::versionString;
-  }
-
-  bool moreThanOneInstanceAllowed()
-  {
-    return true;
-  }
-
-  void anotherInstanceStarted (const String&)
-  {
-
-  }
-};
-
-START_JUCE_APPLICATION (MainApplication)
+CSpeedControl::~CSpeedControl ()
+{
+}

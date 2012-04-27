@@ -26,19 +26,19 @@
   ==============================================================================
 */
 
-#ifndef HELLOWORLDCOMPONENT_HEADER
-#define HELLOWORLDCOMPONENT_HEADER
+#ifndef STANDARDINCLUDES_HEADER
+#define STANDARDINCLUDES_HEADER
 
-class MainComponent : public Component
-{
-public:
-    MainComponent ();
-    ~MainComponent ();
+#include "JuceHeader.h"
 
-    void paint (Graphics& g);
+#include "modules/vf_core/vf_core.h"
+#include "modules/vf_concurrent/vf_concurrent.h"
+#include "modules/vf_gui/vf_gui.h"
 
-private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
-};
+#ifdef _MSC_VER
+#pragma warning (disable: 4100)
+#pragma warning (disable: 4244)
+#pragma warning (disable: 4355)
+#endif
 
 #endif

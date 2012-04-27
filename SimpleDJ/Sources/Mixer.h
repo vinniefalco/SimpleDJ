@@ -26,25 +26,32 @@
   ==============================================================================
 */
 
-#include "JuceHeader.h"
-#include "MainComponent.h"
+#ifndef MIXER_HEADER
+#define MIXER_HEADER
 
-MainComponent::MainComponent()
+class Mixer : private AudioIODeviceCallback
 {
-  setSize (640, 480);
-}
+public:
+  Mixer ();
+  ~Mixer ();
 
-MainComponent::~MainComponent()
-{
-}
+  AudioDeviceManager& getAudioDeviceManager();
 
-void MainComponent::paint (Graphics& g)
-{
-  g.fillAll (Colours::black);
+protected:
+  void audioDeviceAboutToStart (AudioIODevice* device);
 
-  Rectangle <int> r (getLocalBounds ());
-  g.setFont (r.getHeight ()/3);
-  g.setColour (Colours::white);
-  g.drawText ("SimpleDJ", r.getX (), r.getY (), r.getWidth(), r.getHeight (),
-    Justification::centred, true);
-}
+  void audioDeviceIOCallback (const float** inputChannelData,
+                              int numInputChannels,
+                              float** outputChannelData,
+                              int numOutputChannels,
+                              int numSamples);
+
+  void audioDeviceStopped ();
+
+private:
+  vf::ManualCallQueue m_thread;
+  ScopedPointer <AudioDeviceManager> m_audioDeviceManager;
+  AudioIODevice* m_device;
+};
+
+#endif

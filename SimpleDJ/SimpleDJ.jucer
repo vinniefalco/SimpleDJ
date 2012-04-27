@@ -13,6 +13,21 @@
     </VS2010>
   </EXPORTFORMATS>
   <MAINGROUP id="Bp191K" name="SimpleDJ">
+    <FILE id="Zb1HtA" name="CDeck.cpp" compile="1" resource="0" file="Sources/CDeck.cpp"/>
+    <FILE id="YFjpNP" name="CDeck.h" compile="0" resource="0" file="Sources/CDeck.h"/>
+    <FILE id="v4Br1p" name="CMain.cpp" compile="1" resource="0" file="Sources/CMain.cpp"/>
+    <FILE id="VGNNdZ" name="CMain.h" compile="0" resource="0" file="Sources/CMain.h"/>
+    <FILE id="FXgAK6" name="CMainWindow.cpp" compile="1" resource="0" file="Sources/CMainWindow.cpp"/>
+    <FILE id="gWwL98" name="CMainWindow.h" compile="0" resource="0" file="Sources/CMainWindow.h"/>
+    <FILE id="FvG67z" name="CSpeedControl.cpp" compile="1" resource="0"
+          file="Sources/CSpeedControl.cpp"/>
+    <FILE id="GOoos7" name="CSpeedControl.h" compile="0" resource="0" file="Sources/CSpeedControl.h"/>
+    <FILE id="ubLDq1" name="MainApp.cpp" compile="1" resource="0" file="Sources/MainApp.cpp"/>
+    <FILE id="J1Lybt" name="MainApp.h" compile="0" resource="0" file="Sources/MainApp.h"/>
+    <FILE id="HFkRhF" name="Mixer.cpp" compile="1" resource="0" file="Sources/Mixer.cpp"/>
+    <FILE id="s6zIPd" name="Mixer.h" compile="0" resource="0" file="Sources/Mixer.h"/>
+    <FILE id="xA1xNu" name="StandardIncludes.h" compile="0" resource="0"
+          file="Sources/StandardIncludes.h"/>
     <GROUP id="{D8C87514-5C0A-9A75-D062-EACA241DBAAA}" name="VFLib Modules">
       <FILE id="Tcgqsz" name="vf_concurrent.cpp" compile="1" resource="0"
             file="../VFLib/modules/vf_concurrent/vf_concurrent.cpp"/>
@@ -20,13 +35,6 @@
       <FILE id="fB3hA2" name="vf_freetype.c" compile="1" resource="0" file="../VFLib/modules/vf_freetype/vf_freetype.c"/>
       <FILE id="b6Y4tR" name="vf_gui.cpp" compile="1" resource="0" file="../VFLib/modules/vf_gui/vf_gui.cpp"/>
     </GROUP>
-    <FILE id="ubLDq1" name="MainApplication.cpp" compile="1" resource="0"
-          file="Sources/MainApplication.cpp"/>
-    <FILE id="v4Br1p" name="MainComponent.cpp" compile="1" resource="0"
-          file="Sources/MainComponent.cpp"/>
-    <FILE id="VGNNdZ" name="MainComponent.h" compile="0" resource="0" file="Sources/MainComponent.h"/>
-    <FILE id="FXgAK6" name="MainWindow.cpp" compile="1" resource="0" file="Sources/MainWindow.cpp"/>
-    <FILE id="gWwL98" name="MainWindow.h" compile="0" resource="0" file="Sources/MainWindow.h"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>

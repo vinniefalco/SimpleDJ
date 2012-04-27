@@ -26,19 +26,34 @@
   ==============================================================================
 */
 
-#ifndef HELLOWORLDWINDOW_HEADER
-#define HELLOWORLDWINDOW_HEADER
+#include "StandardIncludes.h"
+#include "CDeck.h"
+#include "CMain.h"
 
-class MainWindow : public DocumentWindow
+CMain::CMain ()
+  : vf::ResizableLayout (this)
 {
-public:
-    MainWindow();
-    ~MainWindow();
+  setSize (1024, 768);
 
-    void closeButtonPressed();
+  m_deck = new CDeck;
+  m_deck->setBounds (0, 0, 1024, 768);
+  addToLayout (m_deck, anchorTopLeft, anchorBottomRight);
+  addAndMakeVisible (m_deck);
 
-private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
-};
+  activateLayout ();
+}
 
-#endif
+CMain::~CMain()
+{
+}
+
+void CMain::paint (Graphics& g)
+{
+  g.fillAll (Colours::black);
+
+  Rectangle <int> r (getLocalBounds ());
+  g.setFont (r.getHeight ()/3);
+  g.setColour (Colours::white);
+  g.drawText ("SimpleDJ", r.getX (), r.getY (), r.getWidth(), r.getHeight (),
+    Justification::centred, true);
+}
