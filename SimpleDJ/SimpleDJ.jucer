@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="dV4aaM" name="SimpleDJ" projectType="guiapp" version="1.0.0"
+              bundleIdentifier="com.yourcompany.SimpleDJ" jucerVersion="3.0.0">
+  <EXPORTFORMATS>
+    <VS2010 targetFolder="Builds/VisualStudio2010" libraryType="1" juceFolder="..\JUCE\modules">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="SimpleDJ" headerPath="..\..\..\JUCE;..\..\..\VFLib"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="2" targetName="SimpleDJ" headerPath="..\..\..\JUCE;..\..\..\VFLib"/>
+      </CONFIGURATIONS>
+    </VS2010>
+  </EXPORTFORMATS>
+  <MAINGROUP id="Bp191K" name="SimpleDJ">
+    <GROUP id="{D8C87514-5C0A-9A75-D062-EACA241DBAAA}" name="VFLib Modules">
+      <FILE id="Tcgqsz" name="vf_concurrent.cpp" compile="1" resource="0"
+            file="../VFLib/modules/vf_concurrent/vf_concurrent.cpp"/>
+      <FILE id="eU3QQ7" name="vf_core.cpp" compile="1" resource="0" file="../VFLib/modules/vf_core/vf_core.cpp"/>
+      <FILE id="fB3hA2" name="vf_freetype.c" compile="1" resource="0" file="../VFLib/modules/vf_freetype/vf_freetype.c"/>
+      <FILE id="b6Y4tR" name="vf_gui.cpp" compile="1" resource="0" file="../VFLib/modules/vf_gui/vf_gui.cpp"/>
+    </GROUP>
+    <FILE id="ubLDq1" name="MainApplication.cpp" compile="1" resource="0"
+          file="Sources/MainApplication.cpp"/>
+    <FILE id="v4Br1p" name="MainComponent.cpp" compile="1" resource="0"
+          file="Sources/MainComponent.cpp"/>
+    <FILE id="VGNNdZ" name="MainComponent.h" compile="0" resource="0" file="Sources/MainComponent.h"/>
+    <FILE id="FXgAK6" name="MainWindow.cpp" compile="1" resource="0" file="Sources/MainWindow.cpp"/>
+    <FILE id="gWwL98" name="MainWindow.h" compile="0" resource="0" file="Sources/MainWindow.h"/>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>
