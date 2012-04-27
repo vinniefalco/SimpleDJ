@@ -40,13 +40,13 @@ private:
   {
     State ()
     {
-      level.left.peak = 0;
-      level.left.clip = false;
-      level.right.peak = 0;
-      level.right.clip = false;
+      levels.left.peak = 0;
+      levels.left.clip = false;
+      levels.right.peak = 0;
+      levels.right.clip = false;
     }
 
-    StereoLevel level;
+    Levels levels;
   };
 
   typedef vf::ConcurrentState <State> StateType;
@@ -54,41 +54,40 @@ private:
   StateType m_state;
   vf::ManualCallQueue m_thread;
   vf::Listeners <Listener> m_listeners;
-
-  AudioIODevice* m_device;
+  AudioIODevice* m_currentDevice;
   ReferenceCountedArray <Source> m_sources;
   ScopedPointer <AudioDeviceManager> m_audioDeviceManager;
+  AudioSampleBuffer m_sourceBuffer;
 
 public:
   MixerImp ()
     : m_thread ("Mixer")
-    , m_device (nullptr)
+    , m_currentDevice (nullptr)
     , m_audioDeviceManager (new AudioDeviceManager)
+    , m_sourceBuffer (2, 0)
   {
     // set up audio device
-    {
-      int sampleRate = 44100;
-      int bufferSize;
-      int latencyMilliseconds=50;
+    int sampleRate = 44100;
+    int bufferSize;
+    int latencyMilliseconds=50;
 
-      bufferSize = sampleRate * latencyMilliseconds / 1000;
+    bufferSize = sampleRate * latencyMilliseconds / 1000;
 
-      AudioDeviceManager::AudioDeviceSetup setup;
-      m_audioDeviceManager->initialise (0, 2, 0, true);
-      m_audioDeviceManager->setCurrentAudioDeviceType ("DirectSound", false);
-      m_audioDeviceManager->getAudioDeviceSetup (setup);
+    AudioDeviceManager::AudioDeviceSetup setup;
+    m_audioDeviceManager->initialise (0, 2, 0, true);
+    m_audioDeviceManager->setCurrentAudioDeviceType ("DirectSound", false);
+    m_audioDeviceManager->getAudioDeviceSetup (setup);
 
-      setup.sampleRate = sampleRate;
-      setup.bufferSize = bufferSize;
-      setup.useDefaultInputChannels = false;
-      setup.inputChannels = 0;
-      setup.useDefaultOutputChannels = true;
-      setup.outputChannels = 2;
+    setup.sampleRate = sampleRate;
+    setup.bufferSize = bufferSize;
+    setup.useDefaultInputChannels = false;
+    setup.inputChannels = 0;
+    setup.useDefaultOutputChannels = true;
+    setup.outputChannels = 2;
 
-      String result = m_audioDeviceManager->setAudioDeviceSetup (setup, false);
+    String result = m_audioDeviceManager->setAudioDeviceSetup (setup, false);
 
-      m_audioDeviceManager->addAudioCallback (this);
-    }
+    m_audioDeviceManager->addAudioCallback (this);
   }
 
   ~MixerImp()
@@ -112,6 +111,15 @@ public:
   void doAddSource (Source::Ptr source)
   {
     m_sources.add (source);
+
+    // Prepare the source if we're already open.
+    if (m_currentDevice != nullptr)
+    {
+      int const samplesPerBlockExpected = m_currentDevice->getCurrentBufferSizeSamples ();
+      double const sampleRate = m_currentDevice->getCurrentSampleRate ();
+
+      source->prepareToPlay (samplesPerBlockExpected, sampleRate);
+    }
   }
 
   /** Remove a Source.
@@ -133,15 +141,20 @@ public:
     return *m_audioDeviceManager;
   }
 
+  vf::CallQueue& getThread ()
+  {
+    return m_thread;
+  }
+
   void addListener (Listener* listener, vf::CallQueue& thread)
   {
-    /* Atomically add the listener and synchronize their state. */
+    // Atomically add the listener and synchronize their state.
 
     StateType::ReadAccess state (m_state);
 
     m_listeners.add (listener, thread);
 
-    m_listeners.queue1 (listener, &Listener::onMixerOutputLevel, state->level);
+    m_listeners.queue1 (listener, &Listener::onMixerLevels, this, state->levels);
   }
 
   void removeListener (Listener* listener)
@@ -151,13 +164,11 @@ public:
 
   void addSource (Source::Ptr source)
   {
-    /* Do this on the mixer thread. */
     m_thread.call (&MixerImp::doAddSource, this, source);
   }
 
   void removeSource (Source::Ptr source)
   {
-    /* Do this on the mixer thread. */
     m_thread.call (&MixerImp::doRemoveSource, this, source);
   }
 
@@ -168,7 +179,18 @@ public:
 
   void audioDeviceAboutToStart (AudioIODevice* device)
   {
-    m_device = device;
+    jassert (m_currentDevice == nullptr);
+    m_currentDevice = device;
+
+    // Prepare each Source.
+    for (int i = 0; i < m_sources.size (); ++i)
+    {
+      Source::Ptr source = m_sources [i];
+      int const samplesPerBlockExpected = device->getCurrentBufferSizeSamples ();
+      double const sampleRate = device->getCurrentSampleRate ();
+
+      source->prepareToPlay (samplesPerBlockExpected, sampleRate);
+    }
   }
 
   void audioDeviceIOCallback (const float** inputChannelData,
@@ -177,30 +199,69 @@ public:
                                            int numOutputChannels,
                                            int numSamples)
   {
-    /* Synchronize state. */
+    // Synchronize state.
     m_thread.synchronize ();
 
+    // Set up the output data.
     AudioSampleBuffer outputBuffer (outputChannelData, numOutputChannels, numSamples);
+    AudioSourceChannelInfo outputBufferToFill;
+    outputBufferToFill.buffer = &outputBuffer;
+    outputBufferToFill.numSamples = numSamples;
+    outputBufferToFill.startSample = 0;
 
-    StereoLevel newLevel;
-    newLevel.left.peak = 0;
-    newLevel.left.clip = false;
-    newLevel.right.peak = 0;
-    newLevel.right.clip = false;
+    // Prepare our intermediate buffer.
+    m_sourceBuffer.setSize (2, numSamples, false, false, true);
+    AudioSourceChannelInfo sourceBufferToFill;
+    sourceBufferToFill.buffer = &m_sourceBuffer;
+    sourceBufferToFill.numSamples = numSamples;
+    sourceBufferToFill.startSample = 0;
 
-    /* Update shared state. */
+    if (m_sources.size () > 0)
+    {
+      // Copy first source to the output.
+      m_sources[0]->getNextAudioBlock (outputBufferToFill);
+
+      // Process remaining sources.
+      for (int i = 1; i < m_sources.size (); ++i)
+      {
+        // Add this source to the output.
+
+        m_sources [i]->getNextAudioBlock (sourceBufferToFill);
+
+        outputBufferToFill.buffer->addFrom (0, 0,
+          sourceBufferToFill.buffer->getArrayOfChannels ()[0], numSamples);
+        
+        outputBufferToFill.buffer->addFrom (1, 0,
+          sourceBufferToFill.buffer->getArrayOfChannels ()[1], numSamples);
+      }
+    }
+    else
+    {
+      // Produce silence.
+      outputBufferToFill.buffer->clear ();
+    }
+
+    Levels newLevels;
+    newLevels.left.peak = 0;
+    newLevels.left.clip = false;
+    newLevels.right.peak = 0;
+    newLevels.right.clip = false;
+
+    // Update shared state.
     {
       StateType::WriteAccess state (m_state);
 
-      state->level = newLevel;
+      state->levels = newLevels;
     }
 
-    /* Notify listeners. */
-    m_listeners.call (&Listener::onMixerOutputLevel, newLevel);
+    // Notify listeners.
+    m_listeners.update (&Listener::onMixerLevels, this, newLevels);
   }
 
   void audioDeviceStopped ()
   {
+    /* A nullptr indicates the device is closed */
+    m_currentDevice = nullptr;
   }
 };
 

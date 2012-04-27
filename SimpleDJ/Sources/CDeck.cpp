@@ -29,6 +29,7 @@
 #include "StandardIncludes.h"
 #include "CDeck.h"
 #include "CSpeedControl.h"
+#include "FileManager.h"
 
 CDeck::CDeck ()
   : vf::ResizableLayout (this)
@@ -88,7 +89,9 @@ bool CDeck::isInterestedInFileDrag (const StringArray& files)
   bool isInterested = false;
 
   if (files.size () == 1)
-    isInterested = true;
+  {
+    isInterested = FileManager::getInstance ().canHandleFile (files[0]);
+  }
 
   return isInterested;
 }

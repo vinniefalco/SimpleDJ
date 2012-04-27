@@ -13,19 +13,27 @@
     </VS2010>
   </EXPORTFORMATS>
   <MAINGROUP id="Bp191K" name="SimpleDJ">
-    <FILE id="Zb1HtA" name="CDeck.cpp" compile="1" resource="0" file="Sources/CDeck.cpp"/>
-    <FILE id="YFjpNP" name="CDeck.h" compile="0" resource="0" file="Sources/CDeck.h"/>
-    <FILE id="v4Br1p" name="CMain.cpp" compile="1" resource="0" file="Sources/CMain.cpp"/>
-    <FILE id="VGNNdZ" name="CMain.h" compile="0" resource="0" file="Sources/CMain.h"/>
-    <FILE id="FXgAK6" name="CMainWindow.cpp" compile="1" resource="0" file="Sources/CMainWindow.cpp"/>
-    <FILE id="gWwL98" name="CMainWindow.h" compile="0" resource="0" file="Sources/CMainWindow.h"/>
-    <FILE id="FvG67z" name="CSpeedControl.cpp" compile="1" resource="0"
-          file="Sources/CSpeedControl.cpp"/>
-    <FILE id="GOoos7" name="CSpeedControl.h" compile="0" resource="0" file="Sources/CSpeedControl.h"/>
-    <FILE id="ubLDq1" name="MainApp.cpp" compile="1" resource="0" file="Sources/MainApp.cpp"/>
-    <FILE id="J1Lybt" name="MainApp.h" compile="0" resource="0" file="Sources/MainApp.h"/>
-    <FILE id="HFkRhF" name="Mixer.cpp" compile="1" resource="0" file="Sources/Mixer.cpp"/>
-    <FILE id="s6zIPd" name="Mixer.h" compile="0" resource="0" file="Sources/Mixer.h"/>
+    <GROUP id="{A643C8B7-28F8-DDF5-071F-5CBACFAB7259}" name="Core">
+      <FILE id="K2CX5j" name="Deck.cpp" compile="1" resource="0" file="Sources/Deck.cpp"/>
+      <FILE id="IS4ZhQ" name="Deck.h" compile="0" resource="0" file="Sources/Deck.h"/>
+      <FILE id="gyZQjT" name="FileManager.cpp" compile="1" resource="0" file="Sources/FileManager.cpp"/>
+      <FILE id="mzm1py" name="FileManager.h" compile="0" resource="0" file="Sources/FileManager.h"/>
+      <FILE id="ubLDq1" name="MainApp.cpp" compile="1" resource="0" file="Sources/MainApp.cpp"/>
+      <FILE id="J1Lybt" name="MainApp.h" compile="0" resource="0" file="Sources/MainApp.h"/>
+      <FILE id="HFkRhF" name="Mixer.cpp" compile="1" resource="0" file="Sources/Mixer.cpp"/>
+      <FILE id="s6zIPd" name="Mixer.h" compile="0" resource="0" file="Sources/Mixer.h"/>
+    </GROUP>
+    <GROUP id="{39393AB3-F8BC-4C3E-EE99-A7352D177923}" name="Gui">
+      <FILE id="Zb1HtA" name="CDeck.cpp" compile="1" resource="0" file="Sources/CDeck.cpp"/>
+      <FILE id="YFjpNP" name="CDeck.h" compile="0" resource="0" file="Sources/CDeck.h"/>
+      <FILE id="v4Br1p" name="CMain.cpp" compile="1" resource="0" file="Sources/CMain.cpp"/>
+      <FILE id="VGNNdZ" name="CMain.h" compile="0" resource="0" file="Sources/CMain.h"/>
+      <FILE id="FXgAK6" name="CMainWindow.cpp" compile="1" resource="0" file="Sources/CMainWindow.cpp"/>
+      <FILE id="gWwL98" name="CMainWindow.h" compile="0" resource="0" file="Sources/CMainWindow.h"/>
+      <FILE id="FvG67z" name="CSpeedControl.cpp" compile="1" resource="0"
+            file="Sources/CSpeedControl.cpp"/>
+      <FILE id="GOoos7" name="CSpeedControl.h" compile="0" resource="0" file="Sources/CSpeedControl.h"/>
+    </GROUP>
     <FILE id="xA1xNu" name="StandardIncludes.h" compile="0" resource="0"
           file="Sources/StandardIncludes.h"/>
     <GROUP id="{D8C87514-5C0A-9A75-D062-EACA241DBAAA}" name="VFLib Modules">

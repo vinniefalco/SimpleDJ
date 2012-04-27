@@ -26,85 +26,69 @@
   ==============================================================================
 */
 
-#ifndef MIXER_HEADER
-#define MIXER_HEADER
+#ifndef DECK_HEADER
+#define DECK_HEADER
 
-/** Mixer for audio output.
+#include "Mixer.h"
+
+/** A Mixer Source for playing audio files.
 */
-class Mixer
+class Deck
+  : public Mixer::Source
 {
 public:
-  /** Describes a channel's output level.
-  */
-  struct Level
-  {
-    float peak; //! Post-compressor level, range [0,1]
-    bool clip;  //! true if channel caused clipping.
-  };
+  typedef Mixer::Levels Levels;
 
-  /** Output level for a stereo signal.
+  /** Can be played in the deck.
   */
-  struct Levels
-  {
-    Level left;   //! left channel level
-    Level right;  //! right channel level
-  };
-
-  /** Audio provider for Mixer.
-  */
-  class Source
+  class Playable
     : public vf::ConcurrentObject
     , public AudioSource
   {
   public:
-    typedef ReferenceCountedObjectPtr <Source> Ptr;
-
-    explicit Source (vf::CallQueue& mixerThread) : m_thread (mixerThread)
-    {
-    }
-
-  protected:
-    vf::CallQueue& getThread ()
-    {
-      return m_thread;
-    }
-
-  private:
-    vf::CallQueue& m_thread;
+    typedef ReferenceCountedObjectPtr <Playable> Ptr;
   };
 
-  /** Synchronizes the Mixer state.
+  /** Synchronizes the Deck state.
   */
   class Listener
   {
   public:
+    /** Called when the play state changes.
+    */
+    virtual void onDeckPlay (Deck* deck, bool isPlaying) { }
+
     /** Called when the output level changes.
     */
-    virtual void onMixerLevels (Mixer* mixer, Levels const level) { }
+    virtual void onDeckLevels (Deck* deck, Levels const level) { }
+
+    /** Called when the Playable changes.
+    */
+    virtual void onDeckSelect (Deck* deck, Playable::Ptr playable) { }
   };
 
 public:
-  static Mixer* New ();
+  typedef ReferenceCountedObjectPtr <Deck> Ptr;
 
-  virtual ~Mixer () { }
-
-  /** Get the raw AudioDeviceManager.
-  */
-  virtual AudioDeviceManager& getAudioDeviceManager() = 0;
-
-  /** Return the associated CallQueue.
-  */
-  virtual vf::CallQueue& getThread () = 0;
+  static Deck::Ptr New (vf::CallQueue& mixerThread);
 
   /** Add or remove a Listener.
   */
   virtual void addListener (Listener* listener, vf::CallQueue& thread) = 0;
   virtual void removeListener (Listener* listener) = 0;
 
-  /** Add or remove a Source.
+  /** Change the current Playable.
+
+      Use nullptr to unload.
   */
-  virtual void addSource (Source::Ptr source) = 0;
-  virtual void removeSource (Source::Ptr source) = 0;
+  virtual void selectPlayable (Playable::Ptr playable) = 0;
+
+  /** Start or stop the Deck.
+  */
+  virtual void setPlay (bool shouldBePlaying) = 0;
+
+protected:
+  explicit Deck (vf::CallQueue& mixerThread);
 };
 
 #endif

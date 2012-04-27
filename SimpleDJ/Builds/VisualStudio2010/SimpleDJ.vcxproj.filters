@@ -4,6 +4,12 @@
     <Filter Include="SimpleDJ">
       <UniqueIdentifier>{B6B9AE78-4107-5308-190E-9B2954EBA2EE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SimpleDJ\Core">
+      <UniqueIdentifier>{93CEA994-22A0-9CAB-2AFE-EC7535F6A51D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SimpleDJ\Gui">
+      <UniqueIdentifier>{792E6A63-2370-21EF-635F-4318804276CA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="SimpleDJ\VFLib Modules">
       <UniqueIdentifier>{2DD17002-E435-68C9-603D-4016AF6F851E}</UniqueIdentifier>
     </Filter>
@@ -267,23 +273,29 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Sources\CDeck.cpp">
-      <Filter>SimpleDJ</Filter>
+    <ClCompile Include="..\..\Sources\Deck.cpp">
+      <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Sources\CMain.cpp">
-      <Filter>SimpleDJ</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Sources\CMainWindow.cpp">
-      <Filter>SimpleDJ</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Sources\CSpeedControl.cpp">
-      <Filter>SimpleDJ</Filter>
+    <ClCompile Include="..\..\Sources\FileManager.cpp">
+      <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Sources\MainApp.cpp">
-      <Filter>SimpleDJ</Filter>
+      <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Sources\Mixer.cpp">
-      <Filter>SimpleDJ</Filter>
+      <Filter>SimpleDJ\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CDeck.cpp">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CMain.cpp">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CMainWindow.cpp">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CSpeedControl.cpp">
+      <Filter>SimpleDJ\Gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\VFLib\modules\vf_concurrent\vf_concurrent.cpp">
       <Filter>SimpleDJ\VFLib Modules</Filter>
@@ -1298,23 +1310,29 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Sources\CDeck.h">
-      <Filter>SimpleDJ</Filter>
+    <ClInclude Include="..\..\Sources\Deck.h">
+      <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Sources\CMain.h">
-      <Filter>SimpleDJ</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Sources\CMainWindow.h">
-      <Filter>SimpleDJ</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Sources\CSpeedControl.h">
-      <Filter>SimpleDJ</Filter>
+    <ClInclude Include="..\..\Sources\FileManager.h">
+      <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\MainApp.h">
-      <Filter>SimpleDJ</Filter>
+      <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\Mixer.h">
-      <Filter>SimpleDJ</Filter>
+      <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CDeck.h">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CMain.h">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CMainWindow.h">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CSpeedControl.h">
+      <Filter>SimpleDJ\Gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\StandardIncludes.h">
       <Filter>SimpleDJ</Filter>
