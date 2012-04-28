@@ -130,6 +130,7 @@
     <ClCompile Include="..\..\Sources\Params.cpp" />
     <ClCompile Include="..\..\Sources\ReaderPlayable.cpp" />
     <ClCompile Include="..\..\Sources\CApp.cpp" />
+    <ClCompile Include="..\..\Sources\CDeckFader.cpp" />
     <ClCompile Include="..\..\Sources\CDeck.cpp" />
     <ClCompile Include="..\..\Sources\CDeckLevelMeter.cpp" />
     <ClCompile Include="..\..\Sources\CDeckMixer.cpp" />
@@ -1135,6 +1136,7 @@
     <ClInclude Include="..\..\Sources\Playable.h" />
     <ClInclude Include="..\..\Sources\ReaderPlayable.h" />
     <ClInclude Include="..\..\Sources\StandardIncludes.h" />
+    <ClInclude Include="..\..\Sources\CDeckFader.h" />
     <ClInclude Include="..\..\Sources\CApp.h" />
     <ClInclude Include="..\..\Sources\CDeck.h" />
     <ClInclude Include="..\..\Sources\CDeckLevelMeter.h" />

@@ -26,61 +26,31 @@
   ==============================================================================
 */
 
-#ifndef DECK_HEADER
-#define DECK_HEADER
+#include "StandardIncludes.h"
+#include "CDeckFader.h"
 
-#include "Mixer.h"
-#include "Params.h"
-#include "Playable.h"
-
-/** A Mixer Source that streams a Playable.
-*/
-class Deck
-  : public Mixer::Source
+CDeckFader::CDeckFader (Param& param)
+  : m_param (param)
 {
-public:
-  typedef Mixer::Levels Levels;
+  m_param.addListener (this, vf::MessageThread::getInstance ());
 
-  /** Synchronizes the Deck state.
-  */
-  class Listener
-  {
-  public:
-    /** Called when the output level changes.
-    */
-    virtual void onDeckLevels (Deck* deck, Levels level) { }
+  setSliderStyle (Slider::LinearVertical);
+  setTextBoxStyle (Slider::NoTextBox, true, 0, 0);
+  setRange (0, 1);
+  setValue (1);
+}
 
-    /** Called when the Playable changes.
-    */
-    virtual void onDeckSelect (Deck* deck, Playable::Ptr playable) { }
-  };
+CDeckFader::~CDeckFader ()
+{
+  m_param.removeListener (this);
+}
 
-public:
-  typedef ReferenceCountedObjectPtr <Deck> Ptr;
+void CDeckFader::valueChanged ()
+{
+  m_param.setValue (0 - getValue ());
+}
 
-  static Deck::Ptr New (vf::CallQueue& mixerThread);
-
-  /** Parameters.
-
-      "vol"     [0...1]     Volume fader.
-      "play"    0 or 1      Play state (off/on)
-      "speed"   [-1...1]    Playback speed (0=normal)
-  */
-  Params const& param;
-
-  /** Add or remove a Listener.
-  */
-  virtual void addListener (Listener* listener, vf::CallQueue& thread) = 0;
-  virtual void removeListener (Listener* listener) = 0;
-
-  /** Change the current Playable.
-
-      Use nullptr to unload.
-  */
-  virtual void selectPlayable (Playable::Ptr playable) = 0;
-
-protected:
-  Deck (vf::CallQueue& mixerThread, Params& params);
-};
-
-#endif
+void CDeckFader::onParamChange (Param* param, double value)
+{
+  setValue (0 - value, false);
+}

@@ -28,7 +28,7 @@
 
 #include "StandardIncludes.h"
 #include "CDeck.h"
-#include "CDeckLevelMeter.h"
+#include "CDeckMixer.h"
 #include "CMain.h"
 
 CMain::CMain (Mixer& mixer)
@@ -51,7 +51,7 @@ CMain::CMain (Mixer& mixer)
     addToLayout (c, anchorTopLeft, Point <int> (50, 50));
     addAndMakeVisible (c);
 
-    c = new CDeckLevelMeter (d);
+    c = new CDeckMixer (d, false);
     c->setBounds (466, 8, 30, 288);
     addToLayout (c, Point <int> (50, 0), Point <int> (50, 50));
     addAndMakeVisible (c);
@@ -67,7 +67,7 @@ CMain::CMain (Mixer& mixer)
     addToLayout (c, Point <int> (50, 0), Point <int> (100, 50));
     addAndMakeVisible (c);
 
-    c = new CDeckLevelMeter (d);
+    c = new CDeckMixer (d, true);
     c->setBounds (504, 8, 30, 288);
     addToLayout (c, Point <int> (50, 0), Point <int> (50, 50));
     addAndMakeVisible (c);
@@ -83,7 +83,7 @@ CMain::CMain (Mixer& mixer)
     addToLayout (c, Point <int> (0, 50), Point <int> (50, 100));
     addAndMakeVisible (c);
 
-    c = new CDeckLevelMeter (d);
+    c = new CDeckMixer (d, false);
     c->setBounds (466, 304, 30, 288);
     addToLayout (c, Point <int> (50, 50), Point <int> (50, 100));
     addAndMakeVisible (c);
@@ -99,7 +99,7 @@ CMain::CMain (Mixer& mixer)
     addToLayout (c, Point <int> (50, 50), anchorBottomRight);
     addAndMakeVisible (c);
 
-    c = new CDeckLevelMeter (d);
+    c = new CDeckMixer (d, true);
     c->setBounds (504, 304, 30, 288);
     addToLayout (c, Point <int> (50, 50), Point <int> (50, 100));
     addAndMakeVisible (c);

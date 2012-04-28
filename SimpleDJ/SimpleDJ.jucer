@@ -38,6 +38,8 @@
     </GROUP>
     <GROUP id="{39393AB3-F8BC-4C3E-EE99-A7352D177923}" name="Gui">
       <FILE id="ubLDq1" name="CApp.cpp" compile="1" resource="0" file="Sources/CApp.cpp"/>
+      <FILE id="yOxS8F" name="CDeckFader.h" compile="0" resource="0" file="Sources/CDeckFader.h"/>
+      <FILE id="fQH0mN" name="CDeckFader.cpp" compile="1" resource="0" file="Sources/CDeckFader.cpp"/>
       <FILE id="J1Lybt" name="CApp.h" compile="0" resource="0" file="Sources/CApp.h"/>
       <FILE id="Zb1HtA" name="CDeck.cpp" compile="1" resource="0" file="Sources/CDeck.cpp"/>
       <FILE id="YFjpNP" name="CDeck.h" compile="0" resource="0" file="Sources/CDeck.h"/>

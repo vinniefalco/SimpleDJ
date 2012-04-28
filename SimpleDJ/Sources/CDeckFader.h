@@ -26,61 +26,29 @@
   ==============================================================================
 */
 
-#ifndef DECK_HEADER
-#define DECK_HEADER
+#ifndef CDECKFADER_HEADER
+#define CDECKFADER_HEADER
 
-#include "Mixer.h"
-#include "Params.h"
-#include "Playable.h"
+#include "Param.h"
 
-/** A Mixer Source that streams a Playable.
+/** Deck fader.
 */
-class Deck
-  : public Mixer::Source
+class CDeckFader
+  : public Slider
+  , public Param::Listener
 {
 public:
-  typedef Mixer::Levels Levels;
+  explicit CDeckFader (Param& param);
+  ~CDeckFader ();
 
-  /** Synchronizes the Deck state.
-  */
-  class Listener
-  {
-  public:
-    /** Called when the output level changes.
-    */
-    virtual void onDeckLevels (Deck* deck, Levels level) { }
+  void valueChanged ();
 
-    /** Called when the Playable changes.
-    */
-    virtual void onDeckSelect (Deck* deck, Playable::Ptr playable) { }
-  };
+  void onParamChange (Param* param, double value);
 
-public:
-  typedef ReferenceCountedObjectPtr <Deck> Ptr;
+private:
+  Param& m_param;
 
-  static Deck::Ptr New (vf::CallQueue& mixerThread);
-
-  /** Parameters.
-
-      "vol"     [0...1]     Volume fader.
-      "play"    0 or 1      Play state (off/on)
-      "speed"   [-1...1]    Playback speed (0=normal)
-  */
-  Params const& param;
-
-  /** Add or remove a Listener.
-  */
-  virtual void addListener (Listener* listener, vf::CallQueue& thread) = 0;
-  virtual void removeListener (Listener* listener) = 0;
-
-  /** Change the current Playable.
-
-      Use nullptr to unload.
-  */
-  virtual void selectPlayable (Playable::Ptr playable) = 0;
-
-protected:
-  Deck (vf::CallQueue& mixerThread, Params& params);
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CDeckFader)
 };
 
 #endif

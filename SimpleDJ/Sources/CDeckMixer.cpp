@@ -28,28 +28,38 @@
 
 #include "StandardIncludes.h"
 #include "CDeckMixer.h"
+#include "CDeckLevelMeter.h"
+#include "CDeckFader.h"
 
-CDeckMixer::CDeckMixer (Deck::Ptr deck)
+CDeckMixer::CDeckMixer (Deck::Ptr deck, bool rightFacing)
   : vf::ResizableLayout (this)
   , m_deck (deck)
 {
   setOpaque (true);
-  setSize (100, 200);
-  
-  setMinimumSize (100, 200);
+  setSize (64, 200);
 
+  {
+    Component* c = new CDeckLevelMeter (deck);
+    c->setBounds (0, 70, 30, 130);
+    addToLayout (c, anchorTopLeft, anchorBottomLeft);
+    addAndMakeVisible (c);
+  }
 
+  {
+    Component* c = new CDeckFader (deck->param["vol"]);
+    c->setBounds (0, 70, 30, 130);
+    addToLayout (c, anchorTopLeft, anchorBottomLeft);
+    addAndMakeVisible (c);
+  }
+
+  setMinimumSize (16, 64);
 
   activateLayout ();
-
-  m_deck->addListener (this, vf::MessageThread::getInstance());
 }
 
 CDeckMixer::~CDeckMixer ()
 {
   deleteAllChildren ();
-
-  m_deck->removeListener (this);
 }
 
 void CDeckMixer::paint (Graphics& g)
@@ -61,9 +71,4 @@ void CDeckMixer::paint (Graphics& g)
 
   g.setColour (Colours::grey.darker ());
   g.fillRect (r);
-}
-
-void CDeckMixer::onDeckLevels (Deck* deck, Deck::Levels levels)
-{
-  m_levelMeter->setLevel (levels.left);
 }

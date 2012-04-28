@@ -37,19 +37,15 @@
 class CDeckMixer
   : public Component
   , public vf::ResizableLayout
-  , private Deck::Listener
 {
 public:
-  CDeckMixer (Deck::Ptr deck);
+  CDeckMixer (Deck::Ptr deck, bool rightFacing);
   ~CDeckMixer ();
 
   void paint (Graphics& g);
 
-  void onDeckLevels (Deck* deck, Deck::Levels levels);
-
 private:
   Deck::Ptr m_deck;
-  CLevelMeter* m_levelMeter;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CDeckMixer)
 };

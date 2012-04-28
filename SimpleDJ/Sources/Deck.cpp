@@ -60,25 +60,30 @@ private:
 
   StateType m_state;
   vf::Listeners <Listener> m_listeners;
-  bool m_isPlaying;
   bool m_isPreparedToPlay;
   int m_samplesPerBlockExpected;
   double m_sampleRate;
   ScopedPointer <ResamplingAudioSource> m_resampler;
   ScopedPointer <PeakDetector <2, float> > m_peakDetector;
 
+  bool m_isPlaying;
+  float m_deckVolume;
+
   Params m_params;
+  ScopedPointer <ParamImp> m_paramVol;
   ScopedPointer <ParamImp> m_paramPlay;
   ScopedPointer <ParamImp> m_paramSpeed;
 
 public:
   explicit DeckImp (vf::CallQueue& mixerThread)
     : Deck (mixerThread, m_params)
-    , m_isPlaying (false)
     , m_isPreparedToPlay (false)
     , m_samplesPerBlockExpected (0)
     , m_sampleRate (0)
     , m_peakDetector (new PeakDetector <2, float>)
+    , m_isPlaying (false)
+    , m_deckVolume (1)
+    , m_paramVol (new ParamImp ("vol", m_deckVolume, mixerThread, &m_params))
     , m_paramPlay (new ParamImp ("play", 0, mixerThread, &m_params))
     , m_paramSpeed (new ParamImp ("speed", 0, mixerThread, &m_params))
   {
@@ -190,6 +195,10 @@ public:
     m_resampler = nullptr;
   }
 
+  void produceOutput (AudioSampleBuffer& outputBuffer)
+  {
+  }
+
   void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
   {
     // Detect play state change.
@@ -237,7 +246,7 @@ public:
       bufferToFill.clearActiveBufferRegion ();
     }
 
-    // Calculate levels
+    // Calculate levels (pre deck fader)
     Levels newLevels;
 
     m_peakDetector->process (bufferToFill.numSamples,
@@ -248,6 +257,13 @@ public:
 
     newLevels.right.peak = (*m_peakDetector)[1];
     newLevels.right.clip = false;
+
+    // Apply deck fader.
+    bufferToFill.buffer->applyGainRamp (0, 0, bufferToFill.numSamples,
+      m_deckVolume, m_paramVol->getValue ());
+    bufferToFill.buffer->applyGainRamp (1, 0, bufferToFill.numSamples,
+      m_deckVolume, m_paramVol->getValue ());
+    m_deckVolume = m_paramVol->getValue ();
 
     // Update shared state.
     {
