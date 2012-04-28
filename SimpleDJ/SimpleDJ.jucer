@@ -11,6 +11,24 @@
                        isDebug="1" optimisation="2" targetName="SimpleDJ" headerPath="..\..\..\JUCE;..\..\..\VFLib"/>
       </CONFIGURATIONS>
     </VS2010>
+    <XCODE_MAC targetFolder="Builds/MacOSX" objCExtraSuffix="ll8YC7" juceFolder="..\JUCE\modules">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SimpleDJ"
+                       osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       headerPath="../../../JUCE;../../../VFLib"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="SimpleDJ"
+                       osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       headerPath="../../../JUCE;../../../VFLib"/>
+      </CONFIGURATIONS>
+    </XCODE_MAC>
+    <LINUX_MAKE targetFolder="Builds/Linux" juceFolder="..\JUCE\modules">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
+                       targetName="SimpleDJ" headerPath="../../../JUCE;../../../VFLib"/>
+        <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
+                       targetName="SimpleDJ" headerPath="../../../JUCE;../../../VFLib"/>
+      </CONFIGURATIONS>
+    </LINUX_MAKE>
   </EXPORTFORMATS>
   <MAINGROUP id="Bp191K" name="SimpleDJ">
     <GROUP id="{A643C8B7-28F8-DDF5-071F-5CBACFAB7259}" name="Core">
