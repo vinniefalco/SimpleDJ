@@ -37,7 +37,12 @@ CMainWindow::CMainWindow (Mixer& mixer) : DocumentWindow (
   true)
 {
   setSize (640, 480);
-  setContentOwned (new CMain (mixer), true);
+  
+  CMain* contentComponent = new CMain (mixer);
+
+  setContentOwned (contentComponent, true);
+
+  contentComponent->setAsConstrainerFor (this);
 
   centreWithSize (800, 500);
   setResizable (true, false);

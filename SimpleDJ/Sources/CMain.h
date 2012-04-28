@@ -35,7 +35,8 @@
 */
 class CMain
   : public Component
-  , vf::ResizableLayout
+  , public vf::TopLevelConstrainer
+  , public vf::ResizableLayout
 {
 public:
   explicit CMain (Mixer& mixer);

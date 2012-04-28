@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef CPARAMTOGGLEBUTTON
-#define CPARAMTOGGLEBUTTON
+#ifndef CPARAMTOGGLEBUTTON_HEADER
+#define CPARAMTOGGLEBUTTON_HEADER
 
 #include "Param.h"
 

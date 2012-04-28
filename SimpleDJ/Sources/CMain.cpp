@@ -31,33 +31,36 @@
 #include "CMain.h"
 
 CMain::CMain (Mixer& mixer)
-  : vf::ResizableLayout (this)
+  : vf::TopLevelConstrainer (this)
+  , vf::ResizableLayout (this)
 {
   setOpaque (true);
   setSize (1000, 700);
 
+  setMinimumSize (500, 300);
+
   Component* deck;
-  
-  deck = new CDeck (mixer);
+
+  deck = new CDeck (0, mixer);
   deck->setBounds (8, 8, 488, 288);
   addToLayout (deck, anchorTopLeft, Point <int> (50, 50));
   addAndMakeVisible (deck);
-#if 1
-  deck = new CDeck (mixer);
+
+  deck = new CDeck (1, mixer);
   deck->setBounds (504, 8, 488, 288);
   addToLayout (deck, Point <int> (50, 0), Point <int> (100, 50));
   addAndMakeVisible (deck);
 
-  deck = new CDeck (mixer);
+  deck = new CDeck (2, mixer);
   deck->setBounds (8, 304, 488, 288);
   addToLayout (deck, Point <int> (0, 50), Point <int> (50, 100));
   addAndMakeVisible (deck);
 
-  deck = new CDeck (mixer);
+  deck = new CDeck (3, mixer);
   deck->setBounds (504, 304, 488, 288);
   addToLayout (deck, Point <int> (50, 50), anchorBottomRight);
   addAndMakeVisible (deck);
-#endif
+
   activateLayout ();
 }
 

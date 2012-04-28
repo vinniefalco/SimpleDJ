@@ -95,8 +95,6 @@ public:
     {
       m_resampler = new ResamplingAudioSource (state->playable, false, 2);
 
-      m_resampler->setResamplingRatio (state->playable->getSampleRate () / m_sampleRate);
-
       m_resampler->prepareToPlay (m_samplesPerBlockExpected, m_sampleRate);
     }
     else
@@ -219,6 +217,12 @@ public:
     if (m_isPlaying)
     {
       jassert (m_isPreparedToPlay && m_resampler != nullptr);
+
+      StateType::UnlockedAccess state (m_state);
+
+      double const speed = pow (2., m_paramSpeed->getValue ());
+
+      m_resampler->setResamplingRatio (speed * state->playable->getSampleRate () / m_sampleRate);
 
       m_resampler->getNextAudioBlock (bufferToFill);
     }

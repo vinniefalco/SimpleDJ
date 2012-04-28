@@ -29,9 +29,11 @@
 #include "StandardIncludes.h"
 #include "CSpeedControl.h"
 
-CSpeedControl::CSpeedControl ()
-  : Slider ("Speed")
+CSpeedControl::CSpeedControl (Param& param)
+  : m_param (param)
 {
+  m_param.addListener (this, vf::MessageThread::getInstance ());
+
   setSliderStyle (Slider::LinearVertical);
   setTextBoxStyle (Slider::NoTextBox, true, 0, 0);
   setRange (-1, 1);
@@ -40,4 +42,15 @@ CSpeedControl::CSpeedControl ()
 
 CSpeedControl::~CSpeedControl ()
 {
+  m_param.removeListener (this);
+}
+
+void CSpeedControl::valueChanged ()
+{
+  m_param.setValue (0 - getValue ());
+}
+
+void CSpeedControl::onParamChange (Param* param, double value)
+{
+  setValue (0 - value, false);
 }

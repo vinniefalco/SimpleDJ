@@ -33,6 +33,8 @@ CParamToggleButton::CParamToggleButton (String buttonName, Param& param)
   : TextButton (buttonName)
   , m_param (param)
 {
+  this->setTriggeredOnMouseDown (true);
+
   m_param.addListener (this, vf::MessageThread::getInstance ());
 }
 

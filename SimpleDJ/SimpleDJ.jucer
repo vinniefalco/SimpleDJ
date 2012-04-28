@@ -8,7 +8,7 @@
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="1" optimisation="1" targetName="SimpleDJ" headerPath="..\..\..\JUCE;..\..\..\VFLib"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="2" targetName="SimpleDJ" headerPath="..\..\..\JUCE;..\..\..\VFLib"/>
+                       isDebug="1" optimisation="2" targetName="SimpleDJ" headerPath="..\..\..\JUCE;..\..\..\VFLib"/>
       </CONFIGURATIONS>
     </VS2010>
   </EXPORTFORMATS>

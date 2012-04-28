@@ -29,13 +29,25 @@
 #ifndef CSPEEDCONTROL_HEADER
 #define CSPEEDCONTROL_HEADER
 
-class CSpeedControl : public Slider
+#include "Param.h"
+
+/** Plyback speed control.
+*/
+class CSpeedControl
+  : public Slider
+  , public Param::Listener
 {
 public:
-  CSpeedControl ();
+  explicit CSpeedControl (Param& param);
   ~CSpeedControl ();
 
+  void valueChanged ();
+
+  void onParamChange (Param* param, double value);
+
 private:
+  Param& m_param;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CSpeedControl)
 };
 

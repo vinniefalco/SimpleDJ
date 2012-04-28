@@ -32,7 +32,7 @@
 #include "CSpeedControl.h"
 #include "FileManager.h"
 
-CDeck::CDeck (Mixer& mixer)
+CDeck::CDeck (int deckNumber, Mixer& mixer)
   : vf::ResizableLayout (this)
   , m_deck (Deck::New (mixer.getThread ()))
   , m_hasDropFocus (false)
@@ -42,51 +42,76 @@ CDeck::CDeck (Mixer& mixer)
 
   setOpaque (true);
   setSize (500, 300);
+  
+  setMinimumSize (200, 100);
 
-  m_speedControl = new CSpeedControl;
-  m_speedControl->setBounds (450, 1, 49, 298);
-  addToLayout (m_speedControl, anchorTopRight, anchorBottomRight);
-  addAndMakeVisible (m_speedControl);
+  // Metadata
 
   m_title = new Label;
-  m_title->setFont (20);
+  m_title->setFont (24);
   m_title->setColour (Label::textColourId, Colours::orange);
+  m_title->setColour (Label::backgroundColourId, Colours::black.withAlpha (.1f));
   m_title->setJustificationType (Justification::left);
-  m_title->setBounds (8, 8, 484, 32);
-  addToLayout (m_title, anchorTopLeft);
+  m_title->setBounds (4, 4, 458, 32);
+  addToLayout (m_title, anchorTopLeft, anchorTopRight);
   addAndMakeVisible (m_title);
 
   m_artist = new Label;
   m_artist->setFont (14);
   m_artist->setColour (Label::textColourId, Colours::orange);
+  m_artist->setColour (Label::backgroundColourId, Colours::black.withAlpha (.1f));
   m_artist->setJustificationType (Justification::left);
-  m_artist->setBounds (8, 32, 484, 32);
-  addToLayout (m_artist, anchorTopLeft);
+  m_artist->setBounds (4, 40, 458, 22);
+  addToLayout (m_artist, anchorTopLeft, anchorTopRight);
   addAndMakeVisible (m_artist);
 
   m_album = new Label;
   m_album->setFont (12);
   m_album->setColour (Label::textColourId, Colours::orange);
+  m_album->setColour (Label::backgroundColourId, Colours::black.withAlpha (.1f));
   m_album->setJustificationType (Justification::left);
-  m_album->setBounds (8, 50, 484, 32);
-  addToLayout (m_album, anchorTopLeft);
+  m_album->setBounds (4, 66, 458, 20);
+  addToLayout (m_album, anchorTopLeft, anchorTopRight);
   addAndMakeVisible (m_album);
 
+  // Deck label
+
   {
-    Label* c = new Label (String::empty, "Drag and drop an mp3 here.");
-    c->setFont (32);
-    c->setBounds (0, 0, 450, 300);
+    Label* c = new Label (String::empty, String::charToString ('A' + deckNumber));
+    c->setFont (18);
+    c->setColour (Label::textColourId, Colours::black);
+    c->setColour (Label::backgroundColourId, Colours::yellow.darker ());
     c->setJustificationType (Justification::centred);
+    c->setBounds (466, 4, 30, 30);
+    addToLayout (c, anchorTopRight);
+    addAndMakeVisible (c);
+  }
+
+  // Speed control
+
+  m_speedControl = new CSpeedControl (m_deck->param["speed"]);
+  m_speedControl->setBounds (466, 38, 30, 258);
+  addToLayout (m_speedControl, anchorTopRight, anchorBottomRight);
+  addAndMakeVisible (m_speedControl);
+
+  {
+    Label* c = new Label (String::empty, "Drop a music file.");
+    c->setFont (24);
+    c->setColour (Label::textColourId, Colours::white);
+    c->setJustificationType (Justification::centred);
+    c->setBounds (0, 100, 470, 160);
     addToLayout (c, anchorTopLeft, anchorBottomRight);
     addAndMakeVisible (c);
 
     m_text = c;
   }
 
+  // Buttons
+
   {
     CParamToggleButton* c = new CParamToggleButton (
       "Play", m_deck->param ["play"]);
-    c->setBounds (8, 272, 80, 20);
+    c->setBounds (4, 276, 80, 20);
     addToLayout (c, anchorBottomLeft);
     addAndMakeVisible (c);
   }

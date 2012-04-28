@@ -38,7 +38,7 @@ class CDeck
   , private Deck::Listener
 {
 public:
-  explicit CDeck (Mixer& mixer);
+  CDeck (int deckNumber, Mixer& mixer);
   ~CDeck ();
 
   void paint (Graphics& g);
