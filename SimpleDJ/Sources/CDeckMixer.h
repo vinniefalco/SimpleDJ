@@ -26,29 +26,32 @@
   ==============================================================================
 */
 
-#ifndef CSPEEDCONTROL_HEADER
-#define CSPEEDCONTROL_HEADER
+#ifndef CDECKMIXER_HEADER
+#define CDECKMIXER_HEADER
 
-#include "Param.h"
+#include "Deck.h"
+#include "CLevelMeter.h"
 
-/** Playback speed control.
+/** Deck mixer controls
 */
-class CSpeedControl
-  : public Slider
-  , public Param::Listener
+class CDeckMixer
+  : public Component
+  , public vf::ResizableLayout
+  , private Deck::Listener
 {
 public:
-  explicit CSpeedControl (Param& param);
-  ~CSpeedControl ();
+  CDeckMixer (Deck::Ptr deck);
+  ~CDeckMixer ();
 
-  void valueChanged ();
+  void paint (Graphics& g);
 
-  void onParamChange (Param* param, double value);
+  void onDeckLevels (Deck* deck, Deck::Levels levels);
 
 private:
-  Param& m_param;
+  Deck::Ptr m_deck;
+  CLevelMeter* m_levelMeter;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CSpeedControl)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CDeckMixer)
 };
 
 #endif

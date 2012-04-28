@@ -26,29 +26,27 @@
   ==============================================================================
 */
 
-#ifndef CSPEEDCONTROL_HEADER
-#define CSPEEDCONTROL_HEADER
+#ifndef CLEVELMETER_HEADER
+#define CLEVELMETER_HEADER
 
-#include "Param.h"
+#include "Mixer.h"
 
-/** Playback speed control.
+/** Level indicator.
 */
-class CSpeedControl
-  : public Slider
-  , public Param::Listener
+class CLevelMeter : public Component
 {
 public:
-  explicit CSpeedControl (Param& param);
-  ~CSpeedControl ();
+  CLevelMeter ();
+  ~CLevelMeter ();
 
-  void valueChanged ();
+  void paint (Graphics& g);
 
-  void onParamChange (Param* param, double value);
+  void setLevel (Mixer::Level level);
 
 private:
-  Param& m_param;
+  Mixer::Level m_level;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CSpeedControl)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CLevelMeter)
 };
 
 #endif

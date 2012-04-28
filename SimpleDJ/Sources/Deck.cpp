@@ -29,6 +29,7 @@
 #include "StandardIncludes.h"
 #include "Deck.h"
 #include "ParamImp.h"
+#include "PeakDetector.h"
 
 Deck::Deck (vf::CallQueue& mixerThread, Params& params)
   : Mixer::Source (mixerThread)
@@ -64,6 +65,7 @@ private:
   int m_samplesPerBlockExpected;
   double m_sampleRate;
   ScopedPointer <ResamplingAudioSource> m_resampler;
+  ScopedPointer <PeakDetector <2, float> > m_peakDetector;
 
   Params m_params;
   ScopedPointer <ParamImp> m_paramPlay;
@@ -76,6 +78,7 @@ public:
     , m_isPreparedToPlay (false)
     , m_samplesPerBlockExpected (0)
     , m_sampleRate (0)
+    , m_peakDetector (new PeakDetector <2, float>)
     , m_paramPlay (new ParamImp ("play", 0, mixerThread, &m_params))
     , m_paramSpeed (new ParamImp ("speed", 0, mixerThread, &m_params))
   {
@@ -174,6 +177,8 @@ public:
     m_sampleRate = sampleRate;
 
     prepareToPlayResampler ();
+
+    m_peakDetector->setup (sampleRate);
   }
 
   void releaseResources()
@@ -232,12 +237,16 @@ public:
       bufferToFill.clearActiveBufferRegion ();
     }
 
-    // AudioSampleBuffer& outputBuffer (*bufferToFill.buffer);
-
+    // Calculate levels
     Levels newLevels;
-    newLevels.left.peak = 0;
+
+    m_peakDetector->process (bufferToFill.numSamples,
+      bufferToFill.buffer->getArrayOfChannels ());
+
+    newLevels.left.peak = (*m_peakDetector)[0];
     newLevels.left.clip = false;
-    newLevels.right.peak = 0;
+
+    newLevels.right.peak = (*m_peakDetector)[1];
     newLevels.right.clip = false;
 
     // Update shared state.

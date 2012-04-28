@@ -14,6 +14,7 @@
   </EXPORTFORMATS>
   <MAINGROUP id="Bp191K" name="SimpleDJ">
     <GROUP id="{A643C8B7-28F8-DDF5-071F-5CBACFAB7259}" name="Core">
+      <FILE id="vVkW6N" name="AutoLimiter.h" compile="0" resource="0" file="Sources/AutoLimiter.h"/>
       <FILE id="K2CX5j" name="Deck.cpp" compile="1" resource="0" file="Sources/Deck.cpp"/>
       <FILE id="IS4ZhQ" name="Deck.h" compile="0" resource="0" file="Sources/Deck.h"/>
       <FILE id="gyZQjT" name="FileManager.cpp" compile="1" resource="0" file="Sources/FileManager.cpp"/>
@@ -26,6 +27,7 @@
       <FILE id="nLRiqi" name="ParamImp.h" compile="0" resource="0" file="Sources/ParamImp.h"/>
       <FILE id="brkLn3" name="Params.cpp" compile="1" resource="0" file="Sources/Params.cpp"/>
       <FILE id="Qvzhz2" name="Params.h" compile="0" resource="0" file="Sources/Params.h"/>
+      <FILE id="f41H1D" name="PeakDetector.h" compile="0" resource="0" file="Sources/PeakDetector.h"/>
       <FILE id="uum5uB" name="Playable.h" compile="0" resource="0" file="Sources/Playable.h"/>
       <FILE id="q6gBxw" name="ReaderPlayable.cpp" compile="1" resource="0"
             file="Sources/ReaderPlayable.cpp"/>
@@ -39,6 +41,14 @@
       <FILE id="J1Lybt" name="CApp.h" compile="0" resource="0" file="Sources/CApp.h"/>
       <FILE id="Zb1HtA" name="CDeck.cpp" compile="1" resource="0" file="Sources/CDeck.cpp"/>
       <FILE id="YFjpNP" name="CDeck.h" compile="0" resource="0" file="Sources/CDeck.h"/>
+      <FILE id="Yl6Du2" name="CDeckLevelMeter.cpp" compile="1" resource="0"
+            file="Sources/CDeckLevelMeter.cpp"/>
+      <FILE id="CkSnvC" name="CDeckLevelMeter.h" compile="0" resource="0"
+            file="Sources/CDeckLevelMeter.h"/>
+      <FILE id="mI65QP" name="CDeckMixer.cpp" compile="1" resource="0" file="Sources/CDeckMixer.cpp"/>
+      <FILE id="PhVk60" name="CDeckMixer.h" compile="0" resource="0" file="Sources/CDeckMixer.h"/>
+      <FILE id="GgFBC0" name="CLevelMeter.cpp" compile="1" resource="0" file="Sources/CLevelMeter.cpp"/>
+      <FILE id="hoFcrg" name="CLevelMeter.h" compile="0" resource="0" file="Sources/CLevelMeter.h"/>
       <FILE id="v4Br1p" name="CMain.cpp" compile="1" resource="0" file="Sources/CMain.cpp"/>
       <FILE id="VGNNdZ" name="CMain.h" compile="0" resource="0" file="Sources/CMain.h"/>
       <FILE id="FXgAK6" name="CMainWindow.cpp" compile="1" resource="0" file="Sources/CMainWindow.cpp"/>
@@ -73,5 +83,5 @@
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS/>
+  <JUCEOPTIONS JUCE_CHECK_MEMORY_LEAKS="disabled"/>
 </JUCERPROJECT>

@@ -26,29 +26,44 @@
   ==============================================================================
 */
 
-#ifndef CSPEEDCONTROL_HEADER
-#define CSPEEDCONTROL_HEADER
+#include "StandardIncludes.h"
+#include "CDeckMixer.h"
 
-#include "Param.h"
-
-/** Playback speed control.
-*/
-class CSpeedControl
-  : public Slider
-  , public Param::Listener
+CDeckMixer::CDeckMixer (Deck::Ptr deck)
+  : vf::ResizableLayout (this)
+  , m_deck (deck)
 {
-public:
-  explicit CSpeedControl (Param& param);
-  ~CSpeedControl ();
+  setOpaque (true);
+  setSize (100, 200);
+  
+  setMinimumSize (100, 200);
 
-  void valueChanged ();
 
-  void onParamChange (Param* param, double value);
 
-private:
-  Param& m_param;
+  activateLayout ();
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CSpeedControl)
-};
+  m_deck->addListener (this, vf::MessageThread::getInstance());
+}
 
-#endif
+CDeckMixer::~CDeckMixer ()
+{
+  deleteAllChildren ();
+
+  m_deck->removeListener (this);
+}
+
+void CDeckMixer::paint (Graphics& g)
+{
+  Rectangle <int> r (getLocalBounds ());
+
+  g.setColour (Colours::white);
+  g.drawRect (r, 1);
+
+  g.setColour (Colours::grey.darker ());
+  g.fillRect (r);
+}
+
+void CDeckMixer::onDeckLevels (Deck* deck, Deck::Levels levels)
+{
+  m_levelMeter->setLevel (levels.left);
+}

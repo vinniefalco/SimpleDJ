@@ -26,29 +26,54 @@
   ==============================================================================
 */
 
-#ifndef CSPEEDCONTROL_HEADER
-#define CSPEEDCONTROL_HEADER
+#include "StandardIncludes.h"
+#include "CLevelMeter.h"
 
-#include "Param.h"
-
-/** Playback speed control.
-*/
-class CSpeedControl
-  : public Slider
-  , public Param::Listener
+CLevelMeter::CLevelMeter ()
 {
-public:
-  explicit CSpeedControl (Param& param);
-  ~CSpeedControl ();
+  m_level.peak = 0;
+  m_level.clip = false;
+}
 
-  void valueChanged ();
+CLevelMeter::~CLevelMeter ()
+{
+}
 
-  void onParamChange (Param* param, double value);
+void CLevelMeter::paint (Graphics& g)
+{
+  Rectangle <int> r = getLocalBounds ();
 
-private:
-  Param& m_param;
+  g.setColour (Colours::white);
+  g.drawRect (r);
+  r = r.reduced (1, 1);
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CSpeedControl)
-};
+  g.setColour (Colours::black);
 
-#endif
+  float const peak = std::min (m_level.peak, 1.0f);
+
+  if (r.getWidth () > r.getHeight ())
+  {
+    // horizontal
+    r.setWidth (int (r.getWidth () * peak + 0.5));
+  }
+  else
+  {
+    // vertical
+    r.setTop (int (r.getBottom () - (r.getHeight () * peak + 0.5)));
+  }
+
+  if (m_level.peak < 0.7f)
+    g.setColour (Colours::green);
+  else if (m_level.peak < 1.0f)
+    g.setColour (Colours::orange);
+  else
+    g.setColour (Colours::red);
+  g.fillRect (r);
+}
+
+void CLevelMeter::setLevel (Mixer::Level level)
+{
+  m_level = level;
+
+  repaint ();
+}

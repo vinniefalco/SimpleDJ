@@ -131,6 +131,9 @@
     <ClCompile Include="..\..\Sources\ReaderPlayable.cpp" />
     <ClCompile Include="..\..\Sources\CApp.cpp" />
     <ClCompile Include="..\..\Sources\CDeck.cpp" />
+    <ClCompile Include="..\..\Sources\CDeckLevelMeter.cpp" />
+    <ClCompile Include="..\..\Sources\CDeckMixer.cpp" />
+    <ClCompile Include="..\..\Sources\CLevelMeter.cpp" />
     <ClCompile Include="..\..\Sources\CMain.cpp" />
     <ClCompile Include="..\..\Sources\CMainWindow.cpp" />
     <ClCompile Include="..\..\Sources\CParamToggleButton.cpp" />
@@ -1121,17 +1124,22 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Sources\AutoLimiter.h" />
     <ClInclude Include="..\..\Sources\Deck.h" />
     <ClInclude Include="..\..\Sources\FileManager.h" />
     <ClInclude Include="..\..\Sources\Mixer.h" />
     <ClInclude Include="..\..\Sources\Param.h" />
     <ClInclude Include="..\..\Sources\ParamImp.h" />
     <ClInclude Include="..\..\Sources\Params.h" />
+    <ClInclude Include="..\..\Sources\PeakDetector.h" />
     <ClInclude Include="..\..\Sources\Playable.h" />
     <ClInclude Include="..\..\Sources\ReaderPlayable.h" />
     <ClInclude Include="..\..\Sources\StandardIncludes.h" />
     <ClInclude Include="..\..\Sources\CApp.h" />
     <ClInclude Include="..\..\Sources\CDeck.h" />
+    <ClInclude Include="..\..\Sources\CDeckLevelMeter.h" />
+    <ClInclude Include="..\..\Sources\CDeckMixer.h" />
+    <ClInclude Include="..\..\Sources\CLevelMeter.h" />
     <ClInclude Include="..\..\Sources\CMain.h" />
     <ClInclude Include="..\..\Sources\CMainWindow.h" />
     <ClInclude Include="..\..\Sources\CParamToggleButton.h" />

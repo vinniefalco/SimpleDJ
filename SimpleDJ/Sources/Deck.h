@@ -48,7 +48,7 @@ public:
   public:
     /** Called when the output level changes.
     */
-    virtual void onDeckLevels (Deck* deck, Levels const level) { }
+    virtual void onDeckLevels (Deck* deck, Levels level) { }
 
     /** Called when the Playable changes.
     */

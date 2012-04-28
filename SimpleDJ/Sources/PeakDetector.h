@@ -26,29 +26,70 @@
   ==============================================================================
 */
 
-#ifndef CSPEEDCONTROL_HEADER
-#define CSPEEDCONTROL_HEADER
+#ifndef PEAKDETECTOR_HEADER
+#define PEAKDETECTOR_HEADER
 
-#include "Param.h"
-
-/** Playback speed control.
-*/
-class CSpeedControl
-  : public Slider
-  , public Param::Listener
+// Peak level detector with decay time
+template <int Channels = 2, typename ValueType = float>
+class PeakDetector
 {
-public:
-  explicit CSpeedControl (Param& param);
-  ~CSpeedControl ();
-
-  void valueChanged ();
-
-  void onParamChange (Param* param, double value);
-
 private:
-  Param& m_param;
+  double m_sampleRate;
+  int m_millisecondsDecay;
+  ValueType m_peak [Channels];
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CSpeedControl)
+  static bool isnan (ValueType value)
+  {
+    volatile ValueType v = value;
+    return v != v;
+  }
+
+public:
+  PeakDetector ()
+  {
+    for (int i = 0; i < Channels; ++i)
+      m_peak [i] = 0;
+  }
+
+  void setup (double sampleRate, int millisecondsDecay = 300)
+  {
+    m_sampleRate = sampleRate;
+    m_millisecondsDecay = millisecondsDecay;
+  }
+
+  void process (int samples, ValueType const* const* src)
+  {
+    ValueType maxDeltaPeak = ValueType (1000 * samples) / ValueType (m_sampleRate * m_millisecondsDecay);
+
+    for (int i = 0; i<Channels; i++)
+    {
+      ValueType peak = 0;
+      const ValueType* cur = src[i];
+      for (int n = samples; n; n--)
+      {
+        ValueType v = abs (*cur++);
+        if (peak < v)
+          peak = v;
+      }
+
+      if (peak>1)
+        peak=1;
+
+      ValueType minPeak = m_peak[i] - maxDeltaPeak;
+      if (peak < minPeak)
+        peak = minPeak;
+
+      if (peak < 1e-8)
+        peak = 0;
+
+      m_peak[i] = peak;
+    }
+  }
+
+  ValueType operator [] (const int channel) const
+  {
+    return m_peak [channel];
+  }
 };
 
 #endif

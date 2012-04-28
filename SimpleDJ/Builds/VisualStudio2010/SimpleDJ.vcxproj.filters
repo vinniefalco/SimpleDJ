@@ -300,6 +300,15 @@
     <ClCompile Include="..\..\Sources\CDeck.cpp">
       <Filter>SimpleDJ\Gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Sources\CDeckLevelMeter.cpp">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CDeckMixer.cpp">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CLevelMeter.cpp">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Sources\CMain.cpp">
       <Filter>SimpleDJ\Gui</Filter>
     </ClCompile>
@@ -1328,6 +1337,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Sources\AutoLimiter.h">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Sources\Deck.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
@@ -1346,6 +1358,9 @@
     <ClInclude Include="..\..\Sources\Params.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Sources\PeakDetector.h">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Sources\Playable.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
@@ -1359,6 +1374,15 @@
       <Filter>SimpleDJ\Gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\CDeck.h">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CDeckLevelMeter.h">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CDeckMixer.h">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CLevelMeter.h">
       <Filter>SimpleDJ\Gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\CMain.h">

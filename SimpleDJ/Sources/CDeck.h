@@ -38,7 +38,7 @@ class CDeck
   , private Deck::Listener
 {
 public:
-  CDeck (int deckNumber, Mixer& mixer);
+  CDeck (int deckNumber, Deck::Ptr deck);
   ~CDeck ();
 
   void paint (Graphics& g);
@@ -59,7 +59,7 @@ private:
   Label* m_title;
   Label* m_artist;
   Label* m_album;
-  
+
   bool m_hasDropFocus;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CDeck)

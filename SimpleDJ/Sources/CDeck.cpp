@@ -32,14 +32,11 @@
 #include "CSpeedControl.h"
 #include "FileManager.h"
 
-CDeck::CDeck (int deckNumber, Mixer& mixer)
+CDeck::CDeck (int deckNumber, Deck::Ptr deck)
   : vf::ResizableLayout (this)
-  , m_deck (Deck::New (mixer.getThread ()))
+  , m_deck (deck)
   , m_hasDropFocus (false)
 {
-  // Add the Deck to the Mixer.
-  mixer.addSource (m_deck);
-
   setOpaque (true);
   setSize (500, 300);
   
@@ -147,7 +144,7 @@ void CDeck::paintOverChildren (Graphics& g)
     Rectangle <int> r (getLocalBounds ());
 
     g.setColour (Colours::yellow.withAlpha (0.75f));
-    g.drawRect (r, 16);
+    g.drawRect (r, 6);
   }
 }
 
