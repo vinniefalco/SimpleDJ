@@ -67,7 +67,7 @@ public:
     , m_sourceBuffer (2, 0)
   {
     // set up audio device
-    int sampleRate = 44100;
+    int sampleRate = 96000;
     int bufferSize;
     int latencyMilliseconds=50;
 
@@ -216,31 +216,21 @@ public:
     sourceBufferToFill.numSamples = numSamples;
     sourceBufferToFill.startSample = 0;
 
-    if (m_sources.size () > 0)
+    // Clear the output in preparation for mixing.
+    outputBuffer.clear ();
+#if 1
+    // Add Source to output.
+    for (int i = 0; i < m_sources.size (); ++i)
     {
-      // Copy first source to the output.
-      m_sources[0]->getNextAudioBlock (outputBufferToFill);
+      m_sources [i]->getNextAudioBlock (sourceBufferToFill);
 
-      // Process remaining sources.
-      for (int i = 1; i < m_sources.size (); ++i)
-      {
-        // Add this source to the output.
-
-        m_sources [i]->getNextAudioBlock (sourceBufferToFill);
-
-        outputBufferToFill.buffer->addFrom (0, 0,
-          sourceBufferToFill.buffer->getArrayOfChannels ()[0], numSamples);
+      outputBufferToFill.buffer->addFrom (0, 0,
+        sourceBufferToFill.buffer->getArrayOfChannels ()[0], numSamples);
         
-        outputBufferToFill.buffer->addFrom (1, 0,
-          sourceBufferToFill.buffer->getArrayOfChannels ()[1], numSamples);
-      }
+      outputBufferToFill.buffer->addFrom (1, 0,
+        sourceBufferToFill.buffer->getArrayOfChannels ()[1], numSamples);
     }
-    else
-    {
-      // Produce silence.
-      outputBufferToFill.buffer->clear ();
-    }
-
+#endif
     Levels newLevels;
     newLevels.left.peak = 0;
     newLevels.left.clip = false;

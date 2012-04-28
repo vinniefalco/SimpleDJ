@@ -33,27 +33,40 @@
 CMain::CMain (Mixer& mixer)
   : vf::ResizableLayout (this)
 {
-  setSize (1024, 768);
+  setOpaque (true);
+  setSize (1000, 700);
 
-  m_deck = new CDeck (mixer);
-  m_deck->setBounds (0, 0, 1024, 768);
-  addToLayout (m_deck, anchorTopLeft, anchorBottomRight);
-  addAndMakeVisible (m_deck);
+  Component* deck;
+  
+  deck = new CDeck (mixer);
+  deck->setBounds (8, 8, 488, 288);
+  addToLayout (deck, anchorTopLeft, Point <int> (50, 50));
+  addAndMakeVisible (deck);
+
+  deck = new CDeck (mixer);
+  deck->setBounds (504, 8, 488, 288);
+  addToLayout (deck, Point <int> (50, 0), Point <int> (100, 50));
+  addAndMakeVisible (deck);
+
+  deck = new CDeck (mixer);
+  deck->setBounds (8, 304, 488, 288);
+  addToLayout (deck, Point <int> (0, 50), Point <int> (50, 100));
+  addAndMakeVisible (deck);
+
+  deck = new CDeck (mixer);
+  deck->setBounds (504, 304, 488, 288);
+  addToLayout (deck, Point <int> (50, 50), anchorBottomRight);
+  addAndMakeVisible (deck);
 
   activateLayout ();
 }
 
 CMain::~CMain()
 {
+  deleteAllChildren ();
 }
 
 void CMain::paint (Graphics& g)
 {
   g.fillAll (Colours::black);
-
-  Rectangle <int> r (getLocalBounds ());
-  g.setFont (r.getHeight ()/3);
-  g.setColour (Colours::white);
-  g.drawText ("SimpleDJ", r.getX (), r.getY (), r.getWidth(), r.getHeight (),
-    Justification::centred, true);
 }

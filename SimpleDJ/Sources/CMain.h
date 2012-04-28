@@ -44,8 +44,6 @@ public:
   void paint (Graphics& g);
 
 private:
-  ScopedPointer <Component> m_deck;
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CMain)
 };
 

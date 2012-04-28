@@ -36,7 +36,18 @@ class Playable
   , public AudioSource
 {
 public:
+  struct Metadata
+  {
+    String album;
+    String artist;
+    String title;
+  };
+
   typedef ReferenceCountedObjectPtr <Playable> Ptr;
+
+  virtual double getSampleRate () = 0;
+
+  virtual Metadata getMetadata () = 0;
 };
 
 #endif

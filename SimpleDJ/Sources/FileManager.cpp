@@ -60,14 +60,7 @@ Playable::Ptr FileManager::createPlayableFromFile (String path)
 
   if (format != nullptr)
   {
-    InputStream* inputStream = new FileInputStream (path);
-
-    AudioFormatReader* formatReader = format->createReaderFor (inputStream, true);
-
-    if (formatReader != nullptr)
-    {
-      playable = new ReaderPlayable (formatReader);
-    }
+    playable = ReaderPlayable::openFromFile (path, format);
   }
 
   return playable;

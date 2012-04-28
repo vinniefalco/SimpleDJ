@@ -26,7 +26,7 @@
   ==============================================================================
 */
 
-#ifndef MAINAPP_HEADER
-#define MAINAPP_HEADER
+#ifndef CAPP_HEADER
+#define CAPP_HEADER
 
 #endif

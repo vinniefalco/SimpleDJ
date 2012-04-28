@@ -64,6 +64,7 @@ private:
   bool m_isPreparedToPlay;
   int m_samplesPerBlockExpected;
   double m_sampleRate;
+  ScopedPointer <ResamplingAudioSource> m_resampler;
 
 public:
   explicit DeckImp (vf::CallQueue& mixerThread)
@@ -76,6 +77,26 @@ public:
 
   ~DeckImp()
   {
+  }
+
+  /** Create a new resampler to wrap the Playable, or clear the old one.
+  */
+  void prepareToPlayResampler ()
+  {
+    StateType::UnlockedAccess state (m_state);
+
+    if (state->playable != nullptr && m_isPreparedToPlay)
+    {
+      m_resampler = new ResamplingAudioSource (state->playable, false, 2);
+
+      m_resampler->setResamplingRatio (state->playable->getSampleRate () / m_sampleRate);
+
+      m_resampler->prepareToPlay (m_samplesPerBlockExpected, m_sampleRate);
+    }
+    else
+    {
+      m_resampler = nullptr;
+    }
   }
 
   /** This is called on the mixer thread.
@@ -107,9 +128,12 @@ public:
         StateType::UnlockedAccess state (m_state);
 
         if (state->playable != nullptr && m_isPreparedToPlay)
+
           state->playable->prepareToPlay (m_samplesPerBlockExpected,
                                           m_sampleRate);
       }
+
+      prepareToPlayResampler ();
     }
   }
 
@@ -185,15 +209,7 @@ public:
     m_samplesPerBlockExpected = samplesPerBlockExpected;
     m_sampleRate = sampleRate;
 
-    {
-      // Prepare the Playable if one is selected.
-
-      StateType::UnlockedAccess state (m_state);
-
-      if (state->playable != nullptr)
-        state->playable->prepareToPlay (m_samplesPerBlockExpected,
-                                        m_sampleRate);
-    }
+    prepareToPlayResampler ();
   }
 
   void releaseResources()
@@ -201,24 +217,22 @@ public:
     jassert (m_isPreparedToPlay);
 
     m_isPreparedToPlay = false;
+
+    m_resampler = nullptr;
   }
 
   void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
   {
     AudioSampleBuffer outputBuffer (*bufferToFill.buffer);
 
+    if (m_resampler != nullptr)
     {
-      StateType::UnlockedAccess state (m_state);
-
-      if (state->isPlaying && state->playable != nullptr)
-      {
-        state->playable->getNextAudioBlock (bufferToFill);
-      }
-      else
-      {
-        // Output silence
-        outputBuffer.clear ();
-      }
+      m_resampler->getNextAudioBlock (bufferToFill);
+    }
+    else
+    {
+      // Output silence
+      outputBuffer.clear ();
     }
 
     Levels newLevels;

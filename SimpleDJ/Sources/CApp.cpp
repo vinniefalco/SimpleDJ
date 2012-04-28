@@ -27,22 +27,22 @@
 */
 
 #include "StandardIncludes.h"
-#include "MainApp.h"
+#include "CApp.h"
 #include "Mixer.h"
 #include "CMainWindow.h"
 
-class MainApp  : public JUCEApplication
+class CApp  : public JUCEApplication
 {
 private:
   ScopedPointer <Mixer> m_mixer;
   ScopedPointer <CMainWindow> m_window;
 
 public:
-  MainApp()
+  CApp()
   {
   }
 
-  ~MainApp()
+  ~CApp()
   {
   }
 
@@ -92,4 +92,4 @@ public:
   }
 };
 
-START_JUCE_APPLICATION (MainApp)
+START_JUCE_APPLICATION (CApp)

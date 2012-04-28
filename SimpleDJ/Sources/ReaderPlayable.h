@@ -31,15 +31,22 @@
 
 #include "Playable.h"
 
-/** A Playable that wraps an AudioFormatReader with a resampler.
+/** A Playable that wraps an AudioFormatReader.
 */
 class ReaderPlayable : public Playable
 {
-public:
+protected:
   // reader will be automatically deleted
-  explicit ReaderPlayable (AudioFormatReader* formatReader);
+  ReaderPlayable (String path, AudioFormatReader* formatReader);
+
+public:
+  static Playable::Ptr openFromFile (String path, AudioFormat* format);
 
   ~ReaderPlayable ();
+
+  double getSampleRate ();
+
+  Metadata getMetadata ();
 
   void prepareToPlay (int samplesPerBlockExpected, double sampleRate);
 
@@ -48,8 +55,10 @@ public:
   void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill);
 
 private:
-  ScopedPointer <ResamplingAudioSource> m_resampler;
+  ScopedPointer <AudioFormatReaderSource> m_source;
   AudioFormatReader& m_formatReader;
+
+  Metadata m_meta;
 };
 
 #endif

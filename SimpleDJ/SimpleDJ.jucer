@@ -18,8 +18,6 @@
       <FILE id="IS4ZhQ" name="Deck.h" compile="0" resource="0" file="Sources/Deck.h"/>
       <FILE id="gyZQjT" name="FileManager.cpp" compile="1" resource="0" file="Sources/FileManager.cpp"/>
       <FILE id="mzm1py" name="FileManager.h" compile="0" resource="0" file="Sources/FileManager.h"/>
-      <FILE id="ubLDq1" name="MainApp.cpp" compile="1" resource="0" file="Sources/MainApp.cpp"/>
-      <FILE id="J1Lybt" name="MainApp.h" compile="0" resource="0" file="Sources/MainApp.h"/>
       <FILE id="HFkRhF" name="Mixer.cpp" compile="1" resource="0" file="Sources/Mixer.cpp"/>
       <FILE id="s6zIPd" name="Mixer.h" compile="0" resource="0" file="Sources/Mixer.h"/>
       <FILE id="uum5uB" name="Playable.h" compile="0" resource="0" file="Sources/Playable.h"/>
@@ -29,6 +27,8 @@
             file="Sources/ReaderPlayable.h"/>
     </GROUP>
     <GROUP id="{39393AB3-F8BC-4C3E-EE99-A7352D177923}" name="Gui">
+      <FILE id="ubLDq1" name="CApp.cpp" compile="1" resource="0" file="Sources/CApp.cpp"/>
+      <FILE id="J1Lybt" name="CApp.h" compile="0" resource="0" file="Sources/CApp.h"/>
       <FILE id="Zb1HtA" name="CDeck.cpp" compile="1" resource="0" file="Sources/CDeck.cpp"/>
       <FILE id="YFjpNP" name="CDeck.h" compile="0" resource="0" file="Sources/CDeck.h"/>
       <FILE id="v4Br1p" name="CMain.cpp" compile="1" resource="0" file="Sources/CMain.cpp"/>
@@ -47,6 +47,7 @@
       <FILE id="eU3QQ7" name="vf_core.cpp" compile="1" resource="0" file="../VFLib/modules/vf_core/vf_core.cpp"/>
       <FILE id="fB3hA2" name="vf_freetype.c" compile="1" resource="0" file="../VFLib/modules/vf_freetype/vf_freetype.c"/>
       <FILE id="b6Y4tR" name="vf_gui.cpp" compile="1" resource="0" file="../VFLib/modules/vf_gui/vf_gui.cpp"/>
+      <FILE id="b9Jile" name="vf_taglib.cpp" compile="1" resource="0" file="../VFLib/modules/vf_taglib/vf_taglib.cpp"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>

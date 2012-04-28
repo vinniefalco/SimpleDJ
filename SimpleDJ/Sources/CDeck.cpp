@@ -47,6 +47,30 @@ CDeck::CDeck (Mixer& mixer)
   addToLayout (m_speedControl, anchorTopRight, anchorBottomRight);
   addAndMakeVisible (m_speedControl);
 
+  m_title = new Label;
+  m_title->setFont (20);
+  m_title->setColour (Label::textColourId, Colours::orange);
+  m_title->setJustificationType (Justification::left);
+  m_title->setBounds (8, 8, 484, 32);
+  addToLayout (m_title, anchorTopLeft);
+  addAndMakeVisible (m_title);
+
+  m_artist = new Label;
+  m_artist->setFont (14);
+  m_artist->setColour (Label::textColourId, Colours::orange);
+  m_artist->setJustificationType (Justification::left);
+  m_artist->setBounds (8, 32, 484, 32);
+  addToLayout (m_artist, anchorTopLeft);
+  addAndMakeVisible (m_artist);
+
+  m_album = new Label;
+  m_album->setFont (12);
+  m_album->setColour (Label::textColourId, Colours::orange);
+  m_album->setJustificationType (Justification::left);
+  m_album->setBounds (8, 50, 484, 32);
+  addToLayout (m_album, anchorTopLeft);
+  addAndMakeVisible (m_album);
+
   {
     Label* c = new Label (String::empty, "Drag and drop an mp3 here.");
     c->setFont (32);
@@ -59,10 +83,13 @@ CDeck::CDeck (Mixer& mixer)
   }
 
   activateLayout ();
+
+  m_deck->addListener (this, vf::MessageThread::getInstance());
 }
 
 CDeck::~CDeck()
 {
+  m_deck->removeListener (this);
 }
 
 void CDeck::paint (Graphics& g)
@@ -142,3 +169,18 @@ void CDeck::filesDropped (const StringArray& files, int x, int y)
   }
 }
 
+void CDeck::onDeckSelect (Deck* deck, Playable::Ptr playable)
+{
+  if (playable != nullptr)
+  {
+    m_title->setText  (playable->getMetadata().title, true);
+    m_artist->setText (playable->getMetadata().artist, true);
+    m_album->setText  (playable->getMetadata().album, true);
+  }
+  else
+  {
+    m_title->setText  (String::empty, true);
+    m_artist->setText (String::empty, true);
+    m_album->setText  (String::empty, true);
+  }
+}

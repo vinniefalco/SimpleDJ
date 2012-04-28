@@ -29,29 +29,93 @@
 #include "StandardIncludes.h"
 #include "ReaderPlayable.h"
 
-ReaderPlayable::ReaderPlayable (AudioFormatReader* formatReader)
-  : m_resampler (new ResamplingAudioSource (
-      new AudioFormatReaderSource (formatReader, true), true, 2))
+#include "modules/vf_taglib/vf_taglib.h"
+
+//==============================================================================
+
+/** Quick and dirty interface to TagLib to retrieve metadata.
+*/
+class MetadataReader
+{
+public:
+  MetadataReader (String path)
+  {
+    TagLib::FileRef f (path.toWideCharPointer ());
+
+    m_album = f.tag()->album().toWString ().c_str ();
+
+    m_artist = f.tag()->artist().toWString ().c_str ();
+
+    m_title = f.tag()->title().toWString ().c_str ();
+  }
+
+  String getAlbum () const { return m_album; }
+  String getArtist () const { return m_artist; }
+  String getTitle () const { return m_title; }
+
+private:
+  String m_album;
+  String m_artist;
+  String m_title;
+};
+
+//==============================================================================
+
+ReaderPlayable::ReaderPlayable (String path, AudioFormatReader* formatReader)
+  : m_source (new AudioFormatReaderSource (formatReader, true))
   , m_formatReader (*formatReader)
 {
+  // Extract metadata
+  MetadataReader meta (path);
+  m_meta.album =  meta.getAlbum ();
+  m_meta.artist = meta.getArtist ();
+  m_meta.title =  meta.getTitle ();
 }
 
 ReaderPlayable::~ReaderPlayable ()
 {
 }
 
+double ReaderPlayable::getSampleRate ()
+{
+  return m_formatReader.sampleRate;
+}
+
 void ReaderPlayable::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-  m_resampler->prepareToPlay (samplesPerBlockExpected, sampleRate);
-  m_resampler->setResamplingRatio (sampleRate / m_formatReader.sampleRate);
+  m_source->prepareToPlay (samplesPerBlockExpected, sampleRate);
 }
 
 void ReaderPlayable::releaseResources()
 {
-  m_resampler->releaseResources ();
+  m_source->releaseResources ();
 }
 
 void ReaderPlayable::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-  m_resampler->getNextAudioBlock (bufferToFill);
+  m_source->getNextAudioBlock (bufferToFill);
+}
+
+Playable::Metadata ReaderPlayable::getMetadata ()
+{
+  return m_meta;
+}
+
+Playable::Ptr ReaderPlayable::openFromFile (String path, AudioFormat* format)
+{
+  Playable::Ptr playable;
+
+  InputStream* inputStream = new FileInputStream (path);
+
+  if (inputStream != nullptr)
+  {
+    AudioFormatReader* formatReader = format->createReaderFor (inputStream, true);
+
+    if (formatReader != nullptr)
+    {
+      playable = new ReaderPlayable (path, formatReader);
+    }
+  }
+
+  return playable;
 }

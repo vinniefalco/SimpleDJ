@@ -279,14 +279,14 @@
     <ClCompile Include="..\..\Sources\FileManager.cpp">
       <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Sources\MainApp.cpp">
-      <Filter>SimpleDJ\Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Sources\Mixer.cpp">
       <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Sources\ReaderPlayable.cpp">
       <Filter>SimpleDJ\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CApp.cpp">
+      <Filter>SimpleDJ\Gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Sources\CDeck.cpp">
       <Filter>SimpleDJ\Gui</Filter>
@@ -310,6 +310,9 @@
       <Filter>SimpleDJ\VFLib Modules</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\VFLib\modules\vf_gui\vf_gui.cpp">
+      <Filter>SimpleDJ\VFLib Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\VFLib\modules\vf_taglib\vf_taglib.cpp">
       <Filter>SimpleDJ\VFLib Modules</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
@@ -1319,9 +1322,6 @@
     <ClInclude Include="..\..\Sources\FileManager.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Sources\MainApp.h">
-      <Filter>SimpleDJ\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Sources\Mixer.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
@@ -1330,6 +1330,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Sources\ReaderPlayable.h">
       <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CApp.h">
+      <Filter>SimpleDJ\Gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\CDeck.h">
       <Filter>SimpleDJ\Gui</Filter>
