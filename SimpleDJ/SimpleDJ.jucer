@@ -20,11 +20,17 @@
       <FILE id="mzm1py" name="FileManager.h" compile="0" resource="0" file="Sources/FileManager.h"/>
       <FILE id="HFkRhF" name="Mixer.cpp" compile="1" resource="0" file="Sources/Mixer.cpp"/>
       <FILE id="s6zIPd" name="Mixer.h" compile="0" resource="0" file="Sources/Mixer.h"/>
+      <FILE id="U1Ez73" name="Param.cpp" compile="1" resource="0" file="Sources/Param.cpp"/>
+      <FILE id="EDHMvl" name="Param.h" compile="0" resource="0" file="Sources/Param.h"/>
+      <FILE id="brkLn3" name="Params.cpp" compile="1" resource="0" file="Sources/Params.cpp"/>
+      <FILE id="Qvzhz2" name="Params.h" compile="0" resource="0" file="Sources/Params.h"/>
       <FILE id="uum5uB" name="Playable.h" compile="0" resource="0" file="Sources/Playable.h"/>
       <FILE id="q6gBxw" name="ReaderPlayable.cpp" compile="1" resource="0"
             file="Sources/ReaderPlayable.cpp"/>
       <FILE id="y20oN3" name="ReaderPlayable.h" compile="0" resource="0"
             file="Sources/ReaderPlayable.h"/>
+      <FILE id="xA1xNu" name="StandardIncludes.h" compile="0" resource="0"
+            file="Sources/StandardIncludes.h"/>
     </GROUP>
     <GROUP id="{39393AB3-F8BC-4C3E-EE99-A7352D177923}" name="Gui">
       <FILE id="ubLDq1" name="CApp.cpp" compile="1" resource="0" file="Sources/CApp.cpp"/>
@@ -39,8 +45,6 @@
             file="Sources/CSpeedControl.cpp"/>
       <FILE id="GOoos7" name="CSpeedControl.h" compile="0" resource="0" file="Sources/CSpeedControl.h"/>
     </GROUP>
-    <FILE id="xA1xNu" name="StandardIncludes.h" compile="0" resource="0"
-          file="Sources/StandardIncludes.h"/>
     <GROUP id="{D8C87514-5C0A-9A75-D062-EACA241DBAAA}" name="VFLib Modules">
       <FILE id="Tcgqsz" name="vf_concurrent.cpp" compile="1" resource="0"
             file="../VFLib/modules/vf_concurrent/vf_concurrent.cpp"/>

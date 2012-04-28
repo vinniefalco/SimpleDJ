@@ -29,8 +29,9 @@
 #include "StandardIncludes.h"
 #include "Deck.h"
 
-Deck::Deck (vf::CallQueue& mixerThread)
+Deck::Deck (vf::CallQueue& mixerThread, Params& deckParams)
   : Mixer::Source (mixerThread)
+  , params (deckParams)
 {
 }
 
@@ -60,18 +61,23 @@ private:
 
   StateType m_state;
   vf::Listeners <Listener> m_listeners;
-
   bool m_isPreparedToPlay;
   int m_samplesPerBlockExpected;
   double m_sampleRate;
   ScopedPointer <ResamplingAudioSource> m_resampler;
 
+  Params m_params;
+  ScopedPointer <ParamImp> m_paramPlay;
+  ScopedPointer <ParamImp> m_paramSpeed;
+
 public:
   explicit DeckImp (vf::CallQueue& mixerThread)
-    : Deck (mixerThread)
+    : Deck (mixerThread, m_params)
     , m_isPreparedToPlay (false)
     , m_samplesPerBlockExpected (0)
     , m_sampleRate (0)
+    , m_paramPlay (new ParamImp ("play", 0, mixerThread))
+    , m_paramSpeed (new ParamImp ("speed", 0, mixerThread))
   {
   }
 

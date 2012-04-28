@@ -282,6 +282,12 @@
     <ClCompile Include="..\..\Sources\Mixer.cpp">
       <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Sources\Param.cpp">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Params.cpp">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Sources\ReaderPlayable.cpp">
       <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
@@ -1325,10 +1331,19 @@
     <ClInclude Include="..\..\Sources\Mixer.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Sources\Param.h">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\Params.h">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Sources\Playable.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\ReaderPlayable.h">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\StandardIncludes.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\CApp.h">
@@ -1345,9 +1360,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Sources\CSpeedControl.h">
       <Filter>SimpleDJ\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Sources\StandardIncludes.h">
-      <Filter>SimpleDJ</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>

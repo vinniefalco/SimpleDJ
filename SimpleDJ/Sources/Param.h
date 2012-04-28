@@ -26,68 +26,86 @@
   ==============================================================================
 */
 
-#ifndef DECK_HEADER
-#define DECK_HEADER
+#ifndef PARAM_HEADER
+#define PARAM_HEADER
 
-#include "Mixer.h"
-#include "Params.h"
-#include "Playable.h"
-
-/** A Mixer Source that streams a Playable.
+/** A concurrent, named parameter.
 */
-class Deck
-  : public Mixer::Source
+class Param
 {
 public:
-  typedef Mixer::Levels Levels;
-
-  /** Synchronizes the Deck state.
+  /** Synchronizes state.
   */
   class Listener
   {
   public:
-    /** Called when the play state changes.
+    /** Called when value changes.
     */
-    virtual void onDeckPlay (Deck* deck, bool isPlaying) { }
-
-    /** Called when the output level changes.
-    */
-    virtual void onDeckLevels (Deck* deck, Levels const level) { }
-
-    /** Called when the Playable changes.
-    */
-    virtual void onDeckSelect (Deck* deck, Playable::Ptr playable) { }
+    virtual void onParamChange (Param* param, double nativeValue) { }
   };
 
 public:
-  typedef ReferenceCountedObjectPtr <Deck> Ptr;
+  Param (String name,
+         double initialNativeValue,
+         vf::CallQueue& owningThread);
 
-  static Deck::Ptr New (vf::CallQueue& mixerThread);
-
-  /** Parameters.
-
-      "play"    0 or 1      Play state (off/on)
-      "speed"   [-1...1]    Playback speed (0=normal)
+  /** Return the internal name.
   */
-  Params const& params;
+  String getName () const;
 
   /** Add or remove a Listener.
   */
-  virtual void addListener (Listener* listener, vf::CallQueue& thread) = 0;
-  virtual void removeListener (Listener* listener) = 0;
+  void addListener (Listener* listener, vf::CallQueue& thread);
+  void removeListener (Listener* listener);
 
-  /** Change the current Playable.
-
-      Use nullptr to unload.
+  /** Change the value.
   */
-  virtual void selectPlayable (Playable::Ptr playable) = 0;
+  void setValue (double nativeValue);
 
-  /** Start or stop the Deck.
-  */
-  virtual void setPlay (bool shouldBePlaying) = 0;
+private:
+  void doSetValue (double nativeValue);
 
 protected:
-  Deck (vf::CallQueue& mixerThread, Params& params);
+  double doGetNativeValue () const;
+
+private:
+  struct State
+  {
+    State (double initialNativeValue)
+      : nativeValue (initialNativeValue)
+    {
+    }
+    double nativeValue;
+  };
+
+  typedef vf::ConcurrentState <State> StateType;
+
+  String m_name;
+  StateType m_state;
+  vf::CallQueue& m_thread;
+  vf::Listeners <Listener> m_listeners;
+};
+
+//==============================================================================
+
+/** Owned Param.
+
+    The thread that owns the Param creates this
+*/
+class ParamImp : public Param
+{
+public:
+  ParamImp (String name,
+            double initialNativeValue,
+            vf::CallQueue& owningThread)
+    : Param (name, initialNativeValue, owningThread)
+  {
+  }
+
+  double getNativeValue () const
+  {
+    return doGetNativeValue ();
+  }
 };
 
 #endif

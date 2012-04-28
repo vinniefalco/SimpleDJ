@@ -23,7 +23,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -127,6 +127,8 @@
     <ClCompile Include="..\..\Sources\Deck.cpp" />
     <ClCompile Include="..\..\Sources\FileManager.cpp" />
     <ClCompile Include="..\..\Sources\Mixer.cpp" />
+    <ClCompile Include="..\..\Sources\Param.cpp" />
+    <ClCompile Include="..\..\Sources\Params.cpp" />
     <ClCompile Include="..\..\Sources\ReaderPlayable.cpp" />
     <ClCompile Include="..\..\Sources\CApp.cpp" />
     <ClCompile Include="..\..\Sources\CDeck.cpp" />
@@ -1122,14 +1124,16 @@
     <ClInclude Include="..\..\Sources\Deck.h" />
     <ClInclude Include="..\..\Sources\FileManager.h" />
     <ClInclude Include="..\..\Sources\Mixer.h" />
+    <ClInclude Include="..\..\Sources\Param.h" />
+    <ClInclude Include="..\..\Sources\Params.h" />
     <ClInclude Include="..\..\Sources\Playable.h" />
     <ClInclude Include="..\..\Sources\ReaderPlayable.h" />
+    <ClInclude Include="..\..\Sources\StandardIncludes.h" />
     <ClInclude Include="..\..\Sources\CApp.h" />
     <ClInclude Include="..\..\Sources\CDeck.h" />
     <ClInclude Include="..\..\Sources\CMain.h" />
     <ClInclude Include="..\..\Sources\CMainWindow.h" />
     <ClInclude Include="..\..\Sources\CSpeedControl.h" />
-    <ClInclude Include="..\..\Sources\StandardIncludes.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiBuffer.h" />

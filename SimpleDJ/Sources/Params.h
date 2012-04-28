@@ -26,68 +26,59 @@
   ==============================================================================
 */
 
-#ifndef DECK_HEADER
-#define DECK_HEADER
+#ifndef PARAMS_HEADER
+#define PARAMS_HEADER
 
-#include "Mixer.h"
-#include "Params.h"
-#include "Playable.h"
+#include "Param.h"
 
-/** A Mixer Source that streams a Playable.
+/** A set of named parameters.
 */
-class Deck
-  : public Mixer::Source
+class Params
 {
 public:
-  typedef Mixer::Levels Levels;
-
-  /** Synchronizes the Deck state.
+  /** Add a parameter.
+      The owner is responsible for deleting the param object.
   */
-  class Listener
+  void add (Param* param);
+
+  /** Count the number of parameters
+  */
+  int size () const;
+
+  /** Retrieve a parameter by name.
+      If the parameter does not exist, nullptr is returned.
+  */
+  Param* find (String name) const;
+
+  /** Retrieve a parameter by name.
+      If the parameter does not exist, an exception is thrown.
+  */
+  Param& get (String name) const;
+
+  /** Retrieve a parameter by index
+  */
+  Param& operator [] (int index) const
   {
-  public:
-    /** Called when the play state changes.
-    */
-    virtual void onDeckPlay (Deck* deck, bool isPlaying) { }
+    return *m_params [index];
+  }
 
-    /** Called when the output level changes.
-    */
-    virtual void onDeckLevels (Deck* deck, Levels const level) { }
-
-    /** Called when the Playable changes.
-    */
-    virtual void onDeckSelect (Deck* deck, Playable::Ptr playable) { }
-  };
-
-public:
-  typedef ReferenceCountedObjectPtr <Deck> Ptr;
-
-  static Deck::Ptr New (vf::CallQueue& mixerThread);
-
-  /** Parameters.
-
-      "play"    0 or 1      Play state (off/on)
-      "speed"   [-1...1]    Playback speed (0=normal)
+  /** Retrieve a parameter by name.
+      If the parameter does not exist, nullptr is returned.
   */
-  Params const& params;
+  inline Param& operator [] (String name) const
+  {
+    return get (name);
+  }
 
-  /** Add or remove a Listener.
+  /** Sugar for [].
   */
-  virtual void addListener (Listener* listener, vf::CallQueue& thread) = 0;
-  virtual void removeListener (Listener* listener) = 0;
+  inline Param& operator () (String name) const
+  {
+    return get (name);
+  }
 
-  /** Change the current Playable.
-
-      Use nullptr to unload.
-  */
-  virtual void selectPlayable (Playable::Ptr playable) = 0;
-
-  /** Start or stop the Deck.
-  */
-  virtual void setPlay (bool shouldBePlaying) = 0;
-
-protected:
-  Deck (vf::CallQueue& mixerThread, Params& params);
+private:
+  Array <Param*> m_params;
 };
 
 #endif
