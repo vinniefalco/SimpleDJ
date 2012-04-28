@@ -30,10 +30,10 @@
 #include "Param.h"
 
 Param::Param (String name,
-              double initialNativeValue,
+              double initialValue,
               vf::CallQueue& owningThread)
   : m_name (name)
-  , m_state (initialNativeValue)
+  , m_state (initialValue)
   , m_thread (owningThread)
 {
 }
@@ -54,7 +54,7 @@ void Param::addListener (Listener* listener, vf::CallQueue& thread)
 
   m_listeners.add (listener, thread);
 
-  m_listeners.queue1 (listener, &Listener::onParamChange, this, state->nativeValue);
+  m_listeners.queue1 (listener, &Listener::onParamChange, this, state->value);
 }
 
 void Param::removeListener (Listener* listener)
@@ -62,36 +62,36 @@ void Param::removeListener (Listener* listener)
   m_listeners.remove (listener);
 }
 
-void Param::setValue (double nativeValue)
+void Param::setValue (double value)
 {
   // Are we being called by the owning thread?
   if (m_thread.isAssociatedWithCurrentThread ())
   {
     // Set the value directly
-    doSetValue (nativeValue);
+    doSetValue (value);
   }
   else
   {
     // Change the value from the owning thread.
-    m_thread.call (&Param::doSetValue, this, nativeValue);
+    m_thread.call (&Param::doSetValue, this, value);
   }
 }
 
-void Param::doSetValue (double nativeValue)
+void Param::doSetValue (double value)
 {
   // Atomically change state and notify listeners.
 
   StateType::WriteAccess state (m_state);
 
-  state->nativeValue = nativeValue;
+  state->value = value;
 
-  m_listeners.queue (&Listener::onParamChange, this, nativeValue);
+  m_listeners.queue (&Listener::onParamChange, this, value);
 }
 
-double Param::doGetNativeValue () const
+double Param::doGetValue () const
 {
   // This should only be called from the owning thread!
   jassert (m_thread.isAssociatedWithCurrentThread ());
 
-  return StateType::UnlockedAccess (m_state)->nativeValue;
+  return StateType::UnlockedAccess (m_state)->value;
 }

@@ -26,47 +26,29 @@
   ==============================================================================
 */
 
-#include "StandardIncludes.h"
-#include "CDeck.h"
-#include "CMain.h"
+#ifndef CPARAMTOGGLEBUTTON
+#define CPARAMTOGGLEBUTTON
 
-CMain::CMain (Mixer& mixer)
-  : vf::ResizableLayout (this)
+#include "Param.h"
+
+/** Toggle button tied to a Param.
+*/
+class CParamToggleButton
+  : public TextButton
+  , public Param::Listener
 {
-  setOpaque (true);
-  setSize (1000, 700);
+public:
+  CParamToggleButton (String buttonName, Param& param);
+  ~CParamToggleButton ();
 
-  Component* deck;
-  
-  deck = new CDeck (mixer);
-  deck->setBounds (8, 8, 488, 288);
-  addToLayout (deck, anchorTopLeft, Point <int> (50, 50));
-  addAndMakeVisible (deck);
-#if 1
-  deck = new CDeck (mixer);
-  deck->setBounds (504, 8, 488, 288);
-  addToLayout (deck, Point <int> (50, 0), Point <int> (100, 50));
-  addAndMakeVisible (deck);
+  void clicked ();
 
-  deck = new CDeck (mixer);
-  deck->setBounds (8, 304, 488, 288);
-  addToLayout (deck, Point <int> (0, 50), Point <int> (50, 100));
-  addAndMakeVisible (deck);
+  void onParamChange (Param* param, double value);
 
-  deck = new CDeck (mixer);
-  deck->setBounds (504, 304, 488, 288);
-  addToLayout (deck, Point <int> (50, 50), anchorBottomRight);
-  addAndMakeVisible (deck);
+private:
+  Param& m_param;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CParamToggleButton)
+};
+
 #endif
-  activateLayout ();
-}
-
-CMain::~CMain()
-{
-  deleteAllChildren ();
-}
-
-void CMain::paint (Graphics& g)
-{
-  g.fillAll (Colours::black);
-}

@@ -46,10 +46,6 @@ public:
   class Listener
   {
   public:
-    /** Called when the play state changes.
-    */
-    virtual void onDeckPlay (Deck* deck, bool isPlaying) { }
-
     /** Called when the output level changes.
     */
     virtual void onDeckLevels (Deck* deck, Levels const level) { }
@@ -69,7 +65,7 @@ public:
       "play"    0 or 1      Play state (off/on)
       "speed"   [-1...1]    Playback speed (0=normal)
   */
-  Params const& params;
+  Params const& param;
 
   /** Add or remove a Listener.
   */
@@ -81,10 +77,6 @@ public:
       Use nullptr to unload.
   */
   virtual void selectPlayable (Playable::Ptr playable) = 0;
-
-  /** Start or stop the Deck.
-  */
-  virtual void setPlay (bool shouldBePlaying) = 0;
 
 protected:
   Deck (vf::CallQueue& mixerThread, Params& params);

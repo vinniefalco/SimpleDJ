@@ -28,6 +28,7 @@
 
 #include "StandardIncludes.h"
 #include "CDeck.h"
+#include "CParamToggleButton.h"
 #include "CSpeedControl.h"
 #include "FileManager.h"
 
@@ -82,6 +83,14 @@ CDeck::CDeck (Mixer& mixer)
     m_text = c;
   }
 
+  {
+    CParamToggleButton* c = new CParamToggleButton (
+      "Play", m_deck->param ["play"]);
+    c->setBounds (8, 272, 80, 20);
+    addToLayout (c, anchorBottomLeft);
+    addAndMakeVisible (c);
+  }
+
   activateLayout ();
 
   m_deck->addListener (this, vf::MessageThread::getInstance());
@@ -89,6 +98,8 @@ CDeck::CDeck (Mixer& mixer)
 
 CDeck::~CDeck()
 {
+  deleteAllChildren ();
+
   m_deck->removeListener (this);
 }
 
@@ -154,7 +165,6 @@ void CDeck::filesDropped (const StringArray& files, int x, int y)
       if (playable != nullptr)
       {
         m_deck->selectPlayable (playable);
-        m_deck->setPlay (true);
 
         m_text->setText (String::empty, false);
       }

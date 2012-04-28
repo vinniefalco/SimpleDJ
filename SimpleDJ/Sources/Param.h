@@ -41,12 +41,12 @@ public:
   public:
     /** Called when value changes.
     */
-    virtual void onParamChange (Param* param, double nativeValue) { }
+    virtual void onParamChange (Param* param, double value) { }
   };
 
 public:
   Param (String name,
-         double initialNativeValue,
+         double initialValue,
          vf::CallQueue& owningThread);
 
   /** Return the internal name.
@@ -60,22 +60,22 @@ public:
 
   /** Change the value.
   */
-  void setValue (double nativeValue);
+  void setValue (double value);
 
 private:
-  void doSetValue (double nativeValue);
+  void doSetValue (double value);
 
 protected:
-  double doGetNativeValue () const;
+  double doGetValue () const;
 
 private:
   struct State
   {
-    State (double initialNativeValue)
-      : nativeValue (initialNativeValue)
+    State (double initialValue)
+      : value (initialValue)
     {
     }
-    double nativeValue;
+    double value;
   };
 
   typedef vf::ConcurrentState <State> StateType;
@@ -84,28 +84,6 @@ private:
   StateType m_state;
   vf::CallQueue& m_thread;
   vf::Listeners <Listener> m_listeners;
-};
-
-//==============================================================================
-
-/** Owned Param.
-
-    The thread that owns the Param creates this
-*/
-class ParamImp : public Param
-{
-public:
-  ParamImp (String name,
-            double initialNativeValue,
-            vf::CallQueue& owningThread)
-    : Param (name, initialNativeValue, owningThread)
-  {
-  }
-
-  double getNativeValue () const
-  {
-    return doGetNativeValue ();
-  }
 };
 
 #endif

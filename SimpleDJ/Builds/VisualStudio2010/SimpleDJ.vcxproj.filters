@@ -285,6 +285,9 @@
     <ClCompile Include="..\..\Sources\Param.cpp">
       <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Sources\ParamImp.cpp">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Sources\Params.cpp">
       <Filter>SimpleDJ\Core</Filter>
     </ClCompile>
@@ -301,6 +304,9 @@
       <Filter>SimpleDJ\Gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Sources\CMainWindow.cpp">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CParamToggleButton.cpp">
       <Filter>SimpleDJ\Gui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Sources\CSpeedControl.cpp">
@@ -1334,6 +1340,9 @@
     <ClInclude Include="..\..\Sources\Param.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Sources\ParamImp.h">
+      <Filter>SimpleDJ\Core</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Sources\Params.h">
       <Filter>SimpleDJ\Core</Filter>
     </ClInclude>
@@ -1356,6 +1365,9 @@
       <Filter>SimpleDJ\Gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\CMainWindow.h">
+      <Filter>SimpleDJ\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Sources\CParamToggleButton.h">
       <Filter>SimpleDJ\Gui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Sources\CSpeedControl.h">

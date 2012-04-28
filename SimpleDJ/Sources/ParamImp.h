@@ -26,47 +26,33 @@
   ==============================================================================
 */
 
-#include "StandardIncludes.h"
-#include "CDeck.h"
-#include "CMain.h"
+#ifndef PARAMIMP_HEADER
+#define PARAMIMP_HEADER
 
-CMain::CMain (Mixer& mixer)
-  : vf::ResizableLayout (this)
+#include "Param.h"
+#include "Params.h"
+
+/** Owned Param.
+
+    The thread that owns the Param creates this
+*/
+class ParamImp : public Param
 {
-  setOpaque (true);
-  setSize (1000, 700);
+public:
+  ParamImp (String name,
+            double initialValue,
+            vf::CallQueue& owningThread,
+            Params* params = nullptr)
+    : Param (name, initialValue, owningThread)
+  {
+    if (params != nullptr)
+      params->add (this);
+  }
 
-  Component* deck;
-  
-  deck = new CDeck (mixer);
-  deck->setBounds (8, 8, 488, 288);
-  addToLayout (deck, anchorTopLeft, Point <int> (50, 50));
-  addAndMakeVisible (deck);
-#if 1
-  deck = new CDeck (mixer);
-  deck->setBounds (504, 8, 488, 288);
-  addToLayout (deck, Point <int> (50, 0), Point <int> (100, 50));
-  addAndMakeVisible (deck);
+  double getValue () const
+  {
+    return doGetValue ();
+  }
+};
 
-  deck = new CDeck (mixer);
-  deck->setBounds (8, 304, 488, 288);
-  addToLayout (deck, Point <int> (0, 50), Point <int> (50, 100));
-  addAndMakeVisible (deck);
-
-  deck = new CDeck (mixer);
-  deck->setBounds (504, 304, 488, 288);
-  addToLayout (deck, Point <int> (50, 50), anchorBottomRight);
-  addAndMakeVisible (deck);
 #endif
-  activateLayout ();
-}
-
-CMain::~CMain()
-{
-  deleteAllChildren ();
-}
-
-void CMain::paint (Graphics& g)
-{
-  g.fillAll (Colours::black);
-}

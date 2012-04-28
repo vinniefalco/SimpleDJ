@@ -54,11 +54,12 @@ protected:
 
 private:
   Deck::Ptr m_deck;
-  ScopedPointer <Component> m_speedControl;
-  ScopedPointer <Label> m_text;
-  ScopedPointer <Label> m_title;
-  ScopedPointer <Label> m_artist;
-  ScopedPointer <Label> m_album;
+  Component* m_speedControl;
+  Label* m_text;
+  Label* m_title;
+  Label* m_artist;
+  Label* m_album;
+  
   bool m_hasDropFocus;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CDeck)

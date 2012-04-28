@@ -203,7 +203,9 @@ public:
     m_thread.synchronize ();
 
     // Set up the output data.
+
     AudioSampleBuffer outputBuffer (outputChannelData, numOutputChannels, numSamples);
+
     AudioSourceChannelInfo outputBufferToFill;
     outputBufferToFill.buffer = &outputBuffer;
     outputBufferToFill.numSamples = numSamples;
@@ -211,14 +213,16 @@ public:
 
     // Prepare our intermediate buffer.
     m_sourceBuffer.setSize (2, numSamples, false, false, true);
+
     AudioSourceChannelInfo sourceBufferToFill;
+
     sourceBufferToFill.buffer = &m_sourceBuffer;
     sourceBufferToFill.numSamples = numSamples;
     sourceBufferToFill.startSample = 0;
 
     // Clear the output in preparation for mixing.
     outputBuffer.clear ();
-#if 1
+
     // Add Source to output.
     for (int i = 0; i < m_sources.size (); ++i)
     {
@@ -230,7 +234,7 @@ public:
       outputBufferToFill.buffer->addFrom (1, 0,
         sourceBufferToFill.buffer->getArrayOfChannels ()[1], numSamples);
     }
-#endif
+
     Levels newLevels;
     newLevels.left.peak = 0;
     newLevels.left.clip = false;

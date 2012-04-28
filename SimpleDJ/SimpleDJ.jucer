@@ -22,6 +22,8 @@
       <FILE id="s6zIPd" name="Mixer.h" compile="0" resource="0" file="Sources/Mixer.h"/>
       <FILE id="U1Ez73" name="Param.cpp" compile="1" resource="0" file="Sources/Param.cpp"/>
       <FILE id="EDHMvl" name="Param.h" compile="0" resource="0" file="Sources/Param.h"/>
+      <FILE id="C9iXat" name="ParamImp.cpp" compile="1" resource="0" file="Sources/ParamImp.cpp"/>
+      <FILE id="nLRiqi" name="ParamImp.h" compile="0" resource="0" file="Sources/ParamImp.h"/>
       <FILE id="brkLn3" name="Params.cpp" compile="1" resource="0" file="Sources/Params.cpp"/>
       <FILE id="Qvzhz2" name="Params.h" compile="0" resource="0" file="Sources/Params.h"/>
       <FILE id="uum5uB" name="Playable.h" compile="0" resource="0" file="Sources/Playable.h"/>
@@ -41,6 +43,10 @@
       <FILE id="VGNNdZ" name="CMain.h" compile="0" resource="0" file="Sources/CMain.h"/>
       <FILE id="FXgAK6" name="CMainWindow.cpp" compile="1" resource="0" file="Sources/CMainWindow.cpp"/>
       <FILE id="gWwL98" name="CMainWindow.h" compile="0" resource="0" file="Sources/CMainWindow.h"/>
+      <FILE id="VKDkEv" name="CParamToggleButton.cpp" compile="1" resource="0"
+            file="Sources/CParamToggleButton.cpp"/>
+      <FILE id="gLwSkU" name="CParamToggleButton.h" compile="0" resource="0"
+            file="Sources/CParamToggleButton.h"/>
       <FILE id="FvG67z" name="CSpeedControl.cpp" compile="1" resource="0"
             file="Sources/CSpeedControl.cpp"/>
       <FILE id="GOoos7" name="CSpeedControl.h" compile="0" resource="0" file="Sources/CSpeedControl.h"/>

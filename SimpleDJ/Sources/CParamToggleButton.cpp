@@ -27,46 +27,26 @@
 */
 
 #include "StandardIncludes.h"
-#include "CDeck.h"
-#include "CMain.h"
+#include "CParamToggleButton.h"
 
-CMain::CMain (Mixer& mixer)
-  : vf::ResizableLayout (this)
+CParamToggleButton::CParamToggleButton (String buttonName, Param& param)
+  : TextButton (buttonName)
+  , m_param (param)
 {
-  setOpaque (true);
-  setSize (1000, 700);
-
-  Component* deck;
-  
-  deck = new CDeck (mixer);
-  deck->setBounds (8, 8, 488, 288);
-  addToLayout (deck, anchorTopLeft, Point <int> (50, 50));
-  addAndMakeVisible (deck);
-#if 1
-  deck = new CDeck (mixer);
-  deck->setBounds (504, 8, 488, 288);
-  addToLayout (deck, Point <int> (50, 0), Point <int> (100, 50));
-  addAndMakeVisible (deck);
-
-  deck = new CDeck (mixer);
-  deck->setBounds (8, 304, 488, 288);
-  addToLayout (deck, Point <int> (0, 50), Point <int> (50, 100));
-  addAndMakeVisible (deck);
-
-  deck = new CDeck (mixer);
-  deck->setBounds (504, 304, 488, 288);
-  addToLayout (deck, Point <int> (50, 50), anchorBottomRight);
-  addAndMakeVisible (deck);
-#endif
-  activateLayout ();
+  m_param.addListener (this, vf::MessageThread::getInstance ());
 }
 
-CMain::~CMain()
+CParamToggleButton::~CParamToggleButton ()
 {
-  deleteAllChildren ();
+  m_param.removeListener (this);
 }
 
-void CMain::paint (Graphics& g)
+void CParamToggleButton::clicked ()
 {
-  g.fillAll (Colours::black);
+  m_param.setValue (getToggleState () ? 0 : 1);
+}
+
+void CParamToggleButton::onParamChange (Param* param, double value)
+{
+  setToggleState (value != 0, false);
 }
