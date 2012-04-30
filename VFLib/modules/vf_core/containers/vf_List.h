@@ -152,7 +152,7 @@ struct ListDefaultTag;
   struct ActiveListTag { }; // subset of all objects that are active
 
   class Object : public List <Object, GlobalListTag>
-                , public List <Object, ActiveListTag>
+               , public List <Object, ActiveListTag>
   {
   public:
     Object () : m_isActive (false)
@@ -181,7 +181,7 @@ struct ListDefaultTag;
       if (m_isActive)
       {
         // Doesn't delete the object
-        s_activeList.remove (this);
+        s_activeList.erase (s_activeList.iterator_to (this));
 
         m_isActive = false;
       }
@@ -333,56 +333,14 @@ public:
 private:
   template <class ElemType, class NodeType>
   class iterator_base : public std::iterator <
-	std::bidirectional_iterator_tag, int>
+    std::bidirectional_iterator_tag, int>
   {
   public:
-	typedef ElemType value_type;
+    typedef ElemType value_type;
     typedef ElemType* pointer;
-	typedef ElemType& reference;
-	
-    reference operator*() const
-	{
-	  return dereference ();
-	}
+    typedef ElemType& reference;
 
-    pointer operator->() const
-	{
-	  return &dereference ();
-	}
-
-	iterator_base& operator++()
-	{
-	  increment ();
-	  return *this;
-	}
-
-	iterator_base operator++(int)
-	{
-	  iterator_base result (*this);
-	  increment ();
-	  return result;
-	}
-
-	iterator_base& operator--()
-	{
-	  decrement ();
-	  return *this;
-	}
-
-    iterator_base operator--(int)
-	{
-	  iterator_base result (*this);
-	  decrement ();
-	  return result;
-	}
-
-  private:
-    explicit iterator_base (NodeType* node) : m_node (node)
-    {
-    }
-
-  public:
-    iterator_base () : m_node (0)
+    iterator_base (NodeType* node = nullptr) : m_node (node)
     {
     }
 
@@ -410,7 +368,43 @@ private:
     {
       return ! this->operator== (other);
     }
-    
+
+    reference operator* () const
+    {
+      return dereference ();
+    }
+
+    pointer operator-> () const
+    {
+      return &dereference ();
+    }
+
+    iterator_base& operator++ ()
+    {
+      increment ();
+      return *this;
+    }
+
+    iterator_base operator++ (int)
+    {
+      iterator_base result (*this);
+      increment ();
+      return result;
+    }
+
+    iterator_base& operator-- ()
+    {
+      decrement ();
+      return *this;
+    }
+
+    iterator_base operator-- (int)
+    {
+      iterator_base result (*this);
+      decrement ();
+      return result;
+    }
+
   private:
     friend class List;
 

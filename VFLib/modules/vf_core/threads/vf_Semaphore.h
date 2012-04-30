@@ -19,43 +19,48 @@
 */
 /*============================================================================*/
 
-/** Add this to get the @ref vf_concurrent module.
+#ifndef VF_SEMAPHORE_VFHEADER
+#define VF_SEMAPHORE_VFHEADER
 
-    @file vf_concurrent.cpp
-    @ingroup vf_concurrent
+/*============================================================================*/
+/**
+  @ingroup vf_core
+
+  @brief A semaphore.
+
+  This implementation is not the best.
 */
-
-#include "AppConfig.h"
-
-#include "vf_concurrent.h"
-
-#if JUCE_MSVC
-#pragma warning (push)
-#pragma warning (disable: 4100) // unreferenced formal parmaeter
-#endif
-
-namespace vf
+class Semaphore
 {
-#if VF_USE_BOOST
-#include "memory/vf_FifoFreeStoreWithTLS.cpp"
-#else
-#include "memory/vf_FifoFreeStoreWithoutTLS.cpp"
-#endif
-#include "memory/vf_GlobalPagedFreeStore.cpp"
-#include "memory/vf_PagedFreeStore.cpp"
+public:
+  Semaphore (int initialCount = 0);
 
-#include "threads/vf_CallQueue.cpp"
-#include "threads/vf_ConcurrentObject.cpp"
-#include "threads/vf_GuiCallQueue.cpp"
-#include "threads/vf_Listeners.cpp"
-#include "threads/vf_ManualCallQueue.cpp"
-#include "threads/vf_MessageThread.cpp"
-#include "threads/vf_ParallelFor.cpp"
-#include "threads/vf_ReadWriteMutex.cpp"
-#include "threads/vf_ThreadGroup.cpp"
-#include "threads/vf_ThreadWithCallQueue.cpp"
-}
+  ~Semaphore ();
 
-#if JUCE_MSVC
-#pragma warning (pop)
+  void signal (int amount = 1);
+
+  /** Returns true if the resource was acquired without a timeout.
+  */
+  bool wait (int timeoutMilliseconds = -1);
+
+private:
+  class WaitingThread : public List <WaitingThread>::Node
+  {
+  public:
+    WaitingThread ()
+      : m_event (false) // auto-reset
+      , m_signaled (false)
+    {
+    }
+
+    WaitableEvent m_event;
+    bool volatile m_signaled;
+  };
+
+  int m_counter;
+  CriticalSection m_mutex;
+  List <WaitingThread> m_waitingThreads;
+  List <WaitingThread> m_deletedList;
+};
+
 #endif

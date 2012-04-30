@@ -175,7 +175,7 @@
   [18]: http://www.mozilla.org/MPL/1.1/ "Mozilla Public License"
 
   @author Vinnie Falco (<a href="mailto:vinnie.falco@gmail.com">email</a>)
-  @version 0.9.0 pre-release
+  @version 1.0 pre-release
   @date 2008
   @copyright Copyright (C) 2008 by Vinnie Falco.
   @copyright Provided under the [GNU General Public License][5]
@@ -440,6 +440,7 @@ namespace vf
 #include "memory/vf_ReferenceCountedSingleton.h"
 #include "memory/vf_StaticObject.h"
 
+#include "threads/vf_Semaphore.h"
 #include "threads/vf_SpinDelay.h"
 #include "threads/vf_InterruptibleThread.h"
 

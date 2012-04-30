@@ -1,7 +1,5 @@
 # VFLib: A multipurpose library built on JUCE.
 
-## (This is pre-release software)
-
 VFLib is a source code collection of individual **modules** containing
 functionality for a variety of applications, with an emphasis on building
 concurrent systems. VFLib requires [JUCE][3] (Jules' Utility Class

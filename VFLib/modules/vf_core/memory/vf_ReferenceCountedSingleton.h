@@ -26,9 +26,9 @@
 #include "../memory/vf_StaticObject.h"
 
 /**
-	Construction options for ReferenceCountedSingleton
+  Construction options for ReferenceCountedSingleton
 
-    @ingroup vf_core
+  @ingroup vf_core
 */
 
 // "base classes dependent on a template parameter aren't part of lookup." - ville
@@ -37,33 +37,33 @@ class SingletonLifetime
 public:
   enum Lifetime
   {
-    // Singleton is created on first use and destroyed when
-    // the last reference is removed.
-    //
+    /** Singleton is created on first use and destroyed when
+        the last reference is removed.
+    */
     createOnDemand,
 
-    // Like createOnDemand, but after the Singleton is destroyed an
-    // exception will be thrown if an attempt is made to create it again.
-    //
+    /** Like createOnDemand, but after the Singleton is destroyed an
+        exception will be thrown if an attempt is made to create it again.
+    */
     createOnDemandOnce,
 
-    // The singleton is created on first use and persists until program exit.
-    //
+    /* The singleton is created on first use and persists until program exit.
+    */
     persistAfterCreation
   };
 };
 
 //------------------------------------------------------------------------------
 /**
-	Thread-safe singleton which comes into existence on first use. Use this
-	instead of creating objects with static storage duration. These singletons
-	are automatically reference counted, so if you hold a pointer to it in every
-	object that depends on it, the order of destruction of objects is assured
-	to be correct.
+  Thread-safe singleton which comes into existence on first use. Use this
+  instead of creating objects with static storage duration. These singletons
+  are automatically reference counted, so if you hold a pointer to it in every
+  object that depends on it, the order of destruction of objects is assured
+  to be correct.
 
-	class Object must provide the function `Object* Object::createInstance()`
+  class Object must provide the function `Object* Object::createInstance()`
 
-    @ingroup vf_core
+  @ingroup vf_core
 */
 template <class Object>
 class ReferenceCountedSingleton : private PerformedAtExit
