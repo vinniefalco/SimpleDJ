@@ -91,7 +91,7 @@ void Param::doSetValue (double value)
 double Param::doGetValue () const
 {
   // This should only be called from the owning thread!
-  jassert (m_thread.isAssociatedWithCurrentThread ());
+  //jassert (m_thread.isAssociatedWithCurrentThread ());
 
   return StateType::UnlockedAccess (m_state)->value;
 }

@@ -49,6 +49,15 @@ private:
     Levels levels;
   };
 
+  struct SourceData
+  {
+    SourceData () : buffer (2, 0)
+    {
+    }
+
+    AudioSampleBuffer buffer;
+  };
+
   typedef vf::ConcurrentState <State> StateType;
 
   StateType m_state;
@@ -56,6 +65,7 @@ private:
   vf::Listeners <Listener> m_listeners;
   AudioIODevice* m_currentDevice;
   ReferenceCountedArray <Source> m_sources;
+  Array <SourceData> m_sourceData;
   ScopedPointer <AudioDeviceManager> m_audioDeviceManager;
   AudioSampleBuffer m_sourceBuffer;
 
@@ -193,46 +203,46 @@ public:
     }
   }
 
+  void processSource (int sourceIndex)
+  {
+    m_sources [sourceIndex]->getNextAudioBlock (
+      AudioSourceChannelInfo (m_sourceData.getReference (sourceIndex).buffer));
+  }
+
   void audioDeviceIOCallback (const float** inputChannelData,
-                                           int numInputChannels,
-                                           float** outputChannelData,
-                                           int numOutputChannels,
-                                           int numSamples)
+                              int numInputChannels,
+                              float** outputChannelData,
+                              int numOutputChannels,
+                              int numSamples)
   {
     // Synchronize state.
     m_thread.synchronize ();
 
-    // Set up the output data.
+    // Prepare intermediate data
+    m_sourceData.resize (m_sources.size ());
+    for (int i = 0; i < m_sources.size (); ++i)
+      m_sourceData.getReference (i).buffer.setSize (2, numSamples, false, false, true);
 
+    // Process sources in parallel.
+    vf::ParallelFor().loop (m_sources.size(), &MixerImp::processSource, this);
+
+    // Set up the output data.
     AudioSampleBuffer outputBuffer (outputChannelData, numOutputChannels, numSamples);
 
-    AudioSourceChannelInfo outputBufferToFill;
-    outputBufferToFill.buffer = &outputBuffer;
-    outputBufferToFill.numSamples = numSamples;
-    outputBufferToFill.startSample = 0;
-
-    // Prepare our intermediate buffer.
-    m_sourceBuffer.setSize (2, numSamples, false, false, true);
-
-    AudioSourceChannelInfo sourceBufferToFill;
-
-    sourceBufferToFill.buffer = &m_sourceBuffer;
-    sourceBufferToFill.numSamples = numSamples;
-    sourceBufferToFill.startSample = 0;
-
-    // Clear the output in preparation for mixing.
-    outputBuffer.clear ();
-
-    // Add Source to output.
-    for (int i = 0; i < m_sources.size (); ++i)
+    // Add Sources to output.
+    if (m_sources.size () > 0)
     {
-      m_sources [i]->getNextAudioBlock (sourceBufferToFill);
-
-      outputBufferToFill.buffer->addFrom (0, 0,
-        sourceBufferToFill.buffer->getArrayOfChannels ()[0], numSamples);
-        
-      outputBufferToFill.buffer->addFrom (1, 0,
-        sourceBufferToFill.buffer->getArrayOfChannels ()[1], numSamples);
+      outputBuffer.copyFrom (0, 0, m_sourceData [0].buffer.getArrayOfChannels ()[0], numSamples);
+      outputBuffer.copyFrom (1, 0, m_sourceData [0].buffer.getArrayOfChannels ()[1], numSamples);
+      for (int i = 1; i < m_sources.size (); ++i)
+      {
+        outputBuffer.addFrom (0, 0, m_sourceData [i].buffer.getArrayOfChannels ()[0], numSamples);
+        outputBuffer.addFrom (1, 0, m_sourceData [i].buffer.getArrayOfChannels ()[1], numSamples);
+      }
+    }
+    else
+    {
+      outputBuffer.clear ();
     }
 
     Levels newLevels;
