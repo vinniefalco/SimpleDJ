@@ -56,12 +56,15 @@ namespace vf
 #include "math/vf_MurmurHash.cpp"
 
 #include "threads/vf_InterruptibleThread.cpp"
+#include "threads/vf_Semaphore.cpp"
 
 #if JUCE_WINDOWS
 #include "native/vf_win32_FPUFlags.cpp"
+#include "native/vf_win32_Threads.cpp"
 
 #else
 #include "native/vf_posix_FPUFlags.cpp"
+#include "native/vf_posix_Threads.cpp"
 
 #endif
 

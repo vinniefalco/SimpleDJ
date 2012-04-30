@@ -30,12 +30,12 @@ CallQueue::~CallQueue ()
   vfassert (m_closed.isSignaled ());
 
   // Can't destroy queue with unprocessed calls.
-  vfassert (m_list.empty ());
+  vfassert (m_queue.empty ());
 }
 
 bool CallQueue::isAssociatedWithCurrentThread () const
 {
-  return juce::Thread::getCurrentThreadId () == m_id;
+  return Thread::getCurrentThreadId () == m_id;
 }
 
 // Adds a call to the queue of execution.
@@ -46,7 +46,7 @@ void CallQueue::queuep (Call* c)
   // process it.
   vfassert (!m_closed.isSignaled ());
 
-  if (m_list.push_back (c))
+  if (m_queue.push_back (c))
     signal ();
 }
 
@@ -124,7 +124,7 @@ bool CallQueue::doSynchronize ()
   //
   reset ();
 
-  Call* call = m_list.pop_front ();
+  Call* call = m_queue.pop_front ();
 
   if (call)
   {
@@ -138,7 +138,7 @@ bool CallQueue::doSynchronize ()
       call->operator() ();
       delete call;
 
-      call = m_list.pop_front ();
+      call = m_queue.pop_front ();
       if (call == 0)
         break;
     }

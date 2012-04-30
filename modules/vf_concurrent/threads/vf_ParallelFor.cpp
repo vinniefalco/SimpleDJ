@@ -19,43 +19,39 @@
 */
 /*============================================================================*/
 
-/** Add this to get the @ref vf_concurrent module.
-
-    @file vf_concurrent.cpp
-    @ingroup vf_concurrent
-*/
-
-#include "AppConfig.h"
-
-#include "vf_concurrent.h"
-
-#if JUCE_MSVC
-#pragma warning (push)
-#pragma warning (disable: 4100) // unreferenced formal parmaeter
-#endif
-
-namespace vf
+ParallelFor::ParallelFor (ThreadGroup& pool)
+  : m_pool (pool)
+  , m_event (false) // auto-reset
 {
-#if VF_USE_BOOST
-#include "memory/vf_FifoFreeStoreWithTLS.cpp"
-#else
-#include "memory/vf_FifoFreeStoreWithoutTLS.cpp"
-#endif
-#include "memory/vf_GlobalPagedFreeStore.cpp"
-#include "memory/vf_PagedFreeStore.cpp"
-
-#include "threads/vf_CallQueue.cpp"
-#include "threads/vf_ConcurrentObject.cpp"
-#include "threads/vf_GuiCallQueue.cpp"
-#include "threads/vf_Listeners.cpp"
-#include "threads/vf_ManualCallQueue.cpp"
-#include "threads/vf_MessageThread.cpp"
-#include "threads/vf_ParallelFor.cpp"
-#include "threads/vf_ReadWriteMutex.cpp"
-#include "threads/vf_ThreadGroup.cpp"
-#include "threads/vf_ThreadWithCallQueue.cpp"
 }
 
-#if JUCE_MSVC
-#pragma warning (pop)
-#endif
+void ParallelFor::iterate (Iteration* iteration)
+{
+  ++m_numberOfInstances;
+
+  for (;;)
+  {
+    int const loopIndex = ++m_currentIndex;
+
+    if (loopIndex < m_numberOfIterations)
+      (*iteration) (loopIndex);
+    else
+      break;
+  }
+
+  if (--m_numberOfInstances == 0)
+    m_event.signal ();
+}
+
+void ParallelFor::doLoop (int numberOfIterations, Iteration* iteration)
+{
+  m_currentIndex = -1;
+  m_numberOfInstances = 0;
+
+  m_numberOfIterations = numberOfIterations;
+
+  m_pool.call (&ParallelFor::iterate, this, iteration);
+
+  m_event.wait ();
+}
+

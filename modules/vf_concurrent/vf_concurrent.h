@@ -149,11 +149,14 @@ namespace vf
 #include "threads/vf_CallQueue.h"
 #include "threads/vf_ConcurrentObject.h"
 #include "threads/vf_ConcurrentState.h"
+#include "threads/vf_GlobalThreadGroup.h"
 #include "threads/vf_GuiCallQueue.h"
 #include "threads/vf_Listeners.h"
 #include "threads/vf_MessageThread.h"
 #include "threads/vf_ManualCallQueue.h"
+#include "threads/vf_ParallelFor.h"
 #include "threads/vf_ReadWriteMutex.h"
+#include "threads/vf_ThreadGroup.h"
 #include "threads/vf_ThreadWithCallQueue.h"
 }
 

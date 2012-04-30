@@ -398,10 +398,6 @@ protected:
 public:
   //============================================================================
 
-  ///@internal
-  ///@name Internal member functions
-  ///@{
-
   /** @internal
   
       @details Add a raw Call to the queue and synchronize if possible.
@@ -442,15 +438,12 @@ public:
   */
   bool isBeingSynchronized () const { return m_isBeingSynchronized.isSignaled(); }
 
-  ///@}
-
 private:
   template <class Functor>
   class CallType : public Call
   {
   public:
     explicit CallType (Functor const& f) : m_f (f) { }
-    ~CallType () { }
     void operator() () { m_f (); }
 
   private:
@@ -460,11 +453,9 @@ private:
   bool doSynchronize ();
 
 private:
-  typedef LockFreeQueue <Call> CallList;
-
   String const m_name;
   juce::Thread::ThreadID m_id;
-  CallList m_list;
+  LockFreeQueue <Call> m_queue;
   AtomicFlag m_closed;
   AtomicFlag m_isBeingSynchronized;
   AllocatorType m_allocator;

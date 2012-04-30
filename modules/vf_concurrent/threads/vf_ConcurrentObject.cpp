@@ -28,14 +28,14 @@ private:
 
   Deleter ()
     : ReferenceCountedSingleton <Deleter> (SingletonLifetime::persistAfterCreation)
-    , m_fifo ("Deleter")
+    , m_thread ("Deleter")
   {
-	m_fifo.start ();
+    m_thread.start ();
   }
 
   ~Deleter ()
   {
-    m_fifo.stop (true);
+    m_thread.stop (true);
   }
 
 private:
@@ -47,10 +47,10 @@ private:
 public:
   void Delete (ConcurrentObject* sharedObject)
   {
-    if (m_fifo.isAssociatedWithCurrentThread ())
+    if (m_thread.isAssociatedWithCurrentThread ())
       delete sharedObject;
     else
-      m_fifo.call (&Deleter::doDelete, sharedObject);
+      m_thread.call (&Deleter::doDelete, sharedObject);
   }
 
   static Deleter* createInstance ()
@@ -61,7 +61,7 @@ public:
 private:
   AtomicCounter m_refs;
 
-  ThreadWithCallQueue m_fifo;
+  ThreadWithCallQueue m_thread;
 };
 
 //------------------------------------------------------------------------------
