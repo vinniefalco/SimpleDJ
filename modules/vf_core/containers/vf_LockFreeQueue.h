@@ -115,7 +115,7 @@ public:
 
       This operation is lock-free.
 
-      @return   The element, or nullptr if the list was empty.
+      @return The element, or nullptr if the list was empty.
   */
   Element* pop_front ()
   {

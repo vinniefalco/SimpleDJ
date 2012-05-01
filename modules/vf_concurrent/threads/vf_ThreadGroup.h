@@ -50,6 +50,13 @@ public:
 
   ~ThreadGroup ();
 
+  /** Returns the number of threads.
+  */
+  int getNumberOfThreads () const
+  {
+    return m_threads.size ();
+  }
+
   /** Sets the number of concurrent threads.
       If the number of threads is reduced, excess threads will
       complete their calls before destroying themselves.
@@ -69,10 +76,13 @@ public:
            iter != m_threads.end (); ++iter)
         iter->queue (new (m_allocator) WorkType <Functor> (f));
     }
-    else
-    {
-      f ();
-    }
+  }
+
+  /** Allocator access.
+  */
+  inline AllocatorType& getAllocator ()
+  {
+    return m_allocator;
   }
 
   template <class Fn>
@@ -159,7 +169,6 @@ private:
 
   private:
     LockFreeQueue <Work> m_queue;
-    WaitableEvent m_event;
   };
 
   typedef SpinLock LockType;

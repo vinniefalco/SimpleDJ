@@ -22,6 +22,8 @@
 #ifndef VF_PARALLELFOR_VFHEADER
 #define VF_PARALLELFOR_VFHEADER
 
+#include "../memory/vf_AllocatedBy.h"
+
 #include "vf_GlobalThreadGroup.h"
 #include "vf_ThreadGroup.h"
 
@@ -32,12 +34,20 @@
   @brief Parallel for loop.
 
   This uses a ThreadGroup to iterate through a for loop in parallel. The
-  for loop must take this form:
+  following two pieces of code perform identical operations:
 
   @code
 
+  extern void function (int loopIndex);
+
+  // Serial computation
+  //
   for (int i = 0; i < numberOfIterations; ++i)
-    function (..., i);
+    function (i);
+
+  // Parallel computation
+  //
+  ParallelFor().loop (numberOfIterations, &function);
 
   @endcode
 
@@ -64,7 +74,7 @@ public:
   {
     IterationType <Functor> iteration (f);
 
-    doLoop (numberOfIterations, &iteration);
+    doLoop (numberOfIterations, iteration);
   }
 
   template <class Fn>
@@ -114,6 +124,8 @@ public:
   { loopf (n, vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8, vf::_1)); }
 
 private:
+  class LoopState;
+
   class Iteration
   {
   public:
@@ -138,13 +150,11 @@ private:
   };
 
 private:
-  void iterate (Iteration* iteration);
-
-  void doLoop (int numberOfIterations, Iteration* iteration);
+  void doLoop (int numberOfIterations, Iteration& iteration);
 
 private:
   ThreadGroup& m_pool;
-  WaitableEvent m_event;
+  WaitableEvent m_finishedEvent;
   Atomic <int> m_currentIndex;
   Atomic <int> m_numberOfInstances;
   int m_numberOfIterations;
