@@ -37,7 +37,7 @@ public:
   {
 	if (++m_count > 20)
 	{
-	  juce::Thread::yield ();
+	  Thread::yield ();
 	}
   }
 

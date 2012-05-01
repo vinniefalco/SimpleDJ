@@ -88,7 +88,7 @@ bool CallQueue::synchronize ()
   if (m_isBeingSynchronized.trySignal ())
   {
     // Remember this thread.
-    m_id = juce::Thread::getCurrentThreadId ();
+    m_id = Thread::getCurrentThreadId ();
 
     did_something = doSynchronize ();
 

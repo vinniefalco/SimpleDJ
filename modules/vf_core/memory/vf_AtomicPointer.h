@@ -128,7 +128,7 @@ public:
   }
 
 private:
-  juce::Atomic <P*> m_value;
+  Atomic <P*> m_value;
 };
 
 #endif

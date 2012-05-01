@@ -190,7 +190,7 @@ void PagedFreeStore::doOncePerSecond ()
   s << " (" << String (m_used.get ()) << "/"
     << String (m_total.get ()) << " of "
     << String (m_newPagesLeft.get ()) << ")";
-  juce::Logger::outputDebugString (s);
+  Logger::outputDebugString (s);
 #endif
 }
 

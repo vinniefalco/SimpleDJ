@@ -98,7 +98,7 @@ public:
 
       @ingroup vf_audio internal
   */
-  class Buffer : public juce::AudioSampleBuffer
+  class Buffer : public AudioSampleBuffer
   {
   public:
 	Buffer (int numChannels, int numSamples);
@@ -149,7 +149,7 @@ protected:
   void releaseBufferInternal (Buffer* buffer);
 
 private:
-  juce::Array <Buffer*> m_buffers;
+  Array <Buffer*> m_buffers;
 };
 
 /*============================================================================*/

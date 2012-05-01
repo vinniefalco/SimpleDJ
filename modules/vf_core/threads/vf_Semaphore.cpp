@@ -26,10 +26,15 @@ Semaphore::Semaphore (int initialCount)
 
 Semaphore::~Semaphore ()
 {
-  for (List <WaitingThread>::iterator iter = m_deletedList.begin ();
-       iter != m_deletedList.end ();)
+  // Can't delete the semaphore while threads are waiting on it!!
+  jassert (m_waitingThreads.pop_front () == nullptr);
+
+  for (;;)
   {
-    delete &(*iter++);
+    WaitingThread* waitingThread = m_deletedList.pop_front ();
+
+    if (waitingThread != nullptr)
+      delete waitingThread;
   }
 }
 
@@ -37,63 +42,41 @@ void Semaphore::signal (int amount)
 {
   jassert (amount > 0);
 
-  ScopedLock lock (m_mutex);
-
-  m_counter += amount;
-
-  if (m_counter >= 0)
+  while (amount--)
   {
-    if (!m_waitingThreads.empty ())
+    // Increment and release a waiting thread if the count is positive.
+    if (++m_counter > 0)
     {
-      WaitingThread* w = &m_waitingThreads.front ();
+      WaitingThread* waitingThread = m_waitingThreads.pop_front ();
 
-      m_waitingThreads.pop_front ();
-
-      w->m_event.signal ();
-      w->m_signaled = true;
+      if (waitingThread != nullptr)
+        waitingThread->m_event.signal ();
     }
   }
 }
 
-bool Semaphore::wait (int timeoutMilliseconds)
+void Semaphore::wait ()
 {
-  bool isSignaled = false;
-  WaitingThread* w = nullptr;
-
+  // Decrement the count and wait if needed.
+  if (--m_counter < 0)
   {
-    ScopedLock lock (m_mutex);
+    // Try to recycle an element from the deleted list.
+    WaitingThread* waitingThread = m_deletedList.pop_front ();
 
-    if (--m_counter < 0)
+    if (waitingThread == nullptr)
     {
-      if (m_deletedList.size () > 0)
-      {
-        w = &m_deletedList.front ();
-        
-        m_deletedList.pop_front ();
-      }
-      else
-      {
-        w = new WaitingThread;
-      }
-
-      m_waitingThreads.push_front (*w);
-    }
-  }
-
-  if (w != nullptr)
-  {
-    w->m_event.wait (timeoutMilliseconds);
-
-    {
-      ScopedLock lock (m_mutex);
-
-      isSignaled = w->m_signaled;
-
-      m_waitingThreads.erase (w);
+      // Nothing to recycle so make a new one.
+      waitingThread = new WaitingThread;
     }
 
-    m_deletedList.push_front (*w);
-  }
+    // Put us on the waiting list.
+    m_waitingThreads.push_front (waitingThread);
 
-  return isSignaled;
+    // Wait until a resource is available.
+    waitingThread->m_event.wait ();
+
+    // We've been taken off the waiting list so put this
+    // element on the deleted list to get recycled.
+    m_deletedList.push_front (waitingThread);
+  }
 }

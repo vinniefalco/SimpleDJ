@@ -51,7 +51,7 @@ LabColour::LabColour (LabColour const& lab)
 {
 }
 
-LabColour::LabColour (juce::Colour const& sRGB)
+LabColour::LabColour (Colour const& sRGB)
 {
   *this = from (sRGB);
 }
@@ -85,7 +85,7 @@ XYZColour const LabColour::toXYZ () const
   return XYZColour (x, y, z, m_alpha);
 }
 
-juce::Colour const LabColour::toRGB () const
+Colour const LabColour::toRGB () const
 {
   return toXYZ ().toRGB ();
 }

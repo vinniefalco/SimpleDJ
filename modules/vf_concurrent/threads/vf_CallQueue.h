@@ -454,7 +454,7 @@ private:
 
 private:
   String const m_name;
-  juce::Thread::ThreadID m_id;
+  Thread::ThreadID m_id;
   LockFreeQueue <Call> m_queue;
   AtomicFlag m_closed;
   AtomicFlag m_isBeingSynchronized;

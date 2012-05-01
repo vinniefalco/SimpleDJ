@@ -212,7 +212,7 @@ void Button::paintButton (Graphics& g,
                           bool isMouseOverButton,
                           bool isButtonDown)
 {
-  getFacade().setEnabled (juce::Button::isEnabled());
+  getFacade().setEnabled (Button::isEnabled());
   getFacade().setButtonState (isMouseOverButton, isButtonDown);
   
 #if 1
@@ -233,7 +233,7 @@ void Button::paintOverChildren (Graphics& g)
 
 void Button::mouseDrag (const MouseEvent& e)
 {
-  if (juce::Button::isEnabled())
+  if (Button::isEnabled())
   {
     if (getModel().isMomentary() && !m_bEnabledUnboundedMouseMovement)
     {
@@ -241,17 +241,17 @@ void Button::mouseDrag (const MouseEvent& e)
       m_bEnabledUnboundedMouseMovement = true;
     }
 
-    juce::Button::mouseDrag (e);
+    Button::mouseDrag (e);
   }
 }
 
 void Button::mouseUp (const MouseEvent& e)
 {
-  if (juce::Button::isEnabled())
+  if (Button::isEnabled())
   {
     m_bEnabledUnboundedMouseMovement=false;
 
-    juce::Button::mouseUp (e);
+    Button::mouseUp (e);
   }
 }
 
@@ -274,7 +274,7 @@ void Button::updateView ()
 {
 #if 0
   setEnabled (getModel().isEnabled ());
-  bool enabled = juce::Button::isEnabled ();
+  bool enabled = Button::isEnabled ();
   if (getFacade().isEnabled () != enabled)
     getFacade().setEnabled (enabled);
 

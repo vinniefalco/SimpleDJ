@@ -19,45 +19,44 @@
 */
 /*============================================================================*/
 
-ThreadGroup::Worker::Worker (String name) : Thread (name)
+ThreadGroup::Worker::Worker (String name, ThreadGroup& group)
+  : Thread (name)
+  , m_group (group)
 {
   startThread ();
 }
 
 ThreadGroup::Worker::~Worker ()
 {
+  // Make sure the thread is stopped
   stopThread (-1);
-}
 
-void ThreadGroup::Worker::queue (Work* work)
-{
-  bool const becameSignaled = m_queue.push_back (work);
-
-  if (becameSignaled)
-    notify ();
+  // Remove ourselves from the list.
+  m_group.m_threads.erase (this);
 }
 
 void ThreadGroup::Worker::run ()
 {
-  while (!threadShouldExit ())
+  do
   {
-    wait (-1);
+    m_group.m_semaphore.wait ();
 
-    Work* w;
+    Work* work = m_group.m_queue.pop_front ();
 
-    do
-    {
-      w = m_queue.pop_front ();
+    jassert (work != nullptr);
 
-      if (w)
-      {
-        w->operator() ();
+    work->operator() (this);
 
-        delete w;
-      }
-    }
-    while (w);
+    delete work;
   }
+  while (!threadShouldExit ());
+}
+
+//==============================================================================
+
+void ThreadGroup::QuitType::operator() (Worker* worker)
+{
+  worker->signalThreadShouldExit ();
 }
 
 //==============================================================================
@@ -74,14 +73,13 @@ ThreadGroup::ThreadGroup (int numberOfThreads)
 
 ThreadGroup::~ThreadGroup ()
 {
-  setNumberOfThreads (0);
+  while (!m_threads.empty ())
+    killOneWorker ();
 }
 
 void ThreadGroup::setNumberOfThreads (int numberOfThreads)
 {
-  jassert (numberOfThreads >= 0);
-
-  LockType::ScopedLockType lock (m_mutex);
+  jassert (numberOfThreads > 0);
 
   int previousSize = m_threads.size ();
 
@@ -92,7 +90,7 @@ void ThreadGroup::setNumberOfThreads (int numberOfThreads)
       String s;
       s << "ThreadGroup (" << (m_threads.size () + 1) << ")";
 
-      Worker* worker = new Worker (s);
+      Worker* worker = new Worker (s, *this);
 
       m_threads.push_back (*worker);
     }
@@ -101,12 +99,11 @@ void ThreadGroup::setNumberOfThreads (int numberOfThreads)
   else
   {
     while (numberOfThreads < m_threads.size ())
-    {
-      Worker* worker = &m_threads.front ();
-
-      m_threads.erase (worker);
-
-      delete worker;
-    }
+      killOneWorker ();
   }
+}
+
+void ThreadGroup::killOneWorker ()
+{
+  m_queue.push_front (new (getAllocator ()) QuitType);
 }

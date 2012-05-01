@@ -69,7 +69,7 @@ template <class Object>
 class ReferenceCountedSingleton : private PerformedAtExit
 {
 protected:
-  typedef juce::SpinLock LockType;
+  typedef SpinLock LockType;
 
   explicit ReferenceCountedSingleton (SingletonLifetime::Lifetime const lifetime)
     : m_lifetime (lifetime)
@@ -94,7 +94,7 @@ protected:
   }
 
 public:
-  typedef juce::ReferenceCountedObjectPtr <Object> Ptr;
+  typedef ReferenceCountedObjectPtr <Object> Ptr;
 
   static Ptr getInstance ()
   {

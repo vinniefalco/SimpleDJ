@@ -39,7 +39,7 @@ void ThreadWithCallQueue::start (idle_t worker_idle,
 {
   {
     // TODO: Atomic for this
-    juce::CriticalSection::ScopedLockType lock (m_mutex);
+    CriticalSection::ScopedLockType lock (m_mutex);
 
     // start() MUST be called.
     vfassert (!m_calledStart);
@@ -59,7 +59,7 @@ void ThreadWithCallQueue::stop (bool const wait)
   vfassert (!wait || !m_thread.isTheCurrentThread ());
 
   {
-    juce::CriticalSection::ScopedLockType lock (m_mutex);
+    CriticalSection::ScopedLockType lock (m_mutex);
 
     // start() MUST be called.
     vfassert (m_calledStart);
@@ -70,7 +70,7 @@ void ThreadWithCallQueue::stop (bool const wait)
       m_calledStop = true;
 
       {
-        juce::CriticalSection::ScopedUnlockType unlock (m_mutex); // getting fancy
+        CriticalSection::ScopedUnlockType unlock (m_mutex); // getting fancy
 
         call (&ThreadWithCallQueue::do_stop, this);
 

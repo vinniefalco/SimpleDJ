@@ -31,7 +31,7 @@
 /**
   @ingroup vf_concurrent
 
-  @brief A group of threads for performing asynchronous tasks.
+  @brief A group of threads for parallelizing tasks.
 
   @see ParallelFor
 */
@@ -45,12 +45,17 @@ public:
   ThreadGroup ();
 
   /** Creates the specified number of threads.
+
+      @param numberOfThreads The number of threads in the group. This must be
+                             greater than zero.
   */
   explicit ThreadGroup (int numberOfThreads);
 
   ~ThreadGroup ();
 
-  /** Returns the number of threads.
+  /** Determine the number of threads in the group.
+
+      @return The number of threads in the group.
   */
   int getNumberOfThreads () const
   {
@@ -58,23 +63,38 @@ public:
   }
 
   /** Sets the number of concurrent threads.
-      If the number of threads is reduced, excess threads will
-      complete their calls before destroying themselves.
+
+      If the number of threads is reduced, excess threads will complete
+      their work before being destroyed.
+
+      @note This is not thread safe with call().
+
+      @param numberOfThreads The number of threads in the group. This must be
+                             greater than zero.
   */
   void setNumberOfThreads (int numberOfThreads);
 
-  /** Calls a functor on all threads simultaneously.
+  /** Calls a functor on multiple threads.
+
+      The specified functor is executed on some or all available threads at once.
+      A call is always guaranteed to execute.
+
+      @param maxThreads The maximum number of threads to use, or -1 for all.
   */
   template <class Functor>
-  void callf (Functor const& f)
+  void callf (int maxThreads, Functor const& f)
   {
-    LockType::ScopedLockType lock (m_mutex);
+    jassert (maxThreads > 0 || maxThreads == -1);
 
-    if (m_threads.size () > 0)
+    int numberOfThreads = getNumberOfThreads ();
+
+    if (maxThreads != -1 && maxThreads < numberOfThreads)
+      numberOfThreads = maxThreads;
+
+    while (numberOfThreads--)
     {
-      for (List <Worker>::iterator iter = m_threads.begin ();
-           iter != m_threads.end (); ++iter)
-        iter->queue (new (m_allocator) WorkType <Functor> (f));
+      m_queue.push_front (new (getAllocator ()) WorkType <Functor> (f));
+      m_semaphore.signal ();
     }
   }
 
@@ -86,59 +106,88 @@ public:
   }
 
   template <class Fn>
-  void call (Fn f)
-  { callf (vf::bind (f)); }
+  void call (int maxThreads, Fn f)
+  { callf (maxThreads, vf::bind (f)); }
 
-  template <class Fn, typename  T1>
-  void call (Fn f,    const T1& t1)
-  { callf (vf::bind (f, t1)); }
+  template <class Fn,              typename  T1>
+  void call (int maxThreads, Fn f, const T1& t1)
+  { callf (maxThreads, vf::bind (f, t1)); }
 
-  template <class Fn, typename  T1, typename  T2>
-  void call (Fn f,    const T1& t1, const T2& t2)
-  { callf (vf::bind (f, t1, t2)); }
+  template <class Fn,              typename  T1, typename  T2>
+  void call (int maxThreads, Fn f, const T1& t1, const T2& t2)
+  { callf (maxThreads, vf::bind (f, t1, t2)); }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3)
-  { callf (vf::bind (f, t1, t2, t3)); }
+  template <class Fn,              typename  T1, typename  T2, typename  T3>
+  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3)
+  { callf (maxThreads, vf::bind (f, t1, t2, t3)); }
 
-  template <class Fn, typename  T1, typename  T2,
-                      typename  T3, typename  T4>
-  void call (Fn f,    const T1& t1, const T2& t2,
-                      const T3& t3, const T4& t4)
-  { callf (vf::bind (f, t1, t2, t3, t4)); }
+  template <class Fn,              typename  T1, typename  T2,
+                                   typename  T3, typename  T4>
+  void call (int maxThreads, Fn f, const T1& t1, const T2& t2,
+                                   const T3& t3, const T4& t4)
+  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4)); }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3,
-                      typename  T4, typename  T5>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3,
-                      const T4& t4, const T5& t5)
-  { callf (vf::bind (f, t1, t2, t3, t4, t5)); }
+  template <class Fn,              typename  T1, typename  T2, typename  T3,
+                                   typename  T4, typename  T5>
+  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3,
+                                   const T4& t4, const T5& t5)
+  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5)); }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3,
-                      typename  T4, typename  T5, typename  T6>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3,
-                      const T4& t4, const T5& t5, const T6& t6)
-  { callf (vf::bind (f, t1, t2, t3, t4, t5, t6)); }
+  template <class Fn,              typename  T1, typename  T2, typename  T3,
+                                   typename  T4, typename  T5, typename  T6>
+  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3,
+                                   const T4& t4, const T5& t5, const T6& t6)
+  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6)); }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3, typename  T4,
-                      typename  T5, typename  T6, typename  T7>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3, const T4& t4,
-                      const T5& t5, const T6& t6, const T7& t7)
-  { callf (vf::bind (f, t1, t2, t3, t4, t5, t6, t7)); }
+  template <class Fn,              typename  T1, typename  T2, typename  T3, typename  T4,
+                                   typename  T5, typename  T6, typename  T7>
+  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3, const T4& t4,
+                                   const T5& t5, const T6& t6, const T7& t7)
+  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6, t7)); }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3, typename  T4,
-                      typename  T5, typename  T6, typename  T7, typename  T8>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3, const T4& t4,
-                      const T5& t5, const T6& t6, const T7& t7, const T8& t8)
-  { callf (vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8)); }
+  template <class Fn,              typename  T1, typename  T2, typename  T3, typename  T4,
+                                   typename  T5, typename  T6, typename  T7, typename  T8>
+  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3, const T4& t4,
+                                   const T5& t5, const T6& t6, const T7& t7, const T8& t8)
+  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8)); }
+
+private:
+  void killOneWorker ();
 
   //============================================================================
 private:
-  class Work : public LockFreeQueue <Work>::Node,
+  /** A thread in the group.
+  */
+  class Worker
+    : public List <Worker>::Node
+    , public Thread
+  {
+  public:
+    Worker (String name,
+            ThreadGroup& group);
+
+    ~Worker ();
+
+  private:
+    void run ();
+
+  private:
+    ThreadGroup& m_group;
+  };
+
+  //============================================================================
+private:
+  /** Abstract work item.
+  */
+  class Work : public LockFreeStack <Work>::Node,
                public AllocatedBy <AllocatorType>
   {
   public:
     virtual ~Work () { }
-    virtual void operator() () = 0;
+
+    /* The worker is passed in so we can make it quit later.
+    */
+    virtual void operator() (Worker* worker) = 0;
   };
 
   template <class Functor>
@@ -147,35 +196,25 @@ private:
   public:
     explicit WorkType (Functor const& f) : m_f (f) { }
     ~WorkType () { }
-    void operator() () { m_f (); }
+    void operator() (Worker*) { m_f (); }
 
   private:
     Functor m_f;
   };
 
-private:
-  class Worker
-    : public List <Worker>::Node
-    , public Thread
+  /** Used to make a Worker stop
+  */
+  class QuitType : public Work
   {
   public:
-    explicit Worker (String name);
-    ~Worker ();
-
-    void queue (Work* work);
-
-  private:
-    void run ();
-
-  private:
-    LockFreeQueue <Work> m_queue;
+    void operator() (Worker* worker);
   };
 
-  typedef SpinLock LockType;
-  
+private:
+  Semaphore m_semaphore;
   AllocatorType m_allocator;
   List <Worker> m_threads;
-  LockType m_mutex;
+  LockFreeStack <Work> m_queue;
 };
 
 #endif

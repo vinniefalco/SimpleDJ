@@ -37,7 +37,7 @@ public:
   XYZColour (float x, float y, float z);
   XYZColour (float x, float y, float z, float alpha);
   XYZColour (XYZColour const& xyz);
-  XYZColour (juce::Colour const& sRGB);
+  XYZColour (Colour const& sRGB);
 
   XYZColour& operator= (XYZColour const& other);
 
@@ -46,10 +46,10 @@ public:
   float getZ () const { return m_z; }
   float getAlpha () const { return m_alpha; }
 
-  juce::Colour const toRGB () const;
+  Colour const toRGB () const;
 
 private:
-  static XYZColour const from (juce::Colour const& sRGB);
+  static XYZColour const from (Colour const& sRGB);
 
 private:
   float m_x;

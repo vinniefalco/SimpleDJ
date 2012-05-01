@@ -116,7 +116,7 @@ void standard_into_type::do_into()
         case x_uint64: integer_into<uint64>(m_data,v); break;
 
         case x_juceString:
-          as <juce::String> (m_data) = String (v);
+          as <String> (m_data) = String (v);
           break;
 
         default:
@@ -140,7 +140,7 @@ void standard_into_type::do_into()
           break;
 
         case x_juceString:
-          as <juce::String> (m_data) = String (v);
+          as <String> (m_data) = String (v);
           break;
 
         default:
@@ -172,12 +172,12 @@ void standard_into_type::do_into()
             // excludes terminator
             int bytes = sqlite3_column_bytes (m_st->m_stmt, m_iCol);
 
-            const juce::CharPointer_UTF8::CharType* c = reinterpret_cast
-              <const juce::CharPointer_UTF8::CharType*>
+            const CharPointer_UTF8::CharType* c = reinterpret_cast
+              <const CharPointer_UTF8::CharType*>
               (sqlite3_column_text (m_st->m_stmt, m_iCol));
 
-            juce::String& s = as <juce::String> (m_data);
-            s = juce::String (juce::CharPointer_UTF8 (c), juce::CharPointer_UTF8 (c + bytes));
+            String& s = as <String> (m_data);
+            s = String (CharPointer_UTF8 (c), CharPointer_UTF8 (c + bytes));
           }
           break;
 

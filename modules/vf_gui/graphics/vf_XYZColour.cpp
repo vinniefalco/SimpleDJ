@@ -51,7 +51,7 @@ XYZColour::XYZColour (XYZColour const& xyz)
 {
 }
 
-XYZColour::XYZColour (juce::Colour const& sRGB)
+XYZColour::XYZColour (Colour const& sRGB)
 {
   *this = from (sRGB);
 }
@@ -66,7 +66,7 @@ XYZColour& XYZColour::operator= (XYZColour const& other)
   return *this;
 }
 
-XYZColour const XYZColour::from (juce::Colour const& sRGB)
+XYZColour const XYZColour::from (Colour const& sRGB)
 {
   float r = sRGB.getRed   () / 255.f;
   float g = sRGB.getGreen () / 255.f;
@@ -84,7 +84,7 @@ XYZColour const XYZColour::from (juce::Colour const& sRGB)
   return XYZColour (x, y, z, sRGB.getAlpha() / 255.f);
 }
 
-juce::Colour const XYZColour::toRGB () const
+Colour const XYZColour::toRGB () const
 {
   float x = m_x / 100;
   float y = m_y / 100;

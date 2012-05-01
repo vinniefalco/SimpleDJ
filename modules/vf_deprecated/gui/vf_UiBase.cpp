@@ -60,11 +60,6 @@ Model::Listeners <ListenerBase> const& Base::getListeners ()
   return m_listeners;
 }
 
-void Base::destroyConcurrentObject ()
-{
-  delete this;
-}
-
 }
 
 //------------------------------------------------------------------------------

@@ -19,7 +19,8 @@
 */
 /*============================================================================*/
 
-class ParallelFor::LoopState : public AllocatedBy <ThreadGroup::AllocatorType>
+class ParallelFor::LoopState
+  : public AllocatedBy <ThreadGroup::AllocatorType>
   , Uncopyable
 {
 private:
@@ -31,10 +32,10 @@ private:
   Atomic <int> m_numberOfParallelInstances;
 
 public:
-  explicit LoopState (Iteration& iteration,
-                      WaitableEvent& finishedEvent,
-                      int numberOfIterations,
-                      int numberOfParallelInstances)
+  LoopState (Iteration& iteration,
+             WaitableEvent& finishedEvent,
+             int numberOfIterations,
+             int numberOfParallelInstances)
     : m_iteration (iteration)
     , m_finishedEvent (finishedEvent)
     , m_numberOfIterations (numberOfIterations)
@@ -92,23 +93,34 @@ ParallelFor::ParallelFor (ThreadGroup& pool)
 
 void ParallelFor::doLoop (int numberOfIterations, Iteration& iteration)
 {
-  int const numberOfThreads = m_pool.getNumberOfThreads ();
-
-  if (numberOfThreads > 0)
+  if (numberOfIterations > 1)
   {
+    int const numberOfThreads = m_pool.getNumberOfThreads ();
+
+    // The largest number of pool threads we need is one less than the number
+    // of iterations, because we also run the loop body on the caller's thread.
+    //
+    int const maxThreads = numberOfIterations - 1;
+
+    // Calculate the number of parallel instances as the smaller of the number
+    // of threads available (including the caller's) and the number of iterations.
+    //
+    int const numberOfParallelInstances = std::min (
+      numberOfThreads + 1, numberOfIterations);
+
     LoopState* loopState (new (m_pool.getAllocator ()) LoopState (
-      iteration, m_finishedEvent, numberOfIterations, numberOfThreads + 1));
+      iteration, m_finishedEvent, numberOfIterations, numberOfParallelInstances));
 
-    m_pool.call (&LoopState::forLoopBody, loopState);
+    m_pool.call (maxThreads, &LoopState::forLoopBody, loopState);
 
+    // Also use the caller's thread to run the loop body.
     loopState->forLoopBody ();
 
     m_finishedEvent.wait ();
   }
-  else
+  else if (numberOfIterations == 1)
   {
-    for (int i = 0; i < numberOfIterations; ++i)
-      iteration (i);
+    // Just one iteration, so do it.
+    iteration (0);
   }
 }
-

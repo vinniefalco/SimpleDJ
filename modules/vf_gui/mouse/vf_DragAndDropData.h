@@ -126,10 +126,10 @@
 
     @ingroup vf_gui
 */
-class DragAndDropData : public juce::ReferenceCountedObject
+class DragAndDropData : public ReferenceCountedObject
 {
 public:
-  typedef juce::ReferenceCountedObjectPtr <DragAndDropData> Ptr;
+  typedef ReferenceCountedObjectPtr <DragAndDropData> Ptr;
 
   DragAndDropData ();
 
@@ -192,7 +192,7 @@ public:
 
       @ingroup vf_gui
   */
-  class Target : public juce::DragAndDropTarget
+  class Target : public DragAndDropTarget
   {
   public:
 /** @param data The DragAndDropData.
