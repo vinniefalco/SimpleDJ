@@ -19,39 +19,96 @@
 */
 /*============================================================================*/
 
-ParallelFor::ParallelFor (ThreadGroup& pool)
-  : m_pool (pool)
-  , m_event (false) // auto-reset
+class ParallelFor::LoopState : public AllocatedBy <ThreadGroup::AllocatorType>
+  , Uncopyable
 {
-}
+private:
+  Iteration& m_iteration;
+  WaitableEvent& m_finishedEvent;
+  int const m_numberOfIterations;
+  Atomic <int> m_loopIndex;
+  Atomic <int> m_iterationsRemaining;
+  Atomic <int> m_numberOfParallelInstances;
 
-void ParallelFor::iterate (Iteration* iteration)
-{
-  ++m_numberOfInstances;
-
-  for (;;)
+public:
+  explicit LoopState (Iteration& iteration,
+                      WaitableEvent& finishedEvent,
+                      int numberOfIterations,
+                      int numberOfParallelInstances)
+    : m_iteration (iteration)
+    , m_finishedEvent (finishedEvent)
+    , m_numberOfIterations (numberOfIterations)
+    , m_loopIndex (-1)
+    , m_iterationsRemaining (numberOfIterations)
+    , m_numberOfParallelInstances (numberOfParallelInstances)
   {
-    int const loopIndex = ++m_currentIndex;
-
-    if (loopIndex < m_numberOfIterations)
-      (*iteration) (loopIndex);
-    else
-      break;
   }
 
-  if (--m_numberOfInstances == 0)
-    m_event.signal ();
+  void forLoopBody ()
+  {
+    for (;;)
+    {
+      // Request a loop index to process.
+      int const loopIndex = ++m_loopIndex;
+
+      // Is it in range?
+      if (loopIndex < m_numberOfIterations)
+      {
+        // Yes, so process it.
+        m_iteration (loopIndex);
+
+        // Was this the last work item to complete?
+        if (--m_iterationsRemaining == 0)
+        {
+          // Yes, signal.
+          m_finishedEvent.signal ();
+          break;
+        }
+      }
+      else
+      {
+        // Out of range, all work is complete or assigned.
+        break;
+      }
+    }
+
+    release ();
+  }
+
+  void release ()
+  {
+    if (--m_numberOfParallelInstances == 0)
+      delete this;
+  }
+};
+
+//==============================================================================
+
+ParallelFor::ParallelFor (ThreadGroup& pool)
+  : m_pool (pool)
+  , m_finishedEvent (false) // auto-reset
+{
 }
 
-void ParallelFor::doLoop (int numberOfIterations, Iteration* iteration)
+void ParallelFor::doLoop (int numberOfIterations, Iteration& iteration)
 {
-  m_currentIndex = -1;
-  m_numberOfInstances = 0;
+  int const numberOfThreads = m_pool.getNumberOfThreads ();
 
-  m_numberOfIterations = numberOfIterations;
+  if (numberOfThreads > 0)
+  {
+    LoopState* loopState (new (m_pool.getAllocator ()) LoopState (
+      iteration, m_finishedEvent, numberOfIterations, numberOfThreads + 1));
 
-  m_pool.call (&ParallelFor::iterate, this, iteration);
+    m_pool.call (&LoopState::forLoopBody, loopState);
 
-  m_event.wait ();
+    loopState->forLoopBody ();
+
+    m_finishedEvent.wait ();
+  }
+  else
+  {
+    for (int i = 0; i < numberOfIterations; ++i)
+      iteration (i);
+  }
 }
 

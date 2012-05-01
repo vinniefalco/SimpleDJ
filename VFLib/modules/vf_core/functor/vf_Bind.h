@@ -22,25 +22,37 @@
 #ifndef VF_BIND_VFHEADER
 #define VF_BIND_VFHEADER
 
+/* Brings functional support into our namespace, based on environment.
+*/
 #if JUCE_MSVC
-using std::bind;
-using std::placeholders::_1;
+  // Visual Studio has these in std.
+  using std::ref;
+  using std::bind;
+  using std::placeholders::_1;
 
 #elif JUCE_IOS || JUCE_MAC
-#if VF_USE_BOOST
-using boost::bind;
-using boost::function;
-using ::_1;
-using ::_2;
-#else
-using std::tr1::bind;
-using std::tr1::function;
-using std::tr1::placeholders::_1;
-using std::tr1::placeholders::_2;
+  #if VF_USE_BOOST
+    /* If boost is activated, use it. This works
+       around a bug with the iOS implementation of bind.
+    */
+    using boost::ref
+    using boost::bind;
+    using boost::function;
+    using ::_1;
+    using ::_2;
+
+  #else
+    /* Xcode puts these in std::tr1 */
+    using std::tr1::ref;
+    using std::tr1::bind;
+    using std::tr1::function;
+    using std::tr1::placeholders::_1;
+    using std::tr1::placeholders::_2;
+
 #endif
 
 #else
-#error Unknown platform in vf_Bind.h
+  #error Unknown platform in vf_Bind.h
 
 #endif
 

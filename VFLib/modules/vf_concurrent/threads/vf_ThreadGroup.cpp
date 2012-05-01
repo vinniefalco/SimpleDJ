@@ -19,9 +19,7 @@
 */
 /*============================================================================*/
 
-ThreadGroup::Worker::Worker (String name)
-  : Thread (name)
-  , m_event (false) // auto reset
+ThreadGroup::Worker::Worker (String name) : Thread (name)
 {
   startThread ();
 }
@@ -46,7 +44,7 @@ void ThreadGroup::Worker::run ()
     wait (-1);
 
     Work* w;
-    
+
     do
     {
       w = m_queue.pop_front ();
@@ -89,7 +87,7 @@ void ThreadGroup::setNumberOfThreads (int numberOfThreads)
 
   if (numberOfThreads > previousSize)
   {
-    while (m_threads.size () < numberOfThreads)
+    do
     {
       String s;
       s << "ThreadGroup (" << (m_threads.size () + 1) << ")";
@@ -98,10 +96,11 @@ void ThreadGroup::setNumberOfThreads (int numberOfThreads)
 
       m_threads.push_back (*worker);
     }
+    while (m_threads.size () < numberOfThreads);
   }
   else
   {
-    while (m_threads.size () > numberOfThreads)
+    while (numberOfThreads < m_threads.size ())
     {
       Worker* worker = &m_threads.front ();
 
