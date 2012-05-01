@@ -127,7 +127,7 @@ private:
   bool m_calledStart;
   bool m_calledStop;
   bool m_shouldStop;
-  juce::CriticalSection m_mutex;
+  CriticalSection m_mutex;
   InterruptibleThread m_thread;
   idle_t m_idle;
   init_t m_init;

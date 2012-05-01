@@ -137,7 +137,7 @@ public:
   void exitWrite () const noexcept;
 
 private:
-  juce::CriticalSection m_mutex;
+  CriticalSection m_mutex;
 
   mutable CacheLine::Padded <AtomicCounter> m_writes;
   mutable CacheLine::Padded <AtomicCounter> m_readers;

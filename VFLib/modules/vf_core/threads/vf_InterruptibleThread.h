@@ -35,7 +35,7 @@
 
   @ingroup vf_core
 */
-class InterruptibleThread : public juce::Thread
+class InterruptibleThread : public Thread
 {
 public:
   // This is the flag used to indicate if an interruption
@@ -94,7 +94,7 @@ public:
     bool mutable m_checked;
   };
 
-  typedef juce::Thread::ThreadID id;
+  typedef Thread::ThreadID id;
 
 public:
   explicit InterruptibleThread (String name);
@@ -137,7 +137,7 @@ private:
   void run ();
 
   Function <void (void)> m_function;
-  juce::WaitableEvent m_runEvent;
+  WaitableEvent m_runEvent;
   id m_threadId;
 
   enum

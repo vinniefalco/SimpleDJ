@@ -173,7 +173,7 @@ void* FifoFreeStoreWithoutTLS::allocate (const size_t bytes)
     Block* b = m_active;
     while (!b)
     {
-	  juce::Thread::yield ();
+      Thread::yield ();
       b = m_active;
     }
 

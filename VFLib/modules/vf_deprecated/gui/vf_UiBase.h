@@ -146,7 +146,6 @@ public:
 
 protected:
   Model::Listeners <ListenerBase> const& getListeners ();
-  void destroyConcurrentObject ();
 
 private:
   Model::Listeners <ListenerBase> m_listeners;

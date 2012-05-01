@@ -22,7 +22,7 @@
 class PerformedAtExit::Performer
 {
 public:
-  typedef Static::Storage <LockFreeStack <PerformedAtExit>, PerformedAtExit> Stack;
+  typedef Static::Storage <LockFreeStack <PerformedAtExit>, PerformedAtExit> StackType;
 
 private:
   ~Performer ()
@@ -46,16 +46,17 @@ public:
   }
 
 private:
-  static Stack s_list;
+  static StackType s_list;
+
   static Performer s_performer;
 };
 
 PerformedAtExit::Performer PerformedAtExit::Performer::s_performer;
-PerformedAtExit::Performer::Stack PerformedAtExit::Performer::s_list;
+PerformedAtExit::Performer::StackType PerformedAtExit::Performer::s_list;
 
 PerformedAtExit::PerformedAtExit ()
 {
-#ifdef JUCE_IOS
+#if JUCE_IOS
   // TODO: PerformedAtExit::Performer::push_front crashes on iOS if s_storage is not accessed before used
   char *hack = PerformedAtExit::Performer::Stack::s_storage;
 #endif

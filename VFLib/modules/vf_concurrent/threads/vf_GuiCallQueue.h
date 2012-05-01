@@ -37,7 +37,7 @@
 */
 class GuiCallQueue
   : public CallQueue
-  , private juce::AsyncUpdater
+  , private AsyncUpdater
 {
 public:
   /** Create a GuiCallQueue */

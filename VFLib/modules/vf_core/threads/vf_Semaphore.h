@@ -28,39 +28,49 @@
 
   @brief A semaphore.
 
-  This implementation is not the best.
+  This provides a traditional semaphore synchronization primitive. There is no
+  upper limit on the number of signals.
+
+  This implementation is completely lock-free.
+
+  @note There is no tryWait() or timeout facility for acquiring a resource.
 */
 class Semaphore
 {
 public:
+  /** Create a semaphore with the specified number of resources.
+
+      @param initialCount The starting number of resources.
+  */
   Semaphore (int initialCount = 0);
 
   ~Semaphore ();
 
+  /** Increase the number of available resources.
+
+      @param amount The number of new resources available.
+  */
   void signal (int amount = 1);
 
-  /** Returns true if the resource was acquired without a timeout.
+  /** Wait for a resource.
   */
-  bool wait (int timeoutMilliseconds = -1);
+  void wait ();
 
 private:
-  class WaitingThread : public List <WaitingThread>::Node
+  class WaitingThread : public LockFreeStack <WaitingThread>::Node
   {
   public:
     WaitingThread ()
       : m_event (false) // auto-reset
-      , m_signaled (false)
     {
     }
 
     WaitableEvent m_event;
-    bool volatile m_signaled;
   };
 
-  int m_counter;
-  CriticalSection m_mutex;
-  List <WaitingThread> m_waitingThreads;
-  List <WaitingThread> m_deletedList;
+  Atomic <int> m_counter;
+  LockFreeStack <WaitingThread> m_waitingThreads;
+  LockFreeStack <WaitingThread> m_deletedList;
 };
 
 #endif

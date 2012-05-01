@@ -112,7 +112,7 @@ private:
     }
 
   private:
-    juce::Atomic <int> m_count;
+    Atomic <int> m_count;
   };
 
   static const char* getLeakCheckedName ()

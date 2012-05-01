@@ -89,28 +89,28 @@ public:
 
   /** @return A pointer to AudioSampleBuffer.
 
-      @todo Fix broken documentation hyperlink caused by juce:: scope.
+      @todo Fix broken documentation hyperlink caused by juce scope.
   */
-  juce::AudioSampleBuffer* operator-> ()
+  AudioSampleBuffer* operator-> ()
   {
 	return getBuffer();
   }
 
   /** @return A reference to AudioSampleBuffer.
   */
-  juce::AudioSampleBuffer& operator* ()
+  AudioSampleBuffer& operator* ()
   {
 	return *getBuffer();
   }
 
   /** @return A pointer to AudioSampleBuffer. */
-  operator juce::AudioSampleBuffer* ()
+  operator AudioSampleBuffer* ()
   {
 	return getBuffer();
   }
 
   /** @return A pointer to AudioSampleBuffer. */
-  juce::AudioSampleBuffer* getBuffer ()
+  AudioSampleBuffer* getBuffer ()
   {
 	return m_buffer;
   }

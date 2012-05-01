@@ -90,7 +90,7 @@ enum indicator
 // sqlite row id
 
 //typedef sqlite3_int64 rowid;
-typedef juce::int64 rowid;
+typedef int64 rowid;
 
 }
 

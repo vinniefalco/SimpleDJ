@@ -40,8 +40,8 @@
 // anonymous namespace
 namespace {
 
-// avoided the juce::Singleton because of order of initialization issues
-class FreeTypeLibrary : public juce::ReferenceCountedObject
+// avoided the Singleton because of order of initialization issues
+class FreeTypeLibrary : public ReferenceCountedObject
 {
 private:
   static FreeTypeLibrary* s_instance;

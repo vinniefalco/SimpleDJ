@@ -85,7 +85,7 @@ public:
                      amount of space in the memory pointed to by
                      buffer, less startingSampleIndex.
 */
-  AudioSampleBufferArray (const juce::AudioSampleBuffer& buffer,
+  AudioSampleBufferArray (const AudioSampleBuffer& buffer,
                           int startSample = 0,
                           int numSamples = -1)
   {
@@ -93,7 +93,7 @@ public:
   }
 
   /** @param bufferToFill The AudioSourceChannelInfo to point to. */
-  AudioSampleBufferArray (const juce::AudioSourceChannelInfo& bufferToFill)
+  AudioSampleBufferArray (const AudioSourceChannelInfo& bufferToFill)
   {
     setFrom (*bufferToFill.buffer,
              bufferToFill.startSample,
@@ -105,7 +105,7 @@ public:
   
   @return A reference to the array.
 */
-  AudioSampleBufferArray& operator= (const juce::AudioSampleBuffer& buffer)
+  AudioSampleBufferArray& operator= (const AudioSampleBuffer& buffer)
   {
     setFrom (buffer);
     return *this;
@@ -116,7 +116,7 @@ public:
 
   @return A reference to the array.
 */
-  AudioSampleBufferArray& operator= (const juce::AudioSourceChannelInfo& bufferToFill)
+  AudioSampleBufferArray& operator= (const AudioSourceChannelInfo& bufferToFill)
   {
     setFrom (bufferToFill);
     return *this;
@@ -166,7 +166,7 @@ public:
                      amount of space in the memory pointed to by
                      buffer, less startingSampleIndex.
 */
-  void setFrom (juce::AudioSampleBuffer const& buffer,
+  void setFrom (AudioSampleBuffer const& buffer,
                 int startSample = 0,
                 int numSamples = -1)
   {
@@ -187,15 +187,15 @@ public:
   }
 
   /** @return An AudioSampleBuffer pointing to the channel data. */
-  operator juce::AudioSampleBuffer()
+  operator AudioSampleBuffer()
   {
-    return juce::AudioSampleBuffer (m_channels, Channels, m_numSamples);
+    return AudioSampleBuffer (m_channels, Channels, m_numSamples);
   }
 
   /** @return A const AudioSampleBuffer pointing to the channel data. */
   operator const AudioSampleBuffer() const
   {
-    return juce::AudioSampleBuffer (m_channels, Channels, m_numSamples);
+    return AudioSampleBuffer (m_channels, Channels, m_numSamples);
   }
 
 /**

@@ -110,11 +110,11 @@ public:
 
 private:
   static int s_count;
-  static juce::CriticalSection s_mutex;
+  static CriticalSection s_mutex;
   static LPTOP_LEVEL_EXCEPTION_FILTER s_sehPrev;
 };
 
-juce::CriticalSection ScopedPlatformExceptionCatcher::s_mutex;
+CriticalSection ScopedPlatformExceptionCatcher::s_mutex;
 int ScopedPlatformExceptionCatcher::s_count = 0;
 LPTOP_LEVEL_EXCEPTION_FILTER ScopedPlatformExceptionCatcher::s_sehPrev = 0;
 
@@ -167,7 +167,7 @@ bool CatchAny (Function <void (void)> f, bool returnFromException)
   {
     if (!returnFromException)
     {
-      juce::JUCEApplication* app = juce::JUCEApplication::getInstance();
+      JUCEApplication* app = JUCEApplication::getInstance();
 
       if (app)
       {
@@ -187,7 +187,7 @@ bool CatchAny (Function <void (void)> f, bool returnFromException)
   {
     if (!returnFromException)
     {
-      juce::JUCEApplication* app = juce::JUCEApplication::getInstance();
+      JUCEApplication* app = JUCEApplication::getInstance();
 
       if (app)
       {
@@ -204,7 +204,7 @@ bool CatchAny (Function <void (void)> f, bool returnFromException)
   {
     if (!returnFromException)
     {
-      juce::JUCEApplication* app = juce::JUCEApplication::getInstance();
+      JUCEApplication* app = JUCEApplication::getInstance();
 
       if (app)
       {

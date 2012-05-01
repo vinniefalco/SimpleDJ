@@ -180,7 +180,7 @@ private:
     stateInitialized
   };
 
-  juce::Atomic <int> m_state;
+  Atomic <int> m_state;
 };
 
 }

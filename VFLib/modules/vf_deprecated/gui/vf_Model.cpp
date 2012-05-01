@@ -45,11 +45,6 @@ Base::~Base ()
   jassert (m_views.size()==0); // someone forgot to remove themselves?
 }
 
-void Model::Base::destroyConcurrentObject ()
-{
-  delete this;
-}
-
 void Base::addListener (ListenerBase* const listener)
 {
   m_listeners.add (listener);

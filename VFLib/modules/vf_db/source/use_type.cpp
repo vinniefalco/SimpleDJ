@@ -176,7 +176,7 @@ void standard_use_type::do_use()
 
   case x_juceString:
     {
-      juce::String const& s = as <juce::String> (m_data);
+      String const& s = as <String> (m_data);
       result = sqlite3_bind_text (m_st->m_stmt,
                                   m_iParam,
                                   s.toUTF8(),

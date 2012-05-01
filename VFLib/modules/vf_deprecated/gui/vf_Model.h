@@ -141,7 +141,6 @@ public:
 public:
   Base();
   virtual ~Base();
-  void destroyConcurrentObject ();
 
   void addListener (ListenerBase* const listener);
   void removeListener (ListenerBase* const listener);

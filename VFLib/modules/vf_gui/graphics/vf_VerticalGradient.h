@@ -28,7 +28,7 @@
 
     @ingroup vf_gui
 */
-class VerticalGradient : public juce::ColourGradient
+class VerticalGradient : public ColourGradient
 {
 public:
   VerticalGradient (
