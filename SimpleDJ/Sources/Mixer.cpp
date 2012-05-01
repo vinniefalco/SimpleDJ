@@ -65,7 +65,6 @@ private:
   vf::Listeners <Listener> m_listeners;
   AudioIODevice* m_currentDevice;
   ReferenceCountedArray <Source> m_sources;
-  Array <SourceData> m_sourceData;
   ScopedPointer <AudioDeviceManager> m_audioDeviceManager;
   AudioSampleBuffer m_sourceBuffer;
 
@@ -205,8 +204,11 @@ public:
 
   void processSource (int sourceIndex)
   {
-    m_sources [sourceIndex]->getNextAudioBlock (
-      AudioSourceChannelInfo (m_sourceData.getReference (sourceIndex).buffer));
+    AudioSampleBuffer sourceBuffer (
+      m_sourceBuffer.getArrayOfChannels () + 2 * sourceIndex,
+      2, m_sourceBuffer.getNumSamples ());
+
+    m_sources [sourceIndex]->getNextAudioBlock (AudioSourceChannelInfo (sourceBuffer));
   }
 
   void audioDeviceIOCallback (const float** inputChannelData,
@@ -218,26 +220,29 @@ public:
     // Synchronize state.
     m_thread.synchronize ();
 
-    // Prepare intermediate data
-    m_sourceData.resize (m_sources.size ());
-    for (int i = 0; i < m_sources.size (); ++i)
-      m_sourceData.getReference (i).buffer.setSize (2, numSamples, false, false, true);
-
-    // Process sources in parallel.
-    vf::ParallelFor().loop (m_sources.size(), &MixerImp::processSource, this);
-
     // Set up the output data.
     AudioSampleBuffer outputBuffer (outputChannelData, numOutputChannels, numSamples);
 
-    // Add Sources to output.
     if (m_sources.size () > 0)
     {
-      outputBuffer.copyFrom (0, 0, m_sourceData [0].buffer.getArrayOfChannels ()[0], numSamples);
-      outputBuffer.copyFrom (1, 0, m_sourceData [0].buffer.getArrayOfChannels ()[1], numSamples);
-      for (int i = 1; i < m_sources.size (); ++i)
+      // Prepare one large buffer to hold all intermedite results.
+      m_sourceBuffer.setSize (2 * m_sources.size (), numSamples, false, false, true);
+
+      // Process sources in parallel.
+      vf::ParallelFor().loop (m_sources.size(), &MixerImp::processSource, this);
+      //for (int i = 0; i < m_sources.size (); ++i)
+      //  processSource (i);
+
+      // Add Sources to output.
+      if (m_sources.size () > 0)
       {
-        outputBuffer.addFrom (0, 0, m_sourceData [i].buffer.getArrayOfChannels ()[0], numSamples);
-        outputBuffer.addFrom (1, 0, m_sourceData [i].buffer.getArrayOfChannels ()[1], numSamples);
+        outputBuffer.copyFrom (0, 0, m_sourceBuffer.getArrayOfChannels ()[0], numSamples);
+        outputBuffer.copyFrom (1, 0, m_sourceBuffer.getArrayOfChannels ()[1], numSamples);
+        for (int i = 1; i < m_sources.size (); ++i)
+        {
+          outputBuffer.addFrom (0, 0, m_sourceBuffer.getArrayOfChannels ()[2 * i], numSamples);
+          outputBuffer.addFrom (1, 0, m_sourceBuffer.getArrayOfChannels ()[2 * i + 1], numSamples);
+        }
       }
     }
     else
