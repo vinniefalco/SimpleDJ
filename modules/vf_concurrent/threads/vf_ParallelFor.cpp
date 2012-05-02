@@ -45,6 +45,10 @@ public:
   {
   }
 
+  ~LoopState ()
+  {
+  }
+
   void forLoopBody ()
   {
     for (;;)

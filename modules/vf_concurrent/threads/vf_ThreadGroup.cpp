@@ -19,20 +19,30 @@
 */
 /*============================================================================*/
 
+void ThreadGroup::QuitType::operator() (Worker* worker)
+{
+  worker->setShouldExit ();
+}
+
+//==============================================================================
+
 ThreadGroup::Worker::Worker (String name, ThreadGroup& group)
   : Thread (name)
   , m_group (group)
+  , m_shouldExit (false)
 {
   startThread ();
 }
 
 ThreadGroup::Worker::~Worker ()
 {
-  // Make sure the thread is stopped
+  // Make sure the thread is stopped.
   stopThread (-1);
+}
 
-  // Remove ourselves from the list.
-  m_group.m_threads.erase (this);
+void ThreadGroup::Worker::setShouldExit ()
+{
+  m_shouldExit = true;
 }
 
 void ThreadGroup::Worker::run ()
@@ -49,61 +59,49 @@ void ThreadGroup::Worker::run ()
 
     delete work;
   }
-  while (!threadShouldExit ());
+  while (!m_shouldExit);
 }
 
 //==============================================================================
-
-void ThreadGroup::QuitType::operator() (Worker* worker)
-{
-  worker->signalThreadShouldExit ();
-}
-
-//==============================================================================
-
-ThreadGroup::ThreadGroup ()
-{
-  setNumberOfThreads (SystemStats::getNumCpus ());
-}
 
 ThreadGroup::ThreadGroup (int numberOfThreads)
+  : m_numberOfThreads (numberOfThreads)
+  , m_semaphore (0)
 {
-  setNumberOfThreads (numberOfThreads);
+  for (int i = 0; i++ < numberOfThreads; )
+  {
+    String s;
+    s << "ThreadGroup (" << i << ")";
+
+    m_threads.push_front (new Worker (s, *this));
+  }
 }
 
 ThreadGroup::~ThreadGroup ()
 {
-  while (!m_threads.empty ())
-    killOneWorker ();
+  // Put one quit item in the queue for each worker to stop.
+  for (int i = 0; i < m_numberOfThreads; ++i)
+  {
+    m_queue.push_front (new (getAllocator ()) QuitType);
+
+    m_semaphore.signal ();
+  }
+
+  for (;;)
+  {
+    Worker* worker = m_threads.pop_front ();
+
+    if (worker != nullptr)
+      delete worker;
+    else
+      break;
+  }
+
+  // There must not be pending work!
+  jassert (m_queue.pop_front () == nullptr);
 }
 
-void ThreadGroup::setNumberOfThreads (int numberOfThreads)
+int ThreadGroup::getNumberOfThreads () const
 {
-  jassert (numberOfThreads > 0);
-
-  int previousSize = m_threads.size ();
-
-  if (numberOfThreads > previousSize)
-  {
-    do
-    {
-      String s;
-      s << "ThreadGroup (" << (m_threads.size () + 1) << ")";
-
-      Worker* worker = new Worker (s, *this);
-
-      m_threads.push_back (*worker);
-    }
-    while (m_threads.size () < numberOfThreads);
-  }
-  else
-  {
-    while (numberOfThreads < m_threads.size ())
-      killOneWorker ();
-  }
-}
-
-void ThreadGroup::killOneWorker ()
-{
-  m_queue.push_front (new (getAllocator ()) QuitType);
+  return m_numberOfThreads;
 }

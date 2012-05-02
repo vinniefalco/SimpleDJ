@@ -40,16 +40,13 @@ class ThreadGroup
 public:
   typedef FifoFreeStoreType AllocatorType;
 
-  /** Creates one thread per CPU.
-  */
-  ThreadGroup ();
-
   /** Creates the specified number of threads.
 
       @param numberOfThreads The number of threads in the group. This must be
-                             greater than zero.
+                             greater than zero. If this parameter is omitted,
+                             one thread is created per available CPU.
   */
-  explicit ThreadGroup (int numberOfThreads);
+  explicit ThreadGroup (int numberOfThreads = SystemStats::getNumCpus ());
 
   ~ThreadGroup ();
 
@@ -57,22 +54,7 @@ public:
 
       @return The number of threads in the group.
   */
-  int getNumberOfThreads () const
-  {
-    return m_threads.size ();
-  }
-
-  /** Sets the number of concurrent threads.
-
-      If the number of threads is reduced, excess threads will complete
-      their work before being destroyed.
-
-      @note This is not thread safe with call().
-
-      @param numberOfThreads The number of threads in the group. This must be
-                             greater than zero.
-  */
-  void setNumberOfThreads (int numberOfThreads);
+  int getNumberOfThreads () const;
 
   /** Calls a functor on multiple threads.
 
@@ -152,35 +134,37 @@ public:
   { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8)); }
 
 private:
-  void killOneWorker ();
+  void stopThreads (int numberOfThreadsToStop);
 
   //============================================================================
 private:
   /** A thread in the group.
   */
   class Worker
-    : public List <Worker>::Node
+    : public LockFreeStack <Worker>::Node
     , public Thread
+    , LeakChecked <Worker>
   {
   public:
-    Worker (String name,
-            ThreadGroup& group);
-
+    Worker (String name, ThreadGroup& group);
     ~Worker ();
+
+    void setShouldExit ();
 
   private:
     void run ();
 
   private:
     ThreadGroup& m_group;
+    bool m_shouldExit;
   };
 
   //============================================================================
 private:
   /** Abstract work item.
   */
-  class Work : public LockFreeStack <Work>::Node,
-               public AllocatedBy <AllocatorType>
+  class Work : public LockFreeStack <Work>::Node
+             , public AllocatedBy <AllocatorType>
   {
   public:
     virtual ~Work () { }
@@ -191,7 +175,7 @@ private:
   };
 
   template <class Functor>
-  class WorkType : public Work
+  class WorkType : public Work, LeakChecked <WorkType <Functor> >
   {
   public:
     explicit WorkType (Functor const& f) : m_f (f) { }
@@ -204,17 +188,20 @@ private:
 
   /** Used to make a Worker stop
   */
-  class QuitType : public Work
+  class QuitType
+    : public Work
+    , LeakChecked <QuitType>
   {
   public:
     void operator() (Worker* worker);
   };
 
 private:
+  int const m_numberOfThreads;
   Semaphore m_semaphore;
   AllocatorType m_allocator;
-  List <Worker> m_threads;
   LockFreeStack <Work> m_queue;
+  LockFreeStack <Worker> m_threads;
 };
 
 #endif

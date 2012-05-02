@@ -31,8 +31,6 @@
   This provides a traditional semaphore synchronization primitive. There is no
   upper limit on the number of signals.
 
-  This implementation is completely lock-free.
-
   @note There is no tryWait() or timeout facility for acquiring a resource.
 */
 class Semaphore
@@ -42,7 +40,7 @@ public:
 
       @param initialCount The starting number of resources.
   */
-  Semaphore (int initialCount = 0);
+  explicit Semaphore (int initialCount);
 
   ~Semaphore ();
 
@@ -57,20 +55,26 @@ public:
   void wait ();
 
 private:
-  class WaitingThread : public LockFreeStack <WaitingThread>::Node
+  class WaitingThread
+    : public LockFreeStack <WaitingThread>::Node
+    , LeakChecked <WaitingThread>
   {
   public:
-    WaitingThread ()
-      : m_event (false) // auto-reset
-    {
-    }
+    WaitingThread ();
 
+    void wait ();
+    void signal ();
+
+  private:
     WaitableEvent m_event;
   };
 
+  typedef SpinLock LockType;
+
+  LockType m_mutex;
   Atomic <int> m_counter;
   LockFreeStack <WaitingThread> m_waitingThreads;
-  LockFreeStack <WaitingThread> m_deletedList;
+  LockFreeStack <WaitingThread> m_deleteList;
 };
 
 #endif

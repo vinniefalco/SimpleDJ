@@ -20,15 +20,9 @@
 /*============================================================================*/
 
 class ConcurrentObject::Deleter
-  : public ReferenceCountedSingleton <Deleter>
-  , LeakChecked <Deleter>
 {
 private:
-  typedef SpinLock LockType;
-
-  Deleter ()
-    : ReferenceCountedSingleton <Deleter> (SingletonLifetime::persistAfterCreation)
-    , m_thread ("Deleter")
+  Deleter () : m_thread ("AsyncDeleter")
   {
     m_thread.start ();
   }
@@ -38,14 +32,18 @@ private:
     m_thread.stop (true);
   }
 
-private:
+  void performAtExit ()
+  {
+    //delete this;
+  }
+
   static void doDelete (ConcurrentObject* sharedObject)
   {
     delete sharedObject;
   }
 
 public:
-  void Delete (ConcurrentObject* sharedObject)
+  void destroy (ConcurrentObject* sharedObject)
   {
     if (m_thread.isAssociatedWithCurrentThread ())
       delete sharedObject;
@@ -53,14 +51,14 @@ public:
       m_thread.call (&Deleter::doDelete, sharedObject);
   }
 
-  static Deleter* createInstance ()
+  static Deleter& getInstance ()
   {
-    return new Deleter;
+    static Deleter instance;
+
+    return instance;
   }
 
 private:
-  AtomicCounter m_refs;
-
   ThreadWithCallQueue m_thread;
 };
 
@@ -68,15 +66,13 @@ private:
 
 ConcurrentObject::ConcurrentObject()
 {
-  Deleter::getInstance()->incReferenceCount();
 }
 
 ConcurrentObject::~ConcurrentObject()
 {
-  Deleter::getInstance()->decReferenceCount ();
 }
 
 void ConcurrentObject::destroyConcurrentObject ()
 {
-  Deleter::getInstance()->Delete (this);
+  Deleter::getInstance().destroy (this);
 }
