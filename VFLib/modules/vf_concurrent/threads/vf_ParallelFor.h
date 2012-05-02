@@ -62,6 +62,14 @@
 class ParallelFor : Uncopyable
 {
 public:
+  /** Create a parallel for loop.
+
+      It is best to keep this object around instead of creating and destroying
+      it every time you need to run a loop.
+
+      @param pool The ThreadGroup to use. If this is ommitted then a singleton
+                  ThreadGroup is used which contains one thread per CPU.
+  */
   explicit ParallelFor (ThreadGroup& pool = *GlobalThreadGroup::getInstance ());
 
   /** Execute parallel for loop.
