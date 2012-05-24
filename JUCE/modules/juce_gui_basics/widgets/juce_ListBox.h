@@ -64,7 +64,9 @@ public:
         This method will be called whenever a custom component might need to be updated - e.g.
         when the table is changed, or TableListBox::updateContent() is called.
 
-        If you don't need a custom component for the specified row, then return 0.
+        If you don't need a custom component for the specified row, then return nullptr.
+        (Bear in mind that even if you're not creating a new component, you may still need to
+        delete existingComponentToUpdate if it's non-null).
 
         If you do want a custom component, and the existingComponentToUpdate is null, then
         this method must create a suitable new component and return it.
@@ -75,6 +77,11 @@ public:
         delete this component and return a new one.
 
         The component that your method returns will be deleted by the ListBox when it is no longer needed.
+
+        Bear in mind that if you put a custom component inside the row but still want the
+        listbox to automatically handle clicking, selection, etc, then you'll need to make sure
+        your custom component doesn't intercept all the mouse events that land on it, e.g by
+        using Component::setInterceptsMouseClicks().
     */
     virtual Component* refreshComponentForRow (int rowNumber, bool isRowSelected,
                                                Component* existingComponentToUpdate);

@@ -116,7 +116,7 @@ class OpenGLContext::NativeContext
 public:
     NativeContext (Component& component,
                    const OpenGLPixelFormat& pixelFormat,
-                   const NativeContext* contextToShareWith)
+                   void* contextToShareWith)
     {
         NSOpenGLPixelFormatAttribute attribs[] =
         {
@@ -140,11 +140,8 @@ public:
         view = [[ThreadSafeNSOpenGLView alloc] initWithFrame: NSMakeRect (0, 0, 100.0f, 100.0f)
                                                  pixelFormat: format];
 
-        NSOpenGLContext* const sharedContext
-            = contextToShareWith != nullptr ? contextToShareWith->renderContext : nil;
-
         renderContext = [[[NSOpenGLContext alloc] initWithFormat: format
-                                                    shareContext: sharedContext] autorelease];
+                                                    shareContext: (NSOpenGLContext*) contextToShareWith] autorelease];
 
         setSwapInterval (1);
 
@@ -163,7 +160,7 @@ public:
     }
 
     void initialiseOnRenderThread() {}
-    void shutdownOnRenderThread() {}
+    void shutdownOnRenderThread()               { deactivateCurrentContext(); }
 
     bool createdOk() const noexcept             { return getRawContext() != nullptr; }
     void* getRawContext() const noexcept        { return static_cast <void*> (renderContext); }
@@ -183,6 +180,11 @@ public:
     bool isActive() const noexcept
     {
         return [NSOpenGLContext currentContext] == renderContext;
+    }
+
+    static void deactivateCurrentContext()
+    {
+        [NSOpenGLContext clearCurrentContext];
     }
 
     struct Locker

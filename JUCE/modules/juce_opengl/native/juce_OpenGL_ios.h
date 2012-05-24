@@ -46,7 +46,7 @@ class OpenGLContext::NativeContext
 public:
     NativeContext (Component& component,
                    const OpenGLPixelFormat& pixelFormat,
-                   const NativeContext* const contextToShareWith)
+                   void* contextToShareWith)
         : frameBufferHandle (0), colorBufferHandle (0), depthBufferHandle (0),
           lastWidth (0), lastHeight (0), needToRebuildBuffers (false),
           swapFrames (0), useDepthBuffer (pixelFormat.depthBufferBits > 0)
@@ -73,7 +73,7 @@ public:
         const NSUInteger type = kEAGLRenderingAPIOpenGLES2;
 
         if (contextToShareWith != nullptr)
-            [context initWithAPI: type  sharegroup: [contextToShareWith->context sharegroup]];
+            [context initWithAPI: type  sharegroup: [(EAGLContext*) contextToShareWith sharegroup]];
         else
             [context initWithAPI: type];
 
@@ -81,7 +81,7 @@ public:
         // so causes myserious timing-related failures.
         [EAGLContext setCurrentContext: context];
         createGLBuffers();
-        [EAGLContext setCurrentContext: nil];
+        deactivateCurrentContext();
     }
 
     ~NativeContext()
@@ -99,10 +99,11 @@ public:
     {
         JUCE_CHECK_OPENGL_ERROR
         freeGLBuffers();
+        deactivateCurrentContext();
     }
 
     bool createdOk() const noexcept             { return getRawContext() != nullptr; }
-    void* getRawContext() const noexcept        { return glLayer; }
+    void* getRawContext() const noexcept        { return context; }
     GLuint getFrameBufferID() const noexcept    { return frameBufferHandle; }
 
     bool makeActive() const noexcept
@@ -117,6 +118,11 @@ public:
     bool isActive() const noexcept
     {
         return [EAGLContext currentContext] == context;
+    }
+
+    static void deactivateCurrentContext()
+    {
+        [EAGLContext setCurrentContext: nil];
     }
 
     void swapBuffers()

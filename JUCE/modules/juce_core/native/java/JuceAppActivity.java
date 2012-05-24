@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
@@ -68,6 +69,13 @@ public final class JuceAppActivity   extends Activity
     {
         quitApp();
         super.onDestroy();
+    }
+
+    @Override
+    public void onConfigurationChanged (Configuration cfg)
+    {
+        super.onConfigurationChanged (cfg);
+        setContentView (viewHolder);
     }
 
     private void callAppLauncher()
@@ -494,5 +502,13 @@ public final class JuceAppActivity   extends Activity
     public final void launchURL (String url)
     {
         startActivity (new Intent (Intent.ACTION_VIEW, Uri.parse (url)));
+    }
+
+    public static final String getLocaleValue (boolean isRegion)
+    {
+        java.util.Locale locale = java.util.Locale.getDefault();
+
+        return isRegion ? locale.getDisplayCountry  (java.util.Locale.US)
+                        : locale.getDisplayLanguage (java.util.Locale.US);
     }
 }

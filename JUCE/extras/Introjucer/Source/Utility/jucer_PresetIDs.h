@@ -60,6 +60,7 @@ namespace Ids
     DECLARE_ID (headerPath);
     DECLARE_ID (libraryPath);
     DECLARE_ID (customXcodeFlags);
+    DECLARE_ID (cppLibType);
     DECLARE_ID (osxSDK);
     DECLARE_ID (osxCompatibility);
     DECLARE_ID (osxArchitecture);
@@ -76,6 +77,8 @@ namespace Ids
     DECLARE_ID (juceLinkage);
     DECLARE_ID (buildVST);
     DECLARE_ID (bundleIdentifier);
+    DECLARE_ID (aaxIdentifier);
+    DECLARE_ID (aaxFolder);
     DECLARE_ID (compile);
     DECLARE_ID (noWarnings);
     DECLARE_ID (resource);

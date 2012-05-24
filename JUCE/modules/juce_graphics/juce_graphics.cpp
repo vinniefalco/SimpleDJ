@@ -63,12 +63,16 @@
  #undef SIZEOF
 #endif
 
+#if (JUCE_MAC || JUCE_IOS) && USE_COREGRAPHICS_RENDERING && JUCE_USE_COREIMAGE_LOADER
+ #define JUCE_USING_COREIMAGE_LOADER 1
+#else
+ #define JUCE_USING_COREIMAGE_LOADER 0
+#endif
+
 //==============================================================================
 namespace juce
 {
 
-// START_AUTOINCLUDE colour/*.cpp, geometry/*.cpp, placement/*.cpp, contexts/*.cpp, images/*.cpp,
-// image_formats/*.cpp, fonts/*.cpp, effects/*.cpp
 #include "colour/juce_Colour.cpp"
 #include "colour/juce_ColourGradient.cpp"
 #include "colour/juce_Colours.cpp"
@@ -92,14 +96,13 @@ namespace juce
 #include "image_formats/juce_JPEGLoader.cpp"
 #include "image_formats/juce_PNGLoader.cpp"
 #include "fonts/juce_AttributedString.cpp"
+#include "fonts/juce_Typeface.cpp"
 #include "fonts/juce_CustomTypeface.cpp"
 #include "fonts/juce_Font.cpp"
 #include "fonts/juce_GlyphArrangement.cpp"
 #include "fonts/juce_TextLayout.cpp"
-#include "fonts/juce_Typeface.cpp"
 #include "effects/juce_DropShadowEffect.cpp"
 #include "effects/juce_GlowEffect.cpp"
-// END_AUTOINCLUDE
 
 //==============================================================================
 #if JUCE_MAC || JUCE_IOS
@@ -111,12 +114,12 @@ namespace juce
 
 #elif JUCE_WINDOWS
  #include "../juce_core/native/juce_win32_ComSmartPtr.h"
- #if JUCE_DIRECT2D
-  #include "native/juce_win32_Direct2DGraphicsContext.cpp"
- #endif
  #include "native/juce_win32_DirectWriteTypeface.cpp"
  #include "native/juce_win32_DirectWriteTypeLayout.cpp"
  #include "native/juce_win32_Fonts.cpp"
+ #if JUCE_DIRECT2D
+  #include "native/juce_win32_Direct2DGraphicsContext.cpp"
+ #endif
 
 #elif JUCE_LINUX
  #include "native/juce_linux_Fonts.cpp"

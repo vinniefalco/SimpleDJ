@@ -38,7 +38,7 @@ class OpenGLContext::NativeContext
 public:
     NativeContext (Component& component_,
                    const OpenGLPixelFormat& pixelFormat,
-                   const NativeContext* contextToShareWith)
+                   void* /*contextToShareWith*/)
         : component (component_),
           isInsideGLCallback (false)
     {
@@ -68,6 +68,7 @@ public:
 
     bool makeActive() const noexcept            { return isInsideGLCallback; }
     bool isActive() const noexcept              { return isInsideGLCallback; }
+    static void deactivateCurrentContext()      {}
 
     void swapBuffers() const noexcept           {}
     bool setSwapInterval (const int)            { return false; }
