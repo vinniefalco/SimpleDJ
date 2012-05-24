@@ -324,14 +324,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\modules\vf_gui\vf_gui.cpp" />
-    <ClCompile Include="..\..\modules\vf_luabridge\luabridge\luabridge.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\modules\vf_luabridge\luabridge\shared_ptr.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\modules\vf_luabridge\vf_luabridge.cpp" />
     <ClCompile Include="..\..\modules\vf_lua\lua\lapi.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -462,7 +454,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\modules\vf_lua\vf_lua.c" />
+    <ClCompile Include="..\..\modules\vf_lua\vf_lua.cpp" />
     <ClCompile Include="..\..\modules\vf_sqlite\sqlite\sqlite3.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -602,13 +594,7 @@
     <ClInclude Include="..\..\modules\vf_gui\mouse\vf_MouseEnterEditable.h" />
     <ClInclude Include="..\..\modules\vf_gui\mouse\vf_MouseEnterGroup.h" />
     <ClInclude Include="..\..\modules\vf_gui\vf_gui.h" />
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\class.hpp" />
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\module.hpp" />
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\shared_ptr.hpp" />
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\stack.hpp" />
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\typelist.hpp" />
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\luabridge.hpp" />
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\shared_ptr.hpp" />
+    <ClInclude Include="..\..\modules\vf_luabridge\LuaBridge\LuaBridge.h" />
     <ClInclude Include="..\..\modules\vf_luabridge\vf_luabridge.h" />
     <ClInclude Include="..\..\modules\vf_lua\lua\lapi.h" />
     <ClInclude Include="..\..\modules\vf_lua\lua\lauxlib.h" />
@@ -708,6 +694,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>false</FunctionLevelLinking>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -730,6 +717,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>SyncCThrow</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -16,7 +16,6 @@
 		2E08D9EB1549F0C6006A6931 /* vf_deprecated.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9DF1549F0C6006A6931 /* vf_deprecated.cpp */; };
 		2E08D9EC1549F0C6006A6931 /* vf_freetype.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E01549F0C6006A6931 /* vf_freetype.c */; };
 		2E08D9ED1549F0C6006A6931 /* vf_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E11549F0C6006A6931 /* vf_gui.cpp */; };
-		2E08D9EE1549F0C6006A6931 /* vf_lua.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E21549F0C6006A6931 /* vf_lua.c */; };
 		2E08D9EF1549F0C6006A6931 /* vf_luabridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E31549F0C6006A6931 /* vf_luabridge.cpp */; };
 		2E08D9F01549F0C6006A6931 /* vf_sqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E41549F0C6006A6931 /* vf_sqlite.c */; };
 		2E08D9F11549F0C6006A6931 /* vf_taglib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E51549F0C6006A6931 /* vf_taglib.cpp */; };
@@ -28,7 +27,6 @@
 		2E84C4521549FD10006923F8 /* vf_deprecated.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9DF1549F0C6006A6931 /* vf_deprecated.cpp */; };
 		2E84C4531549FD10006923F8 /* vf_freetype.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E01549F0C6006A6931 /* vf_freetype.c */; };
 		2E84C4541549FD10006923F8 /* vf_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E11549F0C6006A6931 /* vf_gui.cpp */; };
-		2E84C4551549FD10006923F8 /* vf_lua.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E21549F0C6006A6931 /* vf_lua.c */; };
 		2E84C4561549FD10006923F8 /* vf_luabridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E31549F0C6006A6931 /* vf_luabridge.cpp */; };
 		2E84C4571549FD10006923F8 /* vf_sqlite.c in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E41549F0C6006A6931 /* vf_sqlite.c */; };
 		2E84C4581549FD10006923F8 /* vf_taglib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E08D9E51549F0C6006A6931 /* vf_taglib.cpp */; };
@@ -49,7 +47,6 @@
 		2E08D9DF1549F0C6006A6931 /* vf_deprecated.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vf_deprecated.cpp; path = ../../modules/vf_deprecated/vf_deprecated.cpp; sourceTree = "<group>"; };
 		2E08D9E01549F0C6006A6931 /* vf_freetype.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vf_freetype.c; path = ../../modules/vf_freetype/vf_freetype.c; sourceTree = "<group>"; };
 		2E08D9E11549F0C6006A6931 /* vf_gui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vf_gui.cpp; path = ../../modules/vf_gui/vf_gui.cpp; sourceTree = "<group>"; };
-		2E08D9E21549F0C6006A6931 /* vf_lua.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vf_lua.c; path = ../../modules/vf_lua/vf_lua.c; sourceTree = "<group>"; };
 		2E08D9E31549F0C6006A6931 /* vf_luabridge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vf_luabridge.cpp; path = ../../modules/vf_luabridge/vf_luabridge.cpp; sourceTree = "<group>"; };
 		2E08D9E41549F0C6006A6931 /* vf_sqlite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vf_sqlite.c; path = ../../modules/vf_sqlite/vf_sqlite.c; sourceTree = "<group>"; };
 		2E08D9E51549F0C6006A6931 /* vf_taglib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vf_taglib.cpp; path = ../../modules/vf_taglib/vf_taglib.cpp; sourceTree = "<group>"; };
@@ -118,7 +115,6 @@
 				2E08D9DF1549F0C6006A6931 /* vf_deprecated.cpp */,
 				2E08D9E01549F0C6006A6931 /* vf_freetype.c */,
 				2E08D9E11549F0C6006A6931 /* vf_gui.cpp */,
-				2E08D9E21549F0C6006A6931 /* vf_lua.c */,
 				2E08D9E31549F0C6006A6931 /* vf_luabridge.cpp */,
 				2E08D9E41549F0C6006A6931 /* vf_sqlite.c */,
 				2E08D9E51549F0C6006A6931 /* vf_taglib.cpp */,
@@ -220,7 +216,6 @@
 				2E08D9EB1549F0C6006A6931 /* vf_deprecated.cpp in Sources */,
 				2E08D9EC1549F0C6006A6931 /* vf_freetype.c in Sources */,
 				2E08D9ED1549F0C6006A6931 /* vf_gui.cpp in Sources */,
-				2E08D9EE1549F0C6006A6931 /* vf_lua.c in Sources */,
 				2E08D9EF1549F0C6006A6931 /* vf_luabridge.cpp in Sources */,
 				2E08D9F01549F0C6006A6931 /* vf_sqlite.c in Sources */,
 				2E08D9F11549F0C6006A6931 /* vf_taglib.cpp in Sources */,
@@ -239,7 +234,6 @@
 				2E84C4521549FD10006923F8 /* vf_deprecated.cpp in Sources */,
 				2E84C4531549FD10006923F8 /* vf_freetype.c in Sources */,
 				2E84C4541549FD10006923F8 /* vf_gui.cpp in Sources */,
-				2E84C4551549FD10006923F8 /* vf_lua.c in Sources */,
 				2E84C4561549FD10006923F8 /* vf_luabridge.cpp in Sources */,
 				2E84C4571549FD10006923F8 /* vf_sqlite.c in Sources */,
 				2E84C4581549FD10006923F8 /* vf_taglib.cpp in Sources */,

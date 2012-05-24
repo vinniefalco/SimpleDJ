@@ -29,6 +29,12 @@
 
 #include "modules/juce_core/system/juce_TargetPlatform.h"
 
+#ifndef NDEBUG
+#ifndef LUA_USE_APICHECK
+#define LUA_USE_APICHECK
+#endif
+#endif
+
 #if JUCE_MSVC
 #pragma push_macro("_CRT_SECURE_NO_WARNINGS")
 #ifndef _CRT_SECURE_NO_WARNINGS

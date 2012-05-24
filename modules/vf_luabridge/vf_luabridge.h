@@ -47,6 +47,6 @@
 
 #include "../vf_lua/vf_lua.h"
 
-#include "luabridge/luabridge.hpp"
+#include "LuaBridge/LuaBridge.h"
 
 #endif

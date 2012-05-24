@@ -127,17 +127,14 @@
     <Filter Include="VF Modules\vf_luabridge">
       <UniqueIdentifier>{af2be940-f048-4b49-be6a-7ac65d216ddf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="VF Modules\vf_luabridge\luabridge">
-      <UniqueIdentifier>{888c98b8-ba39-4d79-b4b2-a462e6487e87}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="VF Modules\vf_luabridge\luabridge\impl">
-      <UniqueIdentifier>{7854c24c-191a-4387-878a-b13717ac100e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="VF Modules\vf_sqlite">
       <UniqueIdentifier>{77750aaf-a021-4260-943d-ffb29fd235f7}</UniqueIdentifier>
     </Filter>
     <Filter Include="VF Modules\vf_sqlite\sqlite">
       <UniqueIdentifier>{41878b9f-da99-49d3-84d6-fa396beda121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VF Modules\vf_luabridge\LuaBridge">
+      <UniqueIdentifier>{b749b783-719d-41c3-b726-4de765d75a8f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -384,15 +381,6 @@
     <ClCompile Include="..\..\modules\vf_lua\lua\lundump.c">
       <Filter>VF Modules\vf_lua\lua\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\modules\vf_lua\vf_lua.c">
-      <Filter>VF Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\modules\vf_luabridge\luabridge\shared_ptr.cpp">
-      <Filter>VF Modules\vf_luabridge\luabridge</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\modules\vf_luabridge\luabridge\luabridge.cpp">
-      <Filter>VF Modules\vf_luabridge\luabridge</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\modules\vf_luabridge\vf_luabridge.cpp">
       <Filter>VF Library Code</Filter>
     </ClCompile>
@@ -518,6 +506,9 @@
     </ClCompile>
     <ClCompile Include="..\..\modules\vf_concurrent\threads\vf_ThreadGroup.cpp">
       <Filter>VF Modules\vf_concurrent\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\modules\vf_lua\vf_lua.cpp">
+      <Filter>VF Library Code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -821,27 +812,6 @@
     <ClInclude Include="..\..\modules\vf_lua\lua\ldo.h">
       <Filter>VF Modules\vf_lua\lua\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\luabridge.hpp">
-      <Filter>VF Modules\vf_luabridge\luabridge</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\shared_ptr.hpp">
-      <Filter>VF Modules\vf_luabridge\luabridge</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\class.hpp">
-      <Filter>VF Modules\vf_luabridge\luabridge\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\module.hpp">
-      <Filter>VF Modules\vf_luabridge\luabridge\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\shared_ptr.hpp">
-      <Filter>VF Modules\vf_luabridge\luabridge\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\stack.hpp">
-      <Filter>VF Modules\vf_luabridge\luabridge\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\modules\vf_luabridge\luabridge\impl\typelist.hpp">
-      <Filter>VF Modules\vf_luabridge\luabridge\impl</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\modules\vf_bzip2\bzip2\bzlib.h">
       <Filter>VF Modules\vf_bzip2\bzip2</Filter>
     </ClInclude>
@@ -1009,6 +979,9 @@
     </ClInclude>
     <ClInclude Include="..\..\modules\vf_concurrent\threads\vf_GlobalThreadGroup.h">
       <Filter>VF Modules\vf_concurrent\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\modules\vf_luabridge\LuaBridge\LuaBridge.h">
+      <Filter>VF Modules\vf_luabridge\LuaBridge</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

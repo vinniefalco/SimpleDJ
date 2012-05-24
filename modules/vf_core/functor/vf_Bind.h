@@ -28,7 +28,9 @@
   // Visual Studio has these in std.
   using std::ref;
   using std::bind;
+  using std::function;
   using std::placeholders::_1;
+  using std::placeholders::_2;
 
 #elif JUCE_IOS || JUCE_MAC
   #if VF_USE_BOOST
