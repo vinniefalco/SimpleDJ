@@ -31,8 +31,9 @@
 namespace
 {
     Value shouldBuildVST (Project& project)                       { return project.getProjectValue ("buildVST"); }
-    Value shouldBuildRTAS (Project& project)                      { return project.getProjectValue ("buildRTAS"); }
     Value shouldBuildAU (Project& project)                        { return project.getProjectValue ("buildAU"); }
+    Value shouldBuildRTAS (Project& project)                      { return project.getProjectValue ("buildRTAS"); }
+    Value shouldBuildAAX (Project& project)                       { return project.getProjectValue ("buildAAX"); }
 
     Value getPluginName (Project& project)                        { return project.getProjectValue ("pluginName"); }
     Value getPluginDesc (Project& project)                        { return project.getProjectValue ("pluginDesc"); }
@@ -101,6 +102,7 @@ namespace
         flags.set ("JucePlugin_Build_VST",                   valueToBool (shouldBuildVST  (project)));
         flags.set ("JucePlugin_Build_AU",                    valueToBool (shouldBuildAU   (project)));
         flags.set ("JucePlugin_Build_RTAS",                  valueToBool (shouldBuildRTAS (project)));
+        flags.set ("JucePlugin_Build_AAX",                   valueToBool (shouldBuildAAX  (project)));
         flags.set ("JucePlugin_Name",                        getPluginName (project).toString().quoted());
         flags.set ("JucePlugin_Desc",                        getPluginDesc (project).toString().quoted());
         flags.set ("JucePlugin_Manufacturer",                getPluginManufacturer (project).toString().quoted());
@@ -129,6 +131,11 @@ namespace
         flags.set ("JucePlugin_RTASCategory",                getPluginRTASCategoryCode (project));
         flags.set ("JucePlugin_RTASManufacturerCode",        "JucePlugin_ManufacturerCode");
         flags.set ("JucePlugin_RTASProductId",               "JucePlugin_PluginCode");
+        flags.set ("JucePlugin_AAXIdentifier",               project.getAAXIdentifier().toString());
+        flags.set ("JucePlugin_AAXManufacturerCode",         "JucePlugin_ManufacturerCode");
+        flags.set ("JucePlugin_AAXProductId",                "JucePlugin_PluginCode");
+        flags.set ("JucePlugin_AAXPluginId",                 "JucePlugin_PluginCode");
+        flags.set ("JucePlugin_AAXCategory",                 "AAX_ePlugInCategory_None");
 
         MemoryOutputStream mem;
 
@@ -181,7 +188,7 @@ namespace VSTHelpers
                                                                 : "~/SDKs/vstsdk2.4");
     }
 
-    static void prepareExporter (ProjectExporter& exporter, ProjectSaver& projectSaver)
+    static inline void prepareExporter (ProjectExporter& exporter, ProjectSaver& projectSaver)
     {
         fixMissingVSTValues (exporter);
         writePluginCharacteristicsFile (projectSaver);
@@ -202,7 +209,7 @@ namespace VSTHelpers
             exporter.extraSearchPaths.add (juceWrapperFolder.toUnixStyle());
     }
 
-    static void createPropertyEditors (ProjectExporter& exporter, PropertyListBuilder& props)
+    static inline void createPropertyEditors (ProjectExporter& exporter, PropertyListBuilder& props)
     {
         fixMissingVSTValues (exporter);
         createVSTPathEditor (exporter, props);
@@ -212,12 +219,15 @@ namespace VSTHelpers
 //==============================================================================
 namespace RTASHelpers
 {
-    static Value getRTASFolder (ProjectExporter& exporter)        { return exporter.getSetting (Ids::rtasFolder); }
+    static Value getRTASFolder (ProjectExporter& exporter)             { return exporter.getSetting (Ids::rtasFolder); }
+    static RelativePath getRTASFolderPath (ProjectExporter& exporter)  { return RelativePath (exporter.getSettingString (Ids::rtasFolder),
+                                                                                              RelativePath::projectFolder); }
+
+    static bool isExporterSupported (ProjectExporter& exporter)   { return exporter.isVisualStudio() || exporter.isXcode(); }
 
     static RelativePath getRTASFolderRelativePath (ProjectExporter& exporter)
     {
-        return exporter.rebaseFromProjectFolderToBuildTarget (RelativePath (getRTASFolder (exporter).toString(),
-                                                                            RelativePath::projectFolder));
+        return exporter.rebaseFromProjectFolderToBuildTarget (getRTASFolderPath (exporter));
     }
 
     static void fixMissingRTASValues (ProjectExporter& exporter)
@@ -233,7 +243,7 @@ namespace RTASHelpers
 
     static void addExtraSearchPaths (ProjectExporter& exporter)
     {
-        RelativePath rtasFolder (getRTASFolder (exporter).toString(), RelativePath::projectFolder);
+        RelativePath rtasFolder (getRTASFolderPath (exporter));
 
         if (exporter.isVisualStudio())
         {
@@ -309,58 +319,61 @@ namespace RTASHelpers
         }
     }
 
-    static void prepareExporter (ProjectExporter& exporter, ProjectSaver& projectSaver, const File& moduleFolder)
+    static inline void prepareExporter (ProjectExporter& exporter, ProjectSaver& projectSaver, const File& moduleFolder)
     {
-        fixMissingRTASValues (exporter);
-
-        if (exporter.isVisualStudio())
+        if (isExporterSupported (exporter))
         {
-            exporter.msvcTargetSuffix = ".dpm";
-            exporter.msvcNeedsDLLRuntimeLib = true;
+            fixMissingRTASValues (exporter);
 
-            String winbag (getRTASFolderRelativePath (exporter).getChildFile ("WinBag").toWindowsStyle());
-
-            // (VS10 automatically adds escape characters to the quotes for this definition)
-            winbag = (exporter.getVisualStudioVersion() < 10) ? CodeHelpers::addEscapeChars (winbag.quoted())
-                                                              : CodeHelpers::addEscapeChars (winbag).quoted();
-
-            exporter.msvcExtraPreprocessorDefs.set ("JucePlugin_WinBag_path", winbag);
-
-            String msvcPathToRTASFolder (exporter.getJucePathFromTargetFolder()
-                                                 .getChildFile ("juce_audio_plugin_client/RTAS")
-                                                 .toWindowsStyle() + "\\");
-
-            exporter.msvcDelayLoadedDLLs = "DAE.dll; DigiExt.dll; DSI.dll; PluginLib.dll; DSPManager.dll";
-
-            if (! exporter.getExtraLinkerFlags().toString().contains ("/FORCE:multiple"))
-                exporter.getExtraLinkerFlags() = exporter.getExtraLinkerFlags().toString() + " /FORCE:multiple";
-
-            for (ProjectExporter::ConfigIterator config (exporter); config.next();)
+            if (exporter.isVisualStudio())
             {
-                config->getValue (Ids::msvcModuleDefinitionFile) = msvcPathToRTASFolder + "juce_RTAS_WinExports.def";
+                exporter.msvcTargetSuffix = ".dpm";
+                exporter.msvcNeedsDLLRuntimeLib = true;
 
-                if (config->getValue (Ids::postbuildCommand).toString().isEmpty())
-                    config->getValue (Ids::postbuildCommand) = "copy /Y \"" + msvcPathToRTASFolder + "juce_RTAS_WinResources.rsr"
-                                                                    + "\" \"$(TargetPath)\".rsr";
+                String winbag (getRTASFolderRelativePath (exporter).getChildFile ("WinBag").toWindowsStyle());
+
+                // (VS10 automatically adds escape characters to the quotes for this definition)
+                winbag = (exporter.getVisualStudioVersion() < 10) ? CodeHelpers::addEscapeChars (winbag.quoted())
+                                                                  : CodeHelpers::addEscapeChars (winbag).quoted();
+
+                exporter.msvcExtraPreprocessorDefs.set ("JucePlugin_WinBag_path", winbag);
+
+                String msvcPathToRTASFolder (exporter.getJucePathFromTargetFolder()
+                                                     .getChildFile ("juce_audio_plugin_client/RTAS")
+                                                     .toWindowsStyle() + "\\");
+
+                exporter.msvcDelayLoadedDLLs = "DAE.dll; DigiExt.dll; DSI.dll; PluginLib.dll; DSPManager.dll";
+
+                if (! exporter.getExtraLinkerFlags().toString().contains ("/FORCE:multiple"))
+                    exporter.getExtraLinkerFlags() = exporter.getExtraLinkerFlags().toString() + " /FORCE:multiple";
+
+                for (ProjectExporter::ConfigIterator config (exporter); config.next();)
+                {
+                    config->getValue (Ids::msvcModuleDefinitionFile) = msvcPathToRTASFolder + "juce_RTAS_WinExports.def";
+
+                    if (config->getValue (Ids::postbuildCommand).toString().isEmpty())
+                        config->getValue (Ids::postbuildCommand) = "copy /Y \"" + msvcPathToRTASFolder + "juce_RTAS_WinResources.rsr"
+                                                                        + "\" \"$(TargetPath)\".rsr";
+                }
             }
+            else
+            {
+                exporter.xcodeCanUseDwarf = false;
+
+                RelativePath rtasFolder (getRTASFolderPath (exporter));
+                exporter.xcodeExtraLibrariesDebug.add   (rtasFolder.getChildFile ("MacBag/Libs/Debug/libPluginLibrary.a"));
+                exporter.xcodeExtraLibrariesRelease.add (rtasFolder.getChildFile ("MacBag/Libs/Release/libPluginLibrary.a"));
+            }
+
+            writePluginCharacteristicsFile (projectSaver);
+
+            addExtraSearchPaths (exporter);
         }
-        else
-        {
-            exporter.xcodeCanUseDwarf = false;
-
-            RelativePath rtasFolder (getRTASFolder (exporter).toString(), RelativePath::projectFolder);
-            exporter.xcodeExtraLibrariesDebug.add   (rtasFolder.getChildFile ("MacBag/Libs/Debug/libPluginLibrary.a"));
-            exporter.xcodeExtraLibrariesRelease.add (rtasFolder.getChildFile ("MacBag/Libs/Release/libPluginLibrary.a"));
-        }
-
-        writePluginCharacteristicsFile (projectSaver);
-
-        addExtraSearchPaths (exporter);
     }
 
-    static void createPropertyEditors (ProjectExporter& exporter, PropertyListBuilder& props)
+    static inline void createPropertyEditors (ProjectExporter& exporter, PropertyListBuilder& props)
     {
-        if (exporter.isXcode() || exporter.isVisualStudio())
+        if (isExporterSupported (exporter))
         {
             fixMissingRTASValues (exporter);
 
@@ -373,7 +386,7 @@ namespace RTASHelpers
 //==============================================================================
 namespace AUHelpers
 {
-    static void prepareExporter (ProjectExporter& exporter, ProjectSaver& projectSaver)
+    static inline void prepareExporter (ProjectExporter& exporter, ProjectSaver& projectSaver)
     {
         writePluginCharacteristicsFile (projectSaver);
 
@@ -448,6 +461,77 @@ namespace AUHelpers
                     subGroup.getChild (subGroup.getNumChildren() - 1).getShouldInhibitWarningsValue() = true;
                 }
             }
+        }
+    }
+}
+
+//==============================================================================
+namespace AAXHelpers
+{
+    static Value getAAXFolder (ProjectExporter& exporter)             { return exporter.getSetting (Ids::aaxFolder); }
+    static RelativePath getAAXFolderPath (ProjectExporter& exporter)  { return RelativePath (exporter.getSettingString (Ids::aaxFolder),
+                                                                                             RelativePath::projectFolder); }
+
+    static bool isExporterSupported (ProjectExporter& exporter)       { return exporter.isVisualStudio() || exporter.isXcode(); }
+
+    static RelativePath getAAXFolderRelativePath (ProjectExporter& exporter)
+    {
+        return exporter.rebaseFromProjectFolderToBuildTarget (RelativePath (getAAXFolder (exporter).toString(),
+                                                                            RelativePath::projectFolder));
+    }
+
+    static void fixMissingAAXValues (ProjectExporter& exporter)
+    {
+        if (getAAXFolder (exporter).toString().isEmpty())
+        {
+            if (exporter.isVisualStudio())
+                getAAXFolder (exporter) = "c:\\SDKs\\AAX";
+            else
+                getAAXFolder (exporter) = "~/SDKs/AAX";
+        }
+    }
+
+    static void addExtraSearchPaths (ProjectExporter& exporter)
+    {
+        const RelativePath aaxFolder (getAAXFolderPath (exporter));
+
+        exporter.addToExtraSearchPaths (aaxFolder);
+        exporter.addToExtraSearchPaths (aaxFolder.getChildFile ("Interfaces"));
+        exporter.addToExtraSearchPaths (aaxFolder.getChildFile ("Interfaces").getChildFile ("ACF"));
+    }
+
+    static inline void prepareExporter (ProjectExporter& exporter, ProjectSaver& projectSaver, const File& moduleFolder)
+    {
+        if (isExporterSupported (exporter))
+        {
+            fixMissingAAXValues (exporter);
+
+            const RelativePath aaxFolder (getAAXFolderPath (exporter));
+
+            if (exporter.isVisualStudio())
+            {
+                exporter.msvcTargetSuffix = ".aax";
+            }
+            else
+            {
+                exporter.xcodeExtraLibrariesDebug.add   (aaxFolder.getChildFile ("Libs/Debug/libAAXLibrary.a"));
+                exporter.xcodeExtraLibrariesRelease.add (aaxFolder.getChildFile ("Libs/Release/libAAXLibrary.a"));
+            }
+
+            writePluginCharacteristicsFile (projectSaver);
+
+            addExtraSearchPaths (exporter);
+        }
+    }
+
+    static inline void createPropertyEditors (ProjectExporter& exporter, PropertyListBuilder& props)
+    {
+        if (isExporterSupported (exporter))
+        {
+            fixMissingAAXValues (exporter);
+
+            props.add (new TextPropertyComponent (getAAXFolder (exporter), "AAX SDK Folder", 1024, false),
+                       "If you're building an AAX, this must be the folder containing the AAX SDK. This should be an absolute path.");
         }
     }
 }

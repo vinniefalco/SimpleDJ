@@ -103,7 +103,7 @@ void Project::setMissingDefaultValues()
     getMainGroup().initialiseMissingProperties();
 
     if (getDocumentTitle().isEmpty())
-        setTitle ("Juce Project");
+        setTitle ("JUCE Project");
 
     if (! projectRoot.hasProperty (Ids::projectType))
         getProjectTypeValue() = ProjectType::getGUIAppTypeName();
@@ -116,9 +116,6 @@ void Project::setMissingDefaultValues()
     moveOldPropertyFromProjectToAllExporters (Ids::smallIcon);
 
     getProjectType().setMissingProjectProperties (*this);
-
-    if (! projectRoot.hasProperty (Ids::bundleIdentifier))
-        setBundleIdentifierToDefault();
 
     if (! projectRoot.getChildWithName (Tags::modulesGroup).isValid())
         addDefaultModules (false);
@@ -205,6 +202,13 @@ void Project::addDefaultModules (bool shouldCopyFilesLocally)
 }
 
 //==============================================================================
+static void registerRecentFile (const File& file)
+{
+    RecentlyOpenedFilesList::registerRecentFileNatively (file);
+    StoredSettings::getInstance()->recentFiles.addFile (file);
+    StoredSettings::getInstance()->flush();
+}
+
 const String Project::loadDocument (const File& file)
 {
     ScopedPointer <XmlElement> xml (XmlDocument::parse (file));
@@ -217,8 +221,7 @@ const String Project::loadDocument (const File& file)
     if (! newTree.hasType (Tags::projectRoot))
         return "The document contains errors and couldn't be parsed!";
 
-    StoredSettings::getInstance()->recentFiles.addFile (file);
-    StoredSettings::getInstance()->flush();
+    registerRecentFile (file);
     projectRoot = newTree;
 
     removeDefunctExporters();
@@ -229,18 +232,19 @@ const String Project::loadDocument (const File& file)
 
 const String Project::saveDocument (const File& file)
 {
-    return saveProject (file, true);
+    return saveProject (file, false);
 }
 
-String Project::saveProject (const File& file, bool showProgressBox)
+String Project::saveProject (const File& file, bool isCommandLineApp)
 {
     updateProjectSettings();
     sanitiseConfigFlags();
 
-    StoredSettings::getInstance()->recentFiles.addFile (file);
+    if (! isCommandLineApp)
+        registerRecentFile (file);
 
     ProjectSaver saver (*this, file);
-    return saver.save (showProgressBox);
+    return saver.save (! isCommandLineApp);
 }
 
 String Project::saveResourcesOnly (const File& file)
@@ -542,7 +546,8 @@ bool Project::Item::renameFile (const File& newFile)
 {
     const File oldFile (getFile());
 
-    if (oldFile.moveFileTo (newFile))
+    if (oldFile.moveFileTo (newFile)
+         || (newFile.exists() && ! oldFile.exists()))
     {
         setFile (newFile);
         OpenDocumentManager::getInstance()->fileHasBeenRenamed (oldFile, newFile);

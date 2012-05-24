@@ -23,36 +23,5 @@
   ==============================================================================
 */
 
-#ifndef __JUCE_OSX_OBJCHELPERS_JUCEHEADER__
-#define __JUCE_OSX_OBJCHELPERS_JUCEHEADER__
-
-
-/* This file contains a few helper functions that are used internally but which
-   need to be kept away from the public headers because they use obj-C symbols.
-*/
-namespace
-{
-    //==============================================================================
-    static inline String nsStringToJuce (NSString* s)
-    {
-        return CharPointer_UTF8 ([s UTF8String]);
-    }
-
-    static inline NSString* juceStringToNS (const String& s)
-    {
-        return [NSString stringWithUTF8String: s.toUTF8()];
-    }
-
-    static inline NSString* nsStringLiteral (const char* const s) noexcept
-    {
-        return [NSString stringWithUTF8String: s];
-    }
-
-    static inline NSString* nsEmptyString() noexcept
-    {
-        return [NSString string];
-    }
-}
-
-
-#endif   // __JUCE_OSX_OBJCHELPERS_JUCEHEADER__
+#define JUCE_INCLUDED_AAX_IN_MM 1
+#include "juce_AAX_Wrapper.cpp"

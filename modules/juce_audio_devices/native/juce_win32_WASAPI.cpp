@@ -746,7 +746,7 @@ public:
 
         if (inputDevice != nullptr && inputDevice->client != nullptr)
         {
-            latencyIn = (int) (inputDevice->latencySamples + inputDevice->actualBufferSize + inputDevice->minBufferSize);
+            latencyIn = (int) (inputDevice->latencySamples + currentBufferSizeSamples);
 
             if (! check (inputDevice->client->Start()))
             {
@@ -758,7 +758,7 @@ public:
 
         if (outputDevice != nullptr && outputDevice->client != nullptr)
         {
-            latencyOut = (int) (outputDevice->latencySamples + outputDevice->actualBufferSize + outputDevice->minBufferSize);
+            latencyOut = (int) (outputDevice->latencySamples + currentBufferSizeSamples);
 
             if (! check (outputDevice->client->Start()))
             {
@@ -829,8 +829,8 @@ public:
     void setMMThreadPriority()
     {
         DynamicLibrary dll ("avrt.dll");
-        JUCE_DLL_FUNCTION (AvSetMmThreadCharacteristicsW, avSetMmThreadCharacteristics, HANDLE, dll, (LPCWSTR, LPDWORD))
-        JUCE_DLL_FUNCTION (AvSetMmThreadPriority, avSetMmThreadPriority, HANDLE, dll, (HANDLE, AVRT_PRIORITY))
+        JUCE_LOAD_WINAPI_FUNCTION (dll, AvSetMmThreadCharacteristicsW, avSetMmThreadCharacteristics, HANDLE, (LPCWSTR, LPDWORD))
+        JUCE_LOAD_WINAPI_FUNCTION (dll, AvSetMmThreadPriority, avSetMmThreadPriority, HANDLE, (HANDLE, AVRT_PRIORITY))
 
         if (avSetMmThreadCharacteristics != 0 && avSetMmThreadPriority != 0)
         {

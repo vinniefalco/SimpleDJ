@@ -31,7 +31,7 @@ class OpenGLContext::NativeContext
 public:
     NativeContext (Component& component,
                    const OpenGLPixelFormat& pixelFormat,
-                   const NativeContext* contextToShareWith)
+                   void* contextToShareWith)
     {
         createNativeWindow (component);
 
@@ -50,7 +50,7 @@ public:
             initialiseGLExtensions();
 
             const int wglFormat = wglChoosePixelFormatExtension (pixelFormat);
-            wglMakeCurrent (0, 0);
+            deactivateCurrentContext();
 
             if (wglFormat != pixFormat && wglFormat != 0)
             {
@@ -68,7 +68,7 @@ public:
             }
 
             if (contextToShareWith != nullptr)
-                wglShareLists (contextToShareWith->renderContext, renderContext);
+                wglShareLists ((HGLRC) contextToShareWith, renderContext);
 
             component.getTopLevelComponent()->repaint();
             component.repaint();
@@ -82,8 +82,9 @@ public:
     }
 
     void initialiseOnRenderThread() {}
-    void shutdownOnRenderThread() {}
+    void shutdownOnRenderThread()           { deactivateCurrentContext(); }
 
+    static void deactivateCurrentContext()  { wglMakeCurrent (0, 0); }
     bool makeActive() const noexcept        { return wglMakeCurrent (dc, renderContext) != FALSE; }
     bool isActive() const noexcept          { return wglGetCurrentContext() == renderContext; }
     void swapBuffers() const noexcept       { SwapBuffers (dc); }
