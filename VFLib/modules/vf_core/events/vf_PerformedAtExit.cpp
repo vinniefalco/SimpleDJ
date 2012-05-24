@@ -46,6 +46,8 @@ public:
   }
 
 private:
+  friend class PerformedAtExit;
+  
   static StackType s_list;
 
   static Performer s_performer;
@@ -58,7 +60,7 @@ PerformedAtExit::PerformedAtExit ()
 {
 #if JUCE_IOS
   // TODO: PerformedAtExit::Performer::push_front crashes on iOS if s_storage is not accessed before used
-  char *hack = PerformedAtExit::Performer::Stack::s_storage;
+  char *hack = PerformedAtExit::Performer::s_list.s_storage;
 #endif
 	
   Performer::push_front (this);

@@ -23,7 +23,7 @@ namespace Ui {
 
 namespace Model {
 
-const String& Popup::getCurrentItemText ()
+String Popup::getCurrentItemText ()
 {
   return String::empty;
 }

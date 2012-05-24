@@ -175,7 +175,7 @@
   [18]: http://www.mozilla.org/MPL/1.1/ "Mozilla Public License"
 
   @author Vinnie Falco (<a href="mailto:vinnie.falco@gmail.com">email</a>)
-  @version 1.0 pre-release
+  @version 1.0
   @date 2008
   @copyright Copyright (C) 2008 by Vinnie Falco.
   @copyright Provided under the [GNU General Public License][5]

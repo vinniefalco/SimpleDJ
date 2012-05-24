@@ -41,6 +41,12 @@
     @ingroup external
 */
 
+#ifndef NDEBUG
+#ifndef LUA_USE_APICHECK
+#define LUA_USE_APICHECK
+#endif
+#endif
+
 #include "lua/lua.hpp"
 
 #endif

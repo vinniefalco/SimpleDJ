@@ -29,7 +29,7 @@ namespace Model {
 class Popup : public Ui::Model::Base
 {
 public:
-  virtual const String& getCurrentItemText();
+  virtual String getCurrentItemText();
   virtual void buildMenu (PopupMenu& menu);
   virtual void doMenuItem (int menuItemId);
 };
