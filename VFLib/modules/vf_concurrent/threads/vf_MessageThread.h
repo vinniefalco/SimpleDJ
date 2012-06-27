@@ -22,8 +22,6 @@
 #ifndef VF_MESSAGETHREAD_VFHEADER
 #define VF_MESSAGETHREAD_VFHEADER
 
-#include "vf_GuiCallQueue.h"
-
 /*============================================================================*/
 /**
   A GuiCallQueue singleton for the message thread.

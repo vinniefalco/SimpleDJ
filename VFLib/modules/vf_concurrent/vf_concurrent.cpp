@@ -46,7 +46,6 @@ namespace vf
 
 #include "threads/vf_CallQueue.cpp"
 #include "threads/vf_ConcurrentObject.cpp"
-#include "threads/vf_GuiCallQueue.cpp"
 #include "threads/vf_Listeners.cpp"
 #include "threads/vf_ManualCallQueue.cpp"
 #include "threads/vf_MessageThread.cpp"
@@ -54,6 +53,8 @@ namespace vf
 #include "threads/vf_ReadWriteMutex.cpp"
 #include "threads/vf_ThreadGroup.cpp"
 #include "threads/vf_ThreadWithCallQueue.cpp"
+
+#include "threads/vf_GuiCallQueue.cpp"
 }
 
 #if JUCE_MSVC

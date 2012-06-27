@@ -21,7 +21,7 @@
 
 /** Add this to get the @ref vf_lua external module.
 
-    @file vf_lua.c
+    @file vf_lua.cpp
     @ingroup vf_lua external
 */
 

@@ -1,21 +1,21 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
+See the file GNU_GPL_v2.txt for full licensing terms.
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+details.
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 51
+Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 /*============================================================================*/
 
@@ -52,7 +52,7 @@ bool InterruptibleThread::wait (int milliSeconds)
   // Can only be called from the current thread
   vfassert (isTheCurrentThread ());
 
-  bool interrupted;
+  bool interrupted = false;
 
   for (;;)
   {
@@ -67,7 +67,7 @@ bool InterruptibleThread::wait (int milliSeconds)
       break;
     }
     else if (m_state.tryChangeState (stateRun, stateWait) ||
-             m_state.tryChangeState (stateReturn, stateWait))
+      m_state.tryChangeState (stateReturn, stateWait))
     {
       // Transitioned to wait.
       // Caller must wait now.
@@ -81,18 +81,18 @@ bool InterruptibleThread::wait (int milliSeconds)
     interrupted = Thread::wait (milliSeconds);
 
     if (!interrupted)
-	{
-	  if (m_state.tryChangeState (stateWait, stateRun))
-	  {
-		interrupted = false;
-	  }
-	  else
-	  {
-		vfassert (m_state == stateInterrupt);
+    {
+      if (m_state.tryChangeState (stateWait, stateRun))
+      {
+        interrupted = false;
+      }
+      else
+      {
+        vfassert (m_state == stateInterrupt);
 
-		interrupted = true;
-	  }
-	}
+        interrupted = true;
+      }
+    }
   }
 
   return interrupted;
@@ -105,8 +105,8 @@ void InterruptibleThread::interrupt ()
     int const state = m_state;
 
     if (state == stateInterrupt ||
-        state == stateReturn ||
-        m_state.tryChangeState (stateRun, stateInterrupt))
+      state == stateReturn ||
+      m_state.tryChangeState (stateRun, stateInterrupt))
     {
       // Thread will see this at next interruption point.
       break;
@@ -119,7 +119,7 @@ void InterruptibleThread::interrupt ()
   }
 }
 
-InterruptibleThread::Interrupted InterruptibleThread::interruptionPoint ()
+bool InterruptibleThread::interruptionPoint ()
 {
   // Can only be called from the current thread
   vfassert (isTheCurrentThread ());
@@ -141,7 +141,7 @@ InterruptibleThread::Interrupted InterruptibleThread::interruptionPoint ()
   //bool const interrupted = m_state.tryChangeState (stateInterrupt, stateReturn);
   bool const interrupted = m_state.tryChangeState (stateInterrupt, stateRun);
 
-  return InterruptibleThread::Interrupted (interrupted);
+  return interrupted;
 }
 
 InterruptibleThread::id InterruptibleThread::getId () const
@@ -173,32 +173,36 @@ void InterruptibleThread::run ()
 namespace CurrentInterruptibleThread
 {
 
-InterruptibleThread::Interrupted interruptionPoint ()
+bool interruptionPoint ()
 {
-  bool interrupted;
+  bool interrupted = false;
 
-  Thread* thread = Thread::getCurrentThread();
+  Thread* const thread = Thread::getCurrentThread();
 
   // Can't use interruption points on the message thread
-  vfassert (thread != 0);
-  
+  vfassert (thread != nullptr);
+
   if (thread)
   {
-    InterruptibleThread* interruptibleThread = dynamic_cast <InterruptibleThread*> (thread);
+    InterruptibleThread* const interruptibleThread = dynamic_cast <InterruptibleThread*> (thread);
 
     vfassert (interruptibleThread != nullptr);
 
     if (interruptibleThread != nullptr)
+    {
       interrupted = interruptibleThread->interruptionPoint ();
+    }
     else
+    {
       interrupted = false;
+    }
   }
   else
   {
     interrupted = false;
   }
 
-  return InterruptibleThread::Interrupted (interrupted);
+  return interrupted;
 }
 
 }

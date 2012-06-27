@@ -22,11 +22,6 @@
 #ifndef VF_PARALLELFOR_VFHEADER
 #define VF_PARALLELFOR_VFHEADER
 
-#include "../memory/vf_AllocatedBy.h"
-
-#include "vf_GlobalThreadGroup.h"
-#include "vf_ThreadGroup.h"
-
 /*============================================================================*/
 /**
   @ingroup vf_concurrent

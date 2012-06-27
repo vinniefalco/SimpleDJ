@@ -22,8 +22,6 @@
 #ifndef VF_GUICALLQUEUE_VFHEADER
 #define VF_GUICALLQUEUE_VFHEADER
 
-#include "vf_CallQueue.h"
-
 /*============================================================================*/
 /** 
   A CallQueue handled by the Juce message thread (gui).
@@ -66,6 +64,8 @@ private:
   void signal ();
   void reset ();
   void handleAsyncUpdate ();
+
+  ThreadWithCallQueue m_thread;
 };
 
 #endif

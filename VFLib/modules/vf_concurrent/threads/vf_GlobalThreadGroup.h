@@ -22,8 +22,6 @@
 #ifndef VF_GLOBALTHREADGROUP_VFHEADER
 #define VF_GLOBALTHREADGROUP_VFHEADER
 
-#include "vf_ThreadGroup.h"
-
 /*============================================================================*/
 /**
   @ingroup vf_concurrent

@@ -22,9 +22,6 @@
 #ifndef VF_CALLQUEUE_VFHEADER
 #define VF_CALLQUEUE_VFHEADER
 
-#include "../memory/vf_AllocatedBy.h"
-#include "../memory/vf_FifoFreeStore.h"
-
 /*============================================================================*/
 /**
   @ingroup vf_concurrent
@@ -377,6 +374,8 @@ protected:
       Functors may not be added after this routine is called. This is used for
       diagnostics, to track down spurious calls during application shutdown
       or exit. Derived classes may call this if the appropriate time is known.
+
+      The queue is synchronized after it is closed.
   */
   void close ();
 

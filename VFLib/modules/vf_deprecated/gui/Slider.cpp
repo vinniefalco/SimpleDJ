@@ -169,14 +169,14 @@ void Slider::mouseDoubleClick (const MouseEvent& e)
     m_model->setValue (m_model->getDefaultValue ());
 }
 
-void Slider::mouseWheelMove (const MouseEvent& e, float wheelIncrementX, float wheelIncrementY)
+void Slider::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel)
 {
   if (isEnabled())
   {
     int stepCount = getStepCount();
     if (stepCount > 0)
     {
-      double step = 1./getStepCount() * ( wheelIncrementY > 0 ? 1 : -1 );
+      double step = (wheel.isReversed ? -1. : 1) /getStepCount() * ( wheel.deltaY > 0 ? 1 : -1 );
       double newValue = m_model->getValue() + step;
       m_model->setValue (newValue);
     }

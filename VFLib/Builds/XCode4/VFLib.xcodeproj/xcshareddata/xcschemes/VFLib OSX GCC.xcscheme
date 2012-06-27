@@ -13,9 +13,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2E84C44B1549FD10006923F8"
-               BuildableName = "libOSX copy.a"
-               BlueprintName = "iOS"
+               BlueprintIdentifier = "2E915CD61575228C00929EBA"
+               BuildableName = "libVFLib OSX Apple copy.a"
+               BlueprintName = "VFLib OSX GCC"
                ReferencedContainer = "container:VFLib.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

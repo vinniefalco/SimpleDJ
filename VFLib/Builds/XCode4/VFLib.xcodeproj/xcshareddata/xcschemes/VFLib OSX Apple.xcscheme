@@ -14,8 +14,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2E08D9BE1549EF2E006A6931"
-               BuildableName = "libOSX.a"
-               BlueprintName = "OSX"
+               BuildableName = "libVFLib OSX Apple.a"
+               BlueprintName = "VFLib OSX Apple"
                ReferencedContainer = "container:VFLib.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

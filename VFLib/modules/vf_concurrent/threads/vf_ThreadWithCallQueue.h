@@ -22,8 +22,6 @@
 #ifndef VF_THREADWITHCALLQUEUE_VFHEADER
 #define VF_THREADWITHCALLQUEUE_VFHEADER
 
-#include "vf_CallQueue.h"
-
 /*============================================================================*/
 /** 
     An InterruptibleThread with a CallQueue.
@@ -45,7 +43,7 @@
 class ThreadWithCallQueue : public CallQueue
 {
 public:
-  typedef Function <const InterruptibleThread::Interrupted (void)> idle_t;
+  typedef Function <bool (void)> idle_t;
   typedef Function <void (void)> init_t;
   typedef Function <void (void)> exit_t;
 
@@ -110,7 +108,7 @@ public:
     @return `false` if the idle function may continue, or `true` if the
             idle function must return as soon as possible.
   */
-  const InterruptibleThread::Interrupted interruptionPoint ();
+  bool interruptionPoint ();
 
   /* Interrupts the idle function.
   */

@@ -22,11 +22,6 @@
 #ifndef VF_THREADGROUP_VFHEADER
 #define VF_THREADGROUP_VFHEADER
 
-#include "../memory/vf_AllocatedBy.h"
-#include "../memory/vf_FifoFreeStore.h"
-
-#include "vf_CallQueue.h"
-
 /*============================================================================*/
 /**
   @ingroup vf_concurrent

@@ -274,13 +274,15 @@
 #if JUCE_MSVC
 # include <crtdbg.h>
 # include <functional>
-#elif JUCE_IOS || JUCE_MAC
+#elif JUCE_IOS
 # if VF_USE_BOOST
 #  include <boost/bind.hpp>
 #  include <boost/function.hpp>
 # else
 #  include <tr1/functional>
 # endif
+#elif JUCE_MAC
+# include <functional>
 #else
 # include <bind>
 # include <functional>
