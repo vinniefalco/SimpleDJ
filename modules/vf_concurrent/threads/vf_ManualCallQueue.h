@@ -22,8 +22,6 @@
 #ifndef VF_MANUALCALLQUEUE_VFHEADER
 #define VF_MANUALCALLQUEUE_VFHEADER
 
-#include "vf_CallQueue.h"
-
 /*============================================================================*/
 /**
     A CallQueue that requires periodic manual synchronization.

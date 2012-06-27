@@ -19,39 +19,9 @@
 */
 /*============================================================================*/
 
-namespace
-{
-
-// This tries to solve the problem where continual streams of work
-// cause some painting not to occur. This bug was fixed in JUCE.
-//
-void updateAllTopLevelWindows ()
-{
-#if JUCE_WINDOWS
-  // This screws up
-  static bool inUpdate = false;
-
-  if (!inUpdate)
-  {
-    inUpdate = true;
-
-    int n = TopLevelWindow::getNumTopLevelWindows();
-    for (int i = 0; i < n; ++i)
-    {
-      TopLevelWindow* w = TopLevelWindow::getTopLevelWindow (i);
-      ComponentPeer* peer = w->getPeer ();
-      if (peer)
-        peer->performAnyPendingRepaintsNow ();
-    }
-
-    inUpdate = false;
-  }
-#endif
-}
-
-}
-
-GuiCallQueue::GuiCallQueue () : CallQueue ("GuiCallQueue")
+GuiCallQueue::GuiCallQueue ()
+  : CallQueue ("GuiCallQueue")
+  , m_thread ("GuiCallQueue")
 {
   // This object must be created from the Juce Message Thread.
   //
@@ -60,10 +30,14 @@ GuiCallQueue::GuiCallQueue () : CallQueue ("GuiCallQueue")
   // Associate the CallQueue with the message thread right away.
   //
   synchronize ();
+
+  m_thread.start ();
 }
 
 void GuiCallQueue::close ()
 {
+  m_thread.stop (true);
+
   CallQueue::close ();
 }
 
@@ -74,7 +48,7 @@ bool GuiCallQueue::synchronize ()
 
 void GuiCallQueue::signal ()
 {
-  triggerAsyncUpdate ();
+  m_thread.call (&AsyncUpdater::triggerAsyncUpdate, (AsyncUpdater*)this);
 }
 
 void GuiCallQueue::reset ()

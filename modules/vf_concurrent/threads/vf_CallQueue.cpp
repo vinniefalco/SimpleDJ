@@ -106,6 +106,8 @@ bool CallQueue::synchronize ()
 void CallQueue::close ()
 {
   m_closed.signal ();
+
+  synchronize ();
 }
 
 // Process everything in the queue. The list of pending calls is

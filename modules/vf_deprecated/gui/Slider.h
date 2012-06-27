@@ -96,7 +96,7 @@ protected:
   void mouseDown (const MouseEvent& e);
   void mouseDrag (const MouseEvent& e);
   void mouseDoubleClick (const MouseEvent& e);
-  void mouseWheelMove (const MouseEvent& e, float wheelIncrementX, float wheelIncrementY);
+  void mouseWheelMove (const MouseEvent& event, const MouseWheelDetails& wheel);
   void enablementChanged ();
   void updateView ();
 

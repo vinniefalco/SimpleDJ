@@ -22,8 +22,6 @@
 #ifndef VF_CONCURRENTSTATE_VFHEADER
 #define VF_CONCURRENTSTATE_VFHEADER
 
-#include "vf_ReadWriteMutex.h"
-
 /*============================================================================*/
 /** 
     Structured access to a shared state.

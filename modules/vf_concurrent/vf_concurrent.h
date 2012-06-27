@@ -135,6 +135,7 @@
 
 namespace vf
 {
+
 #include "memory/vf_AllocatedBy.h"
 #include "memory/vf_FifoFreeStore.h"
 #if VF_USE_BOOST
@@ -146,18 +147,22 @@ namespace vf
 #include "memory/vf_GlobalPagedFreeStore.h"
 #include "memory/vf_PagedFreeStore.h"
 
+#include "threads/vf_ReadWriteMutex.h"
+#include "threads/vf_ThreadGroup.h"
+
 #include "threads/vf_CallQueue.h"
 #include "threads/vf_ConcurrentObject.h"
 #include "threads/vf_ConcurrentState.h"
 #include "threads/vf_GlobalThreadGroup.h"
-#include "threads/vf_GuiCallQueue.h"
 #include "threads/vf_Listeners.h"
-#include "threads/vf_MessageThread.h"
 #include "threads/vf_ManualCallQueue.h"
 #include "threads/vf_ParallelFor.h"
-#include "threads/vf_ReadWriteMutex.h"
-#include "threads/vf_ThreadGroup.h"
 #include "threads/vf_ThreadWithCallQueue.h"
+
+#include "threads/vf_GuiCallQueue.h"
+
+#include "threads/vf_MessageThread.h"
+
 }
 
 #endif

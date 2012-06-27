@@ -25,46 +25,28 @@
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
-
-  This file incorporates work covered by the following copyright and
-  permission notice:  
-
-    The Loki Library
-    Copyright (c) 2001 by Andrei Alexandrescu
-    This code accompanies the book:
-    Alexandrescu, Andrei. "Modern C++ Design: Generic Programming and Design 
-        Patterns Applied". Copyright (c) 2001. Addison-Wesley.
-    Permission to use, copy, modify, distribute and sell this software for any 
-        purpose is hereby granted without fee, provided that the above copyright 
-        notice appear in all copies and that both that copyright notice and this 
-        permission notice appear in supporting documentation.
-    The author or Addison-Welsey Longman make no representations about the 
-        suitability of this software for any purpose. It is provided "as is" 
-        without express or implied warranty.
 */
 //==============================================================================
 
-#ifndef LUABRIDGE_SHARED_PTR_HEADER
-#define LUABRIDGE_SHARED_PTR_HEADER
+#ifndef LUABRIDGE_REFCOUNTEDPTR_HEADER
+#define LUABRIDGE_REFCOUNTEDPTR_HEADER
 
 #ifdef _MSC_VER
 # include <hash_map>
 #else
+# include <stdint.h>
 # include <ext/hash_map>
 #endif
 
-namespace luabridge
-{
-
 //==============================================================================
 /**
-  Support for our shared_ptr.
+  Support for our RefCountedPtr.
 */
-struct shared_ptr_base
+struct RefCountedPtrBase
 {
   // Declaration of container for the refcounts
 #ifdef _MSC_VER
-  typedef stdext::hash_map <const void *, int> refcounts_t;
+  typedef stdext::hash_map <const void *, int> RefCountsType;
 #else
   struct ptr_hash
   {
@@ -74,13 +56,13 @@ struct shared_ptr_base
       return H(uintptr_t(v));
     }
   };
-  typedef __gnu_cxx::hash_map<const void *, int, ptr_hash> refcounts_t;
+  typedef __gnu_cxx::hash_map<const void *, int, ptr_hash> RefCountsType;
 #endif
 
 protected:
-  inline refcounts_t& refcounts_ ()
+  inline RefCountsType& getRefCounts ()
   {
-    static refcounts_t refcounts;
+    static RefCountsType refcounts;
     return refcounts ;
   }
 };
@@ -89,7 +71,7 @@ protected:
 /**
   A reference counted smart pointer.
 
-  The api is compatible with boost::shared_ptr and std::shared_ptr, in the
+  The api is compatible with boost::RefCountedPtr and std::RefCountedPtr, in the
   sense that it implements a strict subset of the functionality.
 
   This implementation uses a hash table to look up the reference count
@@ -97,93 +79,93 @@ protected:
 
   @tparam T The class type.
 
-  @todo Decompose shared_ptr using a policy. At a minimum, the underlying
+  @todo Decompose RefCountedPtr using a policy. At a minimum, the underlying
         reference count should be policy based (to support atomic operations)
         and the delete behavior should be policy based (to support custom
         disposal methods).
 
-  @todo Provide an intrusive version of shared_ptr.
+  @todo Provide an intrusive version of RefCountedPtr.
 */
 template <class T>
-class shared_ptr : private shared_ptr_base
+class RefCountedPtr : private RefCountedPtrBase
 {
 public:
   template <typename Other>
   struct rebind
   {
-    typedef shared_ptr <Other> other;
+    typedef RefCountedPtr <Other> other;
   };
 
   /** Construct as nullptr or from existing pointer to T.
 
       @param p The optional, existing pointer to assign from.
   */
-  shared_ptr (T* p = 0) : m_p (p)
+  RefCountedPtr (T* p = 0) : m_p (p)
   {
-    ++refcounts_ () [m_p];
+    ++getRefCounts () [m_p];
   }
 
-  /** Construct from another shared_ptr.
+  /** Construct from another RefCountedPtr.
 
-      @param rhs The shared_ptr to assign from.
+      @param rhs The RefCountedPtr to assign from.
   */
-  shared_ptr (shared_ptr <T> const& rhs) : m_p (rhs.get())
+  RefCountedPtr (RefCountedPtr <T> const& rhs) : m_p (rhs.get())
   {
-    ++refcounts_ () [m_p];
+    ++getRefCounts () [m_p];
   }
 
-  /** Construct from a shared_ptr of a different type.
+  /** Construct from a RefCountedPtr of a different type.
 
       @invariant A pointer to U must be convertible to a pointer to T.
 
-      @param  rhs The shared_ptr to assign from.
+      @param  rhs The RefCountedPtr to assign from.
       @tparam U   The other object type.
   */
   template <typename U>
-  shared_ptr (shared_ptr <U> const& rhs) : m_p (static_cast <T*> (rhs.get()))
+  RefCountedPtr (RefCountedPtr <U> const& rhs) : m_p (static_cast <T*> (rhs.get()))
   {
-    ++refcounts_ () [m_p];
+    ++getRefCounts () [m_p];
   }
 
   /** Release the object.
 
       If there are no more references then the object is deleted.
   */
-  ~shared_ptr ()
+  ~RefCountedPtr ()
   {
     reset();
   }
 
-  /** Assign from another shared_ptr.
+  /** Assign from another RefCountedPtr.
 
-      @param  rhs The shared_ptr to assign from.
-      @return     A reference to the shared_ptr.
+      @param  rhs The RefCountedPtr to assign from.
+      @return     A reference to the RefCountedPtr.
   */
-  shared_ptr <T>& operator= (shared_ptr <T> const& rhs)
+  RefCountedPtr <T>& operator= (RefCountedPtr <T> const& rhs)
   {
     if (m_p != rhs.m_p)
     {
       reset ();
       m_p = rhs.m_p;
-      ++refcounts_ () [m_p];
+      ++getRefCounts () [m_p];
     }
     return *this;
   }
 
-  /** Assign from another shared_ptr of a different type.
+  /** Assign from another RefCountedPtr of a different type.
 
       @note A pointer to U must be convertible to a pointer to T.
 
       @tparam U   The other object type.
-      @param  rhs The other shared_ptr to assign from.
-      @return     A reference to the shared_ptr.
+      @param  rhs The other RefCountedPtr to assign from.
+      @return     A reference to the RefCountedPtr.
   */
   template <typename U>
-  shared_ptr <T>& operator= (shared_ptr <U> const& rhs)
+  RefCountedPtr <T>& operator= (RefCountedPtr <U> const& rhs)
   {
     reset ();
     m_p = static_cast <T*> (rhs.get());
-    ++refcounts_ () [m_p];
+    ++getRefCounts () [m_p];
     return *this;
   }
 
@@ -222,7 +204,7 @@ public:
   */
   long use_count () const
   {
-    return refcounts_ () [m_p];
+    return getRefCounts () [m_p];
   }
 
   /** Release the pointer.
@@ -234,7 +216,7 @@ public:
   {
     if (m_p != 0)
     {
-      if (--refcounts_ () [m_p] <= 0)
+      if (--getRefCounts () [m_p] <= 0)
         delete m_p;
 
       m_p = 0;
@@ -243,6 +225,22 @@ public:
 
 private:
   T* m_p;
+};
+
+//==============================================================================
+
+namespace luabridge
+{
+
+template <class T>
+struct ContainerTraits <RefCountedPtr <T> >
+{
+  typedef T Type;
+
+  static T* get (RefCountedPtr <T> const& c)
+  {
+    return c.get ();
+  }
 };
 
 }

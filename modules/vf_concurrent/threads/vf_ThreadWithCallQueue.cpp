@@ -95,7 +95,7 @@ void ThreadWithCallQueue::stop (bool const wait)
 // If interruptionPoint returns true or throws, it must
 // not be called again before the thread has the opportunity to reset.
 //
-const InterruptibleThread::Interrupted ThreadWithCallQueue::interruptionPoint ()
+bool ThreadWithCallQueue::interruptionPoint ()
 {
   return m_thread.interruptionPoint ();
 }
@@ -131,8 +131,8 @@ void ThreadWithCallQueue::run ()
     if (m_shouldStop)
       break;
 
-    // idle_t::None() must return a non signaled Thread::Interrupted.
-    InterruptibleThread::Interrupted interrupted = m_idle ();
+    // idle_t::None() must return false for this to work.
+    bool interrupted = m_idle ();
 
     if (!interrupted)
       interrupted = interruptionPoint ();

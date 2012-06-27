@@ -15,7 +15,23 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\modules\vf_audio\midi\vf_MidiDevices.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\modules\vf_audio\midi\vf_MidiInput.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\modules\vf_audio\sources\vf_NoiseAudioSource.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\modules\vf_audio\sources\vf_SeekingAudioSource.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\modules\vf_audio\sources\vf_SeekingSampleSource.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -291,6 +307,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\modules\vf_gui\graphics\vf_BlendImage.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\modules\vf_gui\graphics\vf_FreeTypeFaces.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -475,7 +495,12 @@
     <ClInclude Include="..\..\modules\vf_audio\buffers\vf_AudioBufferPool.h" />
     <ClInclude Include="..\..\modules\vf_audio\buffers\vf_AudioSampleBufferArray.h" />
     <ClInclude Include="..\..\modules\vf_audio\buffers\vf_ScopedAudioSampleBuffer.h" />
+    <ClInclude Include="..\..\modules\vf_audio\midi\vf_MidiDevices.h" />
+    <ClInclude Include="..\..\modules\vf_audio\midi\vf_MidiInput.h" />
     <ClInclude Include="..\..\modules\vf_audio\sources\vf_NoiseAudioSource.h" />
+    <ClInclude Include="..\..\modules\vf_audio\sources\vf_SampleSource.h" />
+    <ClInclude Include="..\..\modules\vf_audio\sources\vf_SeekingAudioSource.h" />
+    <ClInclude Include="..\..\modules\vf_audio\sources\vf_SeekingSampleSource.h" />
     <ClInclude Include="..\..\modules\vf_audio\vf_audio.h" />
     <ClInclude Include="..\..\modules\vf_bzip2\bzip2\bzlib.h" />
     <ClInclude Include="..\..\modules\vf_bzip2\bzip2\bzlib_private.h" />
@@ -582,6 +607,7 @@
     <ClInclude Include="..\..\modules\vf_gui\components\vf_ComponentBroadcast.h" />
     <ClInclude Include="..\..\modules\vf_gui\components\vf_ComponentNotifyParent.h" />
     <ClInclude Include="..\..\modules\vf_gui\components\vf_TransparentBorder.h" />
+    <ClInclude Include="..\..\modules\vf_gui\graphics\vf_BlendImage.h" />
     <ClInclude Include="..\..\modules\vf_gui\graphics\vf_FreeTypeFaces.h" />
     <ClInclude Include="..\..\modules\vf_gui\graphics\vf_LabColour.h" />
     <ClInclude Include="..\..\modules\vf_gui\graphics\vf_RadialImageConvolutionKernel.h" />
@@ -595,6 +621,7 @@
     <ClInclude Include="..\..\modules\vf_gui\mouse\vf_MouseEnterGroup.h" />
     <ClInclude Include="..\..\modules\vf_gui\vf_gui.h" />
     <ClInclude Include="..\..\modules\vf_luabridge\LuaBridge\LuaBridge.h" />
+    <ClInclude Include="..\..\modules\vf_luabridge\LuaBridge\LuaBridgeExtras.h" />
     <ClInclude Include="..\..\modules\vf_luabridge\vf_luabridge.h" />
     <ClInclude Include="..\..\modules\vf_lua\lua\lapi.h" />
     <ClInclude Include="..\..\modules\vf_lua\lua\lauxlib.h" />
