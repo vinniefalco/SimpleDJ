@@ -1,21 +1,32 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
@@ -45,6 +56,13 @@ public:
 
   ~ThreadGroup ();
 
+  /** Allocator access.
+  */
+  inline AllocatorType& getAllocator ()
+  {
+    return m_allocator;
+  }
+
   /** Determine the number of threads in the group.
 
       @return The number of threads in the group.
@@ -57,9 +75,12 @@ public:
       A call is always guaranteed to execute.
 
       @param maxThreads The maximum number of threads to use, or -1 for all.
+
+      @param f The functor to call for each thread.
   */
+  /** @{ */
   template <class Functor>
-  void callf (int maxThreads, Functor const& f)
+  void callf (int maxThreads, Functor f)
   {
     jassert (maxThreads > 0 || maxThreads == -1);
 
@@ -75,58 +96,43 @@ public:
     }
   }
 
-  /** Allocator access.
-  */
-  inline AllocatorType& getAllocator ()
-  {
-    return m_allocator;
-  }
-
   template <class Fn>
   void call (int maxThreads, Fn f)
-  { callf (maxThreads, vf::bind (f)); }
+    { callf (maxThreads, vf::bind (f)); }
 
-  template <class Fn,              typename  T1>
-  void call (int maxThreads, Fn f, const T1& t1)
-  { callf (maxThreads, vf::bind (f, t1)); }
+  template <class Fn, class T1>
+  void call (int maxThreads, Fn f, T1 t1)
+    { callf (maxThreads, vf::bind (f, t1)); }
 
-  template <class Fn,              typename  T1, typename  T2>
-  void call (int maxThreads, Fn f, const T1& t1, const T2& t2)
-  { callf (maxThreads, vf::bind (f, t1, t2)); }
+  template <class Fn, class T1, class T2>
+  void call (int maxThreads, Fn f, T1 t1, T2 t2)
+    { callf (maxThreads, vf::bind (f, t1, t2)); }
 
-  template <class Fn,              typename  T1, typename  T2, typename  T3>
-  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3)
-  { callf (maxThreads, vf::bind (f, t1, t2, t3)); }
+  template <class Fn, class T1, class T2, class T3>
+  void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3)
+    { callf (maxThreads, vf::bind (f, t1, t2, t3)); }
 
-  template <class Fn,              typename  T1, typename  T2,
-                                   typename  T3, typename  T4>
-  void call (int maxThreads, Fn f, const T1& t1, const T2& t2,
-                                   const T3& t3, const T4& t4)
-  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4)); }
+  template <class Fn, class T1, class T2, class T3, class T4>
+  void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4)
+    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4)); }
 
-  template <class Fn,              typename  T1, typename  T2, typename  T3,
-                                   typename  T4, typename  T5>
-  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3,
-                                   const T4& t4, const T5& t5)
-  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5>
+  void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
+    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5)); }
 
-  template <class Fn,              typename  T1, typename  T2, typename  T3,
-                                   typename  T4, typename  T5, typename  T6>
-  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3,
-                                   const T4& t4, const T5& t5, const T6& t6)
-  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6>
+  void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
+    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6)); }
 
-  template <class Fn,              typename  T1, typename  T2, typename  T3, typename  T4,
-                                   typename  T5, typename  T6, typename  T7>
-  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3, const T4& t4,
-                                   const T5& t5, const T6& t6, const T7& t7)
-  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6, t7)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
+  void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
+    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6, t7)); }
 
-  template <class Fn,              typename  T1, typename  T2, typename  T3, typename  T4,
-                                   typename  T5, typename  T6, typename  T7, typename  T8>
-  void call (int maxThreads, Fn f, const T1& t1, const T2& t2, const T3& t3, const T4& t4,
-                                   const T5& t5, const T6& t6, const T7& t7, const T8& t8)
-  { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
+  void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
+    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8)); }
+
+  /** @} */
 
 private:
   void stopThreads (int numberOfThreadsToStop);

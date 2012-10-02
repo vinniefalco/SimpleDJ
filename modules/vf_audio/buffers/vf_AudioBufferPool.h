@@ -1,21 +1,32 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
@@ -24,94 +35,94 @@
 
 /*============================================================================*/
 /**
-    Temporary audio buffers for intermediate calculations.
+  Temporary audio buffers.
 
-    This container provides a pool of audio buffers that grow to match the
-    working set requirements based on actual usage. Since the buffers never
-    shrink or get deleted, there are almost no calls to the system to allocate
-    or free memory.
+  This container provides a pool of audio buffers that grow to match the
+  working set requirements based on actual usage. Since the buffers never
+  shrink or get deleted, there are almost no calls to the system to allocate
+  or free memory.
 
-    This is ideal for AudioIODeviceCallback implementations which process
-    audio buffers and require temporary storage for intermediate calculations.
-    The usage style is to request a temporary buffer of the desired size,
-    perform calculations, and then release the buffer when finished.
+  This is ideal for AudioIODeviceCallback implementations which process
+  audio buffers and require temporary storage for intermediate calculations.
+  The usage style is to request a temporary buffer of the desired size,
+  perform calculations, and then release the buffer when finished.
 
-    Buffers are intelligently resized and recycled to consume the smallest
-    amount of memory possible based on the usage pattern, with no effort
-    required by the programmer.
+  Buffers are intelligently resized and recycled to consume the smallest
+  amount of memory possible based on the usage pattern, with no effort
+  required by the programmer.
 
-    To use the container, create an instance of the AudioBufferPoolType
-    template, and specify the type of lock to use for synchronization. By
-    default, a CriticalSection is used but if you aren't sharing the pool
-    between threads, you can use a DummyCriticalSection instead.
+  To use the container, create an instance of the AudioBufferPoolType
+  template, and specify the type of lock to use for synchronization. By
+  default, a CriticalSection is used but if you aren't sharing the pool
+  between threads, you can use a DummyCriticalSection instead.
 
-    Here's an example:
+  Here's an example:
 
-    @code
+  @code
 
-    AudioBufferPoolType <DummyCriticalSection> pool;
+  AudioBufferPoolType <DummyCriticalSection> pool;
 
-    // Request a stereo buffer with room for 1024 samples.
-    AudioBufferPool::Buffer* buffer = pool.requestBuffer (2, 1024);
+  // Request a stereo buffer with room for 1024 samples.
+  AudioBufferPool::Buffer* buffer = pool.requestBuffer (2, 1024);
 
-    // (Process buffer)
+  // (Process buffer)
 
-    // Release the buffer to be re-used later.
-    pool.releaseBuffer (buffer);
+  // Release the buffer to be re-used later.
+  pool.releaseBuffer (buffer);
 
-    @endcode
+  @endcode
 
-    Since Buffer is derived from AudioSampleBuffer, it can be used anywhere
-    an AudioSampleBuffer is expected. This example requests a temporary buffer
-    and stores it in an AudioSourceChannelInfo:
+  Since Buffer is derived from AudioSampleBuffer, it can be used anywhere
+  an AudioSampleBuffer is expected. This example requests a temporary buffer
+  and stores it in an AudioSourceChannelInfo:
 
-    @code
+  @code
 
-    // Request a stereo buffer with room for 1024 samples.
-    AudioBufferPool::Buffer* buffer = pool.requestBuffer (2, 1024);
+  // Request a stereo buffer with room for 1024 samples.
+  AudioBufferPool::Buffer* buffer = pool.requestBuffer (2, 1024);
 
-    // Fill out the AudioSourceChannelInfo structure with the buffer
-    AudioSourceChannelInfo info;
-    info.buffer = buffer;         // allowed, since AudioBufferPool::Buffer *
-                                  // is-a AudioSampleBuffer *
-    info.startSample = 0;
-    info.numSamples = 1024;
+  // Fill out the AudioSourceChannelInfo structure with the buffer
+  AudioSourceChannelInfo info;
+  info.buffer = buffer;         // allowed, since AudioBufferPool::Buffer *
+                                // is-a AudioSampleBuffer *
+  info.startSample = 0;
+  info.numSamples = 1024;
 
-    // Clear out the range of samples
-    info.clearActiveBufferRegion ();
+  // Clear out the range of samples
+  info.clearActiveBufferRegion ();
 
-    @endcode
+  @endcode
 
-    @see AudioBufferPoolType, ScopedAudioSampleBuffer
-    @ingroup vf_audio
+  @see AudioBufferPoolType, ScopedAudioSampleBuffer
+
+  @ingroup vf_audio
 */
 class AudioBufferPool
 {
 public:
-  /** @internal
-  
-      @brief Size tracking for AudioSampleBuffer.
+  /**
+    Size tracking for AudioSampleBuffer.
 
-      This provides the getNumSamplesAllocated () function necessary for the
-      implementation of AudioBufferPool. It otherwise acts like a normal
-      AudioSampleBuffer.
+    This provides the getNumSamplesAllocated () function necessary for the
+    implementation of AudioBufferPool. It otherwise acts like a normal
+    AudioSampleBuffer.
 
-      @ingroup vf_audio internal
+    @ingroup vf_audio
   */
   class Buffer : public AudioSampleBuffer
   {
   public:
-	Buffer (int numChannels, int numSamples);
+    Buffer (int numChannels, int numSamples);
 
-	void resize (int newNumChannels, int newNumSamples);
+    void resize (int newNumChannels, int newNumSamples);
 
     /** @return The absolute number of samples available in the storage area,
                 regardless of the number of channels.
     */
-	int getNumSamplesAllocated () const;
+    int getNumSamplesAllocated () const;
 
   private:
-	int m_samplesAllocated;
+    int m_samplesAllocated;
   };
 
   AudioBufferPool ();

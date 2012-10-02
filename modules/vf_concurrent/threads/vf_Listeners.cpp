@@ -1,28 +1,39 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
 // CallQueue item to process a Call for a particular listener.
 // This is used to avoid bind overhead.
 //
-class ListenersBase::CallWork : public CallQueue::Call
+class ListenersBase::CallWork : public CallQueue::Work
 {
 public:
   inline CallWork (ListenersBase::Call* const c, void* const listener)
@@ -45,7 +56,7 @@ private:
 // CallQueue item to process a Call for a group.
 // This is used to avoid bind overhead.
 //
-class ListenersBase::GroupWork : public CallQueue::Call
+class ListenersBase::GroupWork : public CallQueue::Work
 {
 public:
   inline GroupWork (Group* group,
@@ -73,7 +84,7 @@ private:
 // CallQueue item to process a call for a particular listener.
 // This is used to avoid bind overhead.
 //
-class ListenersBase::GroupWork1 : public CallQueue::Call
+class ListenersBase::GroupWork1 : public CallQueue::Work
 {
 public:
   inline GroupWork1 (Group* group,
@@ -117,7 +128,7 @@ struct ListenersBase::Proxy::Entry : Entries::Node,
 
   ~Entry ()
   {
-    vfassert (call.get () == 0);
+    jassert (call.get () == 0);
   }
 
   Group::Ptr group;
@@ -128,7 +139,7 @@ struct ListenersBase::Proxy::Entry : Entries::Node,
 
 // A Group maintains a list of Entry.
 //
-struct ListenersBase::Group::Entry : List::Node,
+struct ListenersBase::Group::Entry : List <Entry>::Node,
                                      AllocatedBy <AllocatorType>
 {
   Entry (void* const l, const timestamp_t t)
@@ -164,10 +175,10 @@ ListenersBase::Group::Group (CallQueue& callQueue)
 ListenersBase::Group::~Group ()
 {
   // If this goes off it means a Listener forgot to remove itself.
-  vfassert (m_list.empty ());
+  jassert (m_list.empty ());
 
   // shouldn't be deleting group during a call
-  vfassert (m_listener == 0);
+  jassert (m_listener == 0);
 }
 
 // Add the listener with the given timestamp.
@@ -180,10 +191,10 @@ void ListenersBase::Group::add (void* listener,
 {
   ReadWriteMutex::ScopedWriteLockType lock (m_mutex);
 
-  vfassert (!contains (listener));
+  jassert (!contains (listener));
 
   // Should never be able to get here while in call()
-  vfassert (m_listener == 0);
+  jassert (m_listener == 0);
 
   // Add the listener and remember the time stamp so we don't
   // send it calls that were queued earlier than the add().
@@ -200,9 +211,9 @@ bool ListenersBase::Group::remove (void* listener)
   ReadWriteMutex::ScopedWriteLockType lock (m_mutex);
 
   // Should never be able to get here while in call()
-  vfassert (m_listener == 0);
+  jassert (m_listener == 0);
 
-  for (List::iterator iter = m_list.begin(); iter != m_list.end(); ++iter)
+  for (List <Entry>::iterator iter = m_list.begin(); iter != m_list.end(); ++iter)
   {
     Entry* entry = &(*iter);
     if (entry->listener == listener)
@@ -222,7 +233,7 @@ bool ListenersBase::Group::remove (void* listener)
 //
 bool ListenersBase::Group::contains (void* const listener) /*const*/
 {
-  for (List::iterator iter = m_list.begin(); iter != m_list.end(); iter++)
+  for (List <Entry>::iterator iter = m_list.begin(); iter != m_list.end(); iter++)
     if (iter->listener == listener)
       return true;
   return false;
@@ -230,13 +241,13 @@ bool ListenersBase::Group::contains (void* const listener) /*const*/
 
 void ListenersBase::Group::call (Call* const c, const timestamp_t timestamp)
 {
-  vfassert (!empty ());
+  jassert (!empty ());
   m_fifo.callp (new (m_fifo.getAllocator()) GroupWork (this, c, timestamp));
 }
 
 void ListenersBase::Group::queue (Call* const c, const timestamp_t timestamp)
 {
-  vfassert (!empty ());
+  jassert (!empty ());
   m_fifo.queuep (new (m_fifo.getAllocator()) GroupWork (this, c, timestamp));
 }
 
@@ -268,13 +279,13 @@ void ListenersBase::Group::do_call (Call* const c, const timestamp_t timestamp)
     ReadWriteMutex::ScopedReadLockType lock (m_mutex);
 
     // Recursion not allowed.
-    vfassert (m_listener == 0);
+    jassert (m_listener == 0);
 
     // The body of the loop MUST NOT cause listeners to get called.
     // Therefore, we don't have to worry about listeners removing
     // themselves while iterating the list.
     //
-    for (List::iterator iter = m_list.begin(); iter != m_list.end();)
+    for (List <Entry>::iterator iter = m_list.begin(); iter != m_list.end();)
     {
       Entry* entry = &(*iter++);
 
@@ -290,7 +301,7 @@ void ListenersBase::Group::do_call (Call* const c, const timestamp_t timestamp)
         // stack to guarantee that these calls will not execute immediately.
         // They will be handled by the tail recusion unrolling in the
         // thread queue.
-        vfassert (m_fifo.isBeingSynchronized ());
+        jassert (m_fifo.isBeingSynchronized ());
 
         m_fifo.callp (new (m_fifo.getAllocator()) CallWork (c, m_listener));
 
@@ -313,9 +324,9 @@ void ListenersBase::Group::do_call1 (Call* const c, const timestamp_t timestamp,
     ReadWriteMutex::ScopedReadLockType lock (m_mutex);
 
     // Recursion not allowed.
-    vfassert (m_listener == 0);
+    jassert (m_listener == 0);
 
-    for (List::iterator iter = m_list.begin(); iter != m_list.end();)
+    for (List <Entry>::iterator iter = m_list.begin(); iter != m_list.end();)
     {
       Entry* entry = &(*iter++);
 
@@ -325,7 +336,7 @@ void ListenersBase::Group::do_call1 (Call* const c, const timestamp_t timestamp,
         {
           m_listener = entry->listener;
 
-          vfassert (m_fifo.isBeingSynchronized ());
+          jassert (m_fifo.isBeingSynchronized ());
 
           m_fifo.callp (new (m_fifo.getAllocator()) CallWork (c, m_listener));
 
@@ -349,7 +360,7 @@ void ListenersBase::Group::do_call1 (Call* const c, const timestamp_t timestamp,
 // CallQueue item for processing a an Entry for a Proxy.
 // This is used to avoid bind overhead.
 //
-class ListenersBase::Proxy::Work : public CallQueue::Call
+class ListenersBase::Proxy::Work : public CallQueue::Work
 {
 public:
   inline Work (Proxy* proxy,
@@ -406,7 +417,7 @@ ListenersBase::Proxy::~Proxy ()
 
   // But all listeners should have removed themselves
   // so our list of groups should still be empty.
-  vfassert (m_entries.empty ());
+  jassert (m_entries.empty ());
 }
 
 // Adds the group to the Proxy.
@@ -450,7 +461,7 @@ void ListenersBase::Proxy::remove (Group* group)
 void ListenersBase::Proxy::update (Call* const c, const timestamp_t timestamp)
 {
   // why would we even want to be called?
-  vfassert (!m_entries.empty());
+  jassert (!m_entries.empty());
 
   // With the read lock, this list can't change on us unless someone
   // adds a listener to a new thread queue in response to a call.
@@ -502,7 +513,7 @@ ListenersBase::~ListenersBase ()
     Group* group = &(*iter++);
 
     // If this goes off it means a Listener forgot to remove.
-    vfassert (group->empty ());
+    jassert (group->empty ());
 
     group->decReferenceCount ();
   }
@@ -525,7 +536,7 @@ void ListenersBase::add_void (void* const listener, CallQueue& callQueue)
 
     // We can be in do_call() on another thread now, but it
     // doesn't modify the list, and we have the write lock.
-    vfassert (!group->contains (listener));
+    jassert (!group->contains (listener));
   }
 #endif
 
@@ -580,18 +591,18 @@ void ListenersBase::remove_void (void* const listener)
       Group* group = &(*iter++);
 
       // this should never happen while we hold the mutex
-      vfassert (!group->empty ());
+      jassert (!group->empty ());
 
       if (group->contains (listener))
       {
-        vfassert (!exists); // added twice?
+        jassert (!exists); // added twice?
 
         exists = true;
         // keep going to make sure there are no empty groups
       }
     }
 
-    vfassert (exists);
+    jassert (exists);
   }
 #endif
 

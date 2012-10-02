@@ -1,21 +1,32 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
@@ -30,27 +41,26 @@ struct LockFreeQueueDefaultTag;
 
 /*============================================================================*/
 /** 
-    Multiple Producer, Single Consumer (MPSC) intrusive FIFO.
+  Multiple Producer, Single Consumer (MPSC) intrusive FIFO.
 
-    This container uses the same intrusive interface as List. It is wait-free
-    for producers and lock-free for consumers. The caller is responsible for
-    preventing the ABA problem (http://en.wikipedia.org/wiki/ABA_problem)
+  This container uses the same intrusive interface as List. It is wait-free
+  for producers and lock-free for consumers. The caller is responsible for
+  preventing the ABA problem (http://en.wikipedia.org/wiki/ABA_problem)
 
-    Invariants:
+  Invariants:
 
-    - Any thread may call push_back() at any time (Multiple Producer).
+  - Any thread may call push_back() at any time (Multiple Producer).
 
-    - Only one thread may call try_pop_front() at a time (Single Consumer)
+  - Only one thread may call try_pop_front() at a time (Single Consumer)
 
-    - The queue is signaled if there are one or more elements.
+  - The queue is signaled if there are one or more elements.
 
-    @param Tag  A type name used to distinguish lists and nodes, for
-                putting objects in multiple lists. If this parameter is
-                omitted, the default tag is used.
+  @param Tag  A type name used to distinguish lists and nodes, for
+              putting objects in multiple lists. If this parameter is
+              omitted, the default tag is used.
 
-    @ingroup vf_core intrusive
+  @ingroup vf_core intrusive
 */
-
 template <class Element, class Tag = LockFreeQueueDefaultTag>
 class LockFreeQueue
 {
@@ -58,19 +68,15 @@ public:
   class Node : Uncopyable
   {
   public:
-    Node ()
-	{
-	}
-
-	explicit Node (Node* next) : m_next (next)
-	{
-	}
+    Node () { }
+    explicit Node (Node* next) : m_next (next) { }
 
     AtomicPointer <Node> m_next;
   };
 
 public:
-  /** Create an empty list. */
+  /** Create an empty list.
+  */
   LockFreeQueue ()
     : m_head (&m_null)
     , m_tail (&m_null)
@@ -93,8 +99,9 @@ public:
   
       This operation is wait-free.
 
-      @return true if the list was previously empty.
+      @param node The element to enqueue.
 
+      @return true if the list was previously empty.
   */
   bool push_back (Node* node)
   {

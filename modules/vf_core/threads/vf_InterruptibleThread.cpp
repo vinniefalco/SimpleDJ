@@ -1,26 +1,56 @@
 /*============================================================================*/
 /*
-Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the Free
-Software Foundation; either version 2 of the License, or (at your option)
-any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 51
-Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
-InterruptibleThread::InterruptibleThread (String name)
+InterruptibleThread::ThreadHelper::ThreadHelper (String name,
+                                                 InterruptibleThread* owner)
   : Thread (name)
+  , m_owner (owner)
+{
+}
+
+InterruptibleThread* InterruptibleThread::ThreadHelper::getOwner () const
+{
+  return m_owner;
+}
+
+void InterruptibleThread::ThreadHelper::run ()
+{
+  m_owner->run ();
+}
+
+//------------------------------------------------------------------------------
+
+InterruptibleThread::InterruptibleThread (String name)
+  : m_thread (name, this)
   , m_state (stateRun)
 {
 }
@@ -36,7 +66,7 @@ void InterruptibleThread::start (const Function <void (void)>& f)
 {
   m_function = f;
 
-  Thread::startThread ();
+  m_thread.startThread ();
 
   // prevents data race with member variables
   m_runEvent.signal ();
@@ -44,19 +74,19 @@ void InterruptibleThread::start (const Function <void (void)>& f)
 
 void InterruptibleThread::join ()
 {
-  Thread::stopThread (-1);
+  m_thread.stopThread (-1);
 }
 
 bool InterruptibleThread::wait (int milliSeconds)
 {
   // Can only be called from the current thread
-  vfassert (isTheCurrentThread ());
+  jassert (isTheCurrentThread ());
 
   bool interrupted = false;
 
   for (;;)
   {
-    vfassert (m_state != stateWait);
+    jassert (m_state != stateWait);
 
     // See if we are interrupted
     if (m_state.tryChangeState (stateInterrupt, stateRun))
@@ -78,7 +108,7 @@ bool InterruptibleThread::wait (int milliSeconds)
 
   if (!interrupted)
   {
-    interrupted = Thread::wait (milliSeconds);
+    interrupted = m_thread.wait (milliSeconds);
 
     if (!interrupted)
     {
@@ -88,7 +118,7 @@ bool InterruptibleThread::wait (int milliSeconds)
       }
       else
       {
-        vfassert (m_state == stateInterrupt);
+        jassert (m_state == stateInterrupt);
 
         interrupted = true;
       }
@@ -113,7 +143,7 @@ void InterruptibleThread::interrupt ()
     }
     else if (m_state.tryChangeState (stateWait, stateRun))
     {
-      Thread::notify ();
+      m_thread.notify ();
       break;
     }
   }
@@ -122,7 +152,7 @@ void InterruptibleThread::interrupt ()
 bool InterruptibleThread::interruptionPoint ()
 {
   // Can only be called from the current thread
-  vfassert (isTheCurrentThread ());
+  jassert (isTheCurrentThread ());
 
   if (m_state == stateWait)
   {
@@ -151,17 +181,31 @@ InterruptibleThread::id InterruptibleThread::getId () const
 
 bool InterruptibleThread::isTheCurrentThread () const
 {
-  return Thread::getCurrentThreadId () == m_threadId;
+  return m_thread.getCurrentThreadId () == m_threadId;
 }
 
 void InterruptibleThread::setPriority (int priority)
 {
-  Thread::setPriority (priority);
+  m_thread.setPriority (priority);
+}
+
+InterruptibleThread* InterruptibleThread::getCurrentThread ()
+{
+  Thread* const thread = Thread::getCurrentThread();
+
+  // This doesn't work for the message thread!
+  jassert (thread != nullptr);
+
+  ThreadHelper* const helper = dynamic_cast <ThreadHelper*> (thread);
+
+  jassert (helper != nullptr);
+
+  return helper->getOwner ();
 }
 
 void InterruptibleThread::run ()
 {
-  m_threadId = Thread::getThreadId ();
+  m_threadId = m_thread.getThreadId ();
 
   m_runEvent.wait ();
 
@@ -170,23 +214,24 @@ void InterruptibleThread::run ()
 
 //------------------------------------------------------------------------------
 
-namespace CurrentInterruptibleThread
-{
-
-bool interruptionPoint ()
+bool CurrentInterruptibleThread::interruptionPoint ()
 {
   bool interrupted = false;
 
+#if 1
+  interrupted = InterruptibleThread::getCurrentThread ()->interruptionPoint ();
+
+#else
   Thread* const thread = Thread::getCurrentThread();
 
   // Can't use interruption points on the message thread
-  vfassert (thread != nullptr);
+  jassert (thread != nullptr);
 
   if (thread)
   {
     InterruptibleThread* const interruptibleThread = dynamic_cast <InterruptibleThread*> (thread);
 
-    vfassert (interruptibleThread != nullptr);
+    jassert (interruptibleThread != nullptr);
 
     if (interruptibleThread != nullptr)
     {
@@ -201,8 +246,7 @@ bool interruptionPoint ()
   {
     interrupted = false;
   }
+#endif
 
   return interrupted;
-}
-
 }
