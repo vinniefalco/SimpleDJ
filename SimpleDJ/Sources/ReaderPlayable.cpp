@@ -40,7 +40,11 @@ class MetadataReader
 public:
   MetadataReader (String path)
   {
+#if JUCE_MAC
+    TagLib::FileRef f (path.toUTF8 ());
+#else
     TagLib::FileRef f (path.toWideCharPointer ());
+#endif
 
     m_album = f.tag()->album().toWString ().c_str ();
 
