@@ -166,15 +166,15 @@ bool AudioFormatWriter::writeFromAudioSampleBuffer (const AudioSampleBuffer& sou
 }
 
 //==============================================================================
-class AudioFormatWriter::ThreadedWriter::Buffer   : public TimeSliceClient,
-                                                    public AbstractFifo
+class AudioFormatWriter::ThreadedWriter::Buffer   : public AbstractFifo,
+                                                    private TimeSliceClient
 {
 public:
-    Buffer (TimeSliceThread& timeSliceThread_, AudioFormatWriter* writer_, int numChannels, int bufferSize_)
-        : AbstractFifo (bufferSize_),
-          buffer (numChannels, bufferSize_),
-          timeSliceThread (timeSliceThread_),
-          writer (writer_),
+    Buffer (TimeSliceThread& tst, AudioFormatWriter* w, int channels, int bufferSize)
+        : AbstractFifo (bufferSize),
+          buffer (channels, bufferSize),
+          timeSliceThread (tst),
+          writer (w),
           receiver (nullptr),
           samplesWritten (0),
           isRunning (true)

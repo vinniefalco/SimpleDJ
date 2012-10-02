@@ -23,20 +23,15 @@
   ==============================================================================
 */
 
-CallOutBox::CallOutBox (Component& contentComponent,
-                        Component& componentToPointTo,
-                        Component* const parent)
-    : borderSpace (20), arrowSize (16.0f), content (contentComponent)
+CallOutBox::CallOutBox (Component& c, const Rectangle<int>& area, Component* const parent)
+    : borderSpace (20), arrowSize (16.0f), content (c)
 {
     addAndMakeVisible (&content);
 
     if (parent != nullptr)
     {
         parent->addChildComponent (this);
-
-        updatePosition (parent->getLocalArea (&componentToPointTo, componentToPointTo.getLocalBounds()),
-                        parent->getLocalBounds());
-
+        updatePosition (area, parent->getLocalBounds());
         setVisible (true);
     }
     else
@@ -44,8 +39,8 @@ CallOutBox::CallOutBox (Component& contentComponent,
         if (! JUCEApplication::isStandaloneApp())
             setAlwaysOnTop (true); // for a plugin, make it always-on-top because the host windows are often top-level
 
-        updatePosition (componentToPointTo.getScreenBounds(),
-                        componentToPointTo.getParentMonitorArea());
+        updatePosition (area, Desktop::getInstance().getDisplays()
+                                .getDisplayContaining (area.getCentre()).userArea);
 
         addToDesktop (ComponentPeer::windowIsTemporary);
     }
@@ -53,6 +48,34 @@ CallOutBox::CallOutBox (Component& contentComponent,
 
 CallOutBox::~CallOutBox()
 {
+}
+
+//==============================================================================
+class CallOutBoxCallback  : public ModalComponentManager::Callback
+{
+public:
+    CallOutBoxCallback (Component* c, const Rectangle<int>& area, Component* parent)
+        : content (c), callout (*c, area, parent)
+    {
+        callout.setVisible (true);
+        callout.enterModalState (true, this);
+    }
+
+    void modalStateFinished (int) {}
+
+    ScopedPointer<Component> content;
+    CallOutBox callout;
+
+    JUCE_DECLARE_NON_COPYABLE (CallOutBoxCallback);
+};
+
+CallOutBox& CallOutBox::launchAsynchronously (Component* content,
+                                              const Rectangle<int>& area,
+                                              Component* parent)
+{
+    jassert (content != nullptr); // must be a valid content component!
+
+    return (new CallOutBoxCallback (content, area, parent))->callout;
 }
 
 //==============================================================================
@@ -65,15 +88,7 @@ void CallOutBox::setArrowSize (const float newSize)
 
 void CallOutBox::paint (Graphics& g)
 {
-    if (background.isNull())
-    {
-        background = Image (Image::ARGB, getWidth(), getHeight(), true);
-        Graphics g2 (background);
-        getLookAndFeel().drawCallOutBoxBackground (*this, g2, outline);
-    }
-
-    g.setColour (Colours::black);
-    g.drawImageAt (background, 0, 0);
+    getLookAndFeel().drawCallOutBoxBackground (*this, g, outline, background);
 }
 
 void CallOutBox::resized()
@@ -144,8 +159,7 @@ void CallOutBox::updatePosition (const Rectangle<int>& newAreaToPointTo, const R
     targetArea = newAreaToPointTo;
     availableArea = newAreaToFitIn;
 
-    Rectangle<int> newBounds (0, 0,
-                              content.getWidth() + borderSpace * 2,
+    Rectangle<int> newBounds (content.getWidth()  + borderSpace * 2,
                               content.getHeight() + borderSpace * 2);
 
     const int hw = newBounds.getWidth() / 2;
@@ -165,6 +179,7 @@ void CallOutBox::updatePosition (const Rectangle<int>& newAreaToPointTo, const R
                              Line<float> (targets[3].translated (-hwReduced, -(hh - arrowIndent)), targets[3].translated (hwReduced, -(hh - arrowIndent))) };
 
     const Rectangle<float> centrePointArea (newAreaToFitIn.reduced (hw, hh).toFloat());
+    const Point<float> targetCentre (targetArea.getCentre().toFloat());
 
     float nearest = 1.0e9f;
 
@@ -173,19 +188,19 @@ void CallOutBox::updatePosition (const Rectangle<int>& newAreaToPointTo, const R
         Line<float> constrainedLine (centrePointArea.getConstrainedPoint (lines[i].getStart()),
                                      centrePointArea.getConstrainedPoint (lines[i].getEnd()));
 
-        const Point<float> centre (constrainedLine.findNearestPointTo (centrePointArea.getCentre()));
-        float distanceFromCentre = centre.getDistanceFrom (centrePointArea.getCentre());
+        const Point<float> centre (constrainedLine.findNearestPointTo (targetCentre));
+        float distanceFromCentre = centre.getDistanceFrom (targets[i]);
 
         if (! (centrePointArea.contains (lines[i].getStart()) || centrePointArea.contains (lines[i].getEnd())))
-            distanceFromCentre *= 2.0f;
+            distanceFromCentre += 1000.0f;
 
         if (distanceFromCentre < nearest)
         {
             nearest = distanceFromCentre;
 
             targetPoint = targets[i];
-            newBounds.setPosition ((int) (centre.getX() - hw),
-                                   (int) (centre.getY() - hh));
+            newBounds.setPosition ((int) (centre.x - hw),
+                                   (int) (centre.y - hh));
         }
     }
 
@@ -199,63 +214,9 @@ void CallOutBox::refreshPath()
     outline.clear();
 
     const float gap = 4.5f;
-    const float cornerSize = 9.0f;
-    const float cornerSize2 = 2.0f * cornerSize;
-    const float arrowBaseWidth = arrowSize * 0.7f;
 
-    const Rectangle<float> area (content.getBounds().toFloat().expanded (gap, gap));
-    const Point<float> target (targetPoint - getPosition().toFloat());
-
-    outline.startNewSubPath (area.getX() + cornerSize, area.getY());
-
-    const float targetLimitX = area.getX() + cornerSize + arrowBaseWidth;
-    const float targetLimitW = area.getWidth() - cornerSize2 - arrowBaseWidth * 2.0f;
-
-    const float targetLimitY = area.getY() + cornerSize + arrowBaseWidth;
-    const float targetLimitH = area.getHeight() - cornerSize2 - arrowBaseWidth * 2.0f;
-
-    if (Rectangle<float> (targetLimitX, 1.0f,
-                          targetLimitW, area.getY() - 2.0f).contains (target))
-    {
-        outline.lineTo (target.x - arrowBaseWidth, area.getY());
-        outline.lineTo (target.x, target.y);
-        outline.lineTo (target.x + arrowBaseWidth, area.getY());
-    }
-
-    outline.lineTo (area.getRight() - cornerSize, area.getY());
-    outline.addArc (area.getRight() - cornerSize2, area.getY(), cornerSize2, cornerSize2, 0, float_Pi * 0.5f);
-
-    if (Rectangle<float> (area.getRight() + 1.0f, targetLimitY,
-                          getWidth() - area.getRight() - 2.0f, targetLimitH).contains (target))
-    {
-        outline.lineTo (area.getRight(), target.y - arrowBaseWidth);
-        outline.lineTo (target.x, target.y);
-        outline.lineTo (area.getRight(), target.y + arrowBaseWidth);
-    }
-
-    outline.lineTo (area.getRight(), area.getBottom() - cornerSize);
-    outline.addArc (area.getRight() - cornerSize2, area.getBottom() - cornerSize2, cornerSize2, cornerSize2, float_Pi * 0.5f, float_Pi);
-
-    if (Rectangle<float> (targetLimitX, area.getBottom() + 1.0f,
-                          targetLimitW, getHeight() - area.getBottom() - 2.0f).contains (target))
-    {
-        outline.lineTo (target.x + arrowBaseWidth, area.getBottom());
-        outline.lineTo (target.x, target.y);
-        outline.lineTo (target.x - arrowBaseWidth, area.getBottom());
-    }
-
-    outline.lineTo (area.getX() + cornerSize, area.getBottom());
-    outline.addArc (area.getX(), area.getBottom() - cornerSize2, cornerSize2, cornerSize2, float_Pi, float_Pi * 1.5f);
-
-    if (Rectangle<float> (1.0f, targetLimitY, area.getX() - 2.0f, targetLimitH).contains (target))
-    {
-        outline.lineTo (area.getX(), target.y + arrowBaseWidth);
-        outline.lineTo (target.x, target.y);
-        outline.lineTo (area.getX(), target.y - arrowBaseWidth);
-    }
-
-    outline.lineTo (area.getX(), area.getY() + cornerSize);
-    outline.addArc (area.getX(), area.getY(), cornerSize2, cornerSize2, float_Pi * 1.5f, float_Pi * 2.0f - 0.05f);
-
-    outline.closeSubPath();
+    outline.addBubble (content.getBounds().toFloat().expanded (gap, gap),
+                       getLocalBounds().toFloat(),
+                       targetPoint - getPosition().toFloat(),
+                       9.0f, arrowSize * 0.7f);
 }

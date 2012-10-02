@@ -31,22 +31,21 @@ BubbleMessageComponent::BubbleMessageComponent (int fadeOutLengthMs)
 
 BubbleMessageComponent::~BubbleMessageComponent()
 {
-    Desktop::getInstance().getAnimator().fadeOut (this, fadeOutLength);
 }
 
-void BubbleMessageComponent::showAt (int x, int y,
-                                     const String& text,
+void BubbleMessageComponent::showAt (const Rectangle<int>& pos,
+                                     const AttributedString& text,
                                      const int numMillisecondsBeforeRemoving,
                                      const bool removeWhenMouseClicked,
                                      const bool deleteSelfAfterUse)
 {
     createLayout (text);
-    setPosition (x, y);
+    setPosition (pos);
     init (numMillisecondsBeforeRemoving, removeWhenMouseClicked, deleteSelfAfterUse);
 }
 
 void BubbleMessageComponent::showAt (Component* const component,
-                                     const String& text,
+                                     const AttributedString& text,
                                      const int numMillisecondsBeforeRemoving,
                                      const bool removeWhenMouseClicked,
                                      const bool deleteSelfAfterUse)
@@ -56,68 +55,65 @@ void BubbleMessageComponent::showAt (Component* const component,
     init (numMillisecondsBeforeRemoving, removeWhenMouseClicked, deleteSelfAfterUse);
 }
 
-void BubbleMessageComponent::createLayout (const String& text)
+void BubbleMessageComponent::createLayout (const AttributedString& text)
 {
-    AttributedString attString;
-    attString.append (text, Font (14.0f));
-    attString.setJustification (Justification::centred);
-
-    textLayout.createLayoutWithBalancedLineLengths (attString, 256);
+    textLayout.createLayoutWithBalancedLineLengths (text, 256);
 }
 
 void BubbleMessageComponent::init (const int numMillisecondsBeforeRemoving,
                                    const bool removeWhenMouseClicked,
                                    const bool deleteSelfAfterUse)
 {
+    setAlpha (1.0f);
     setVisible (true);
-
     deleteAfterUse = deleteSelfAfterUse;
 
-    if (numMillisecondsBeforeRemoving > 0)
-        expiryTime = Time::getMillisecondCounter() + numMillisecondsBeforeRemoving;
-    else
-        expiryTime = 0;
-
-    startTimer (77);
+    expiryTime = numMillisecondsBeforeRemoving > 0
+                    ? (Time::getMillisecondCounter() + (uint32) numMillisecondsBeforeRemoving) : 0;
 
     mouseClickCounter = Desktop::getInstance().getMouseButtonClickCounter();
 
     if (! (removeWhenMouseClicked && isShowing()))
         mouseClickCounter += 0xfffff;
 
+    startTimer (77);
     repaint();
 }
 
+const float bubblePaddingX = 20.0f;
+const float bubblePaddingY = 14.0f;
+
 void BubbleMessageComponent::getContentSize (int& w, int& h)
 {
-    w = (int) (textLayout.getWidth() + 16.0f);
-    h = (int) (textLayout.getHeight() + 16.0f);
+    w = (int) (bubblePaddingX + textLayout.getWidth());
+    h = (int) (bubblePaddingY + textLayout.getHeight());
 }
 
 void BubbleMessageComponent::paintContent (Graphics& g, int w, int h)
 {
     g.setColour (findColour (TooltipWindow::textColourId));
 
-    textLayout.draw (g, Rectangle<float> (0.0f, 0.0f, (float) w, (float) h));
+    textLayout.draw (g, Rectangle<float> (bubblePaddingX / 2.0f, bubblePaddingY / 2.0f,
+                                          w - bubblePaddingX, h - bubblePaddingY));
 }
 
 void BubbleMessageComponent::timerCallback()
 {
     if (Desktop::getInstance().getMouseButtonClickCounter() > mouseClickCounter)
-    {
-        stopTimer();
+        hide (false);
+    else if (expiryTime != 0 && Time::getMillisecondCounter() > expiryTime)
+        hide (true);
+}
+
+void BubbleMessageComponent::hide (const bool fadeOut)
+{
+    stopTimer();
+
+    if (fadeOut)
+        Desktop::getInstance().getAnimator().fadeOut (this, fadeOutLength);
+    else
         setVisible (false);
 
-        if (deleteAfterUse)
-            delete this;
-    }
-    else if (expiryTime != 0 && Time::getMillisecondCounter() > expiryTime)
-    {
-        stopTimer();
-
-        if (deleteAfterUse)
-            delete this;
-        else
-            Desktop::getInstance().getAnimator().fadeOut (this, fadeOutLength);
-    }
+    if (deleteAfterUse)
+        delete this;
 }

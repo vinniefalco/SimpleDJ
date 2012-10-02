@@ -32,7 +32,7 @@
 class MainHostWindow::PluginListWindow  : public DocumentWindow
 {
 public:
-    PluginListWindow (MainHostWindow& owner_)
+    PluginListWindow (MainHostWindow& owner_, AudioPluginFormatManager& formatManager)
         : DocumentWindow ("Available Plugins", Colours::white,
                           DocumentWindow::minimiseButton | DocumentWindow::closeButton),
           owner (owner_)
@@ -40,7 +40,8 @@ public:
         const File deadMansPedalFile (appProperties->getUserSettings()
                                         ->getFile().getSiblingFile ("RecentlyCrashedPluginsList"));
 
-        setContentOwned (new PluginListComponent (owner.knownPluginList,
+        setContentOwned (new PluginListComponent (formatManager,
+                                                  owner.knownPluginList,
                                                   deadMansPedalFile,
                                                   appProperties->getUserSettings()), true);
 
@@ -75,6 +76,9 @@ MainHostWindow::MainHostWindow()
     : DocumentWindow (JUCEApplication::getInstance()->getApplicationName(), Colours::lightgrey,
                       DocumentWindow::allButtons)
 {
+    formatManager.addDefaultFormats();
+    formatManager.addFormat (new InternalPluginFormat());
+
     ScopedPointer<XmlElement> savedAudioState (appProperties->getUserSettings()
                                                    ->getXmlValue ("audioDeviceState"));
 
@@ -84,7 +88,7 @@ MainHostWindow::MainHostWindow()
     setResizeLimits (500, 400, 10000, 10000);
     centreWithSize (800, 600);
 
-    setContentOwned (new GraphDocumentComponent (&deviceManager), false);
+    setContentOwned (new GraphDocumentComponent (formatManager, &deviceManager), false);
 
     restoreWindowStateFromString (appProperties->getUserSettings()->getValue ("mainWindowPos"));
 
@@ -164,14 +168,14 @@ void MainHostWindow::changeListenerCallback (ChangeBroadcaster*)
     }
 }
 
-const StringArray MainHostWindow::getMenuBarNames()
+StringArray MainHostWindow::getMenuBarNames()
 {
     const char* const names[] = { "File", "Plugins", "Options", nullptr };
 
     return StringArray (names);
 }
 
-const PopupMenu MainHostWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*menuName*/)
+PopupMenu MainHostWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*menuName*/)
 {
     PopupMenu menu;
 
@@ -378,7 +382,7 @@ bool MainHostWindow::perform (const InvocationInfo& info)
 
     case CommandIDs::showPluginListEditor:
         if (pluginListWindow == nullptr)
-            pluginListWindow = new PluginListWindow (*this);
+            pluginListWindow = new PluginListWindow (*this, formatManager);
 
         pluginListWindow->toFront (true);
         break;
@@ -407,11 +411,16 @@ void MainHostWindow::showAudioSettings()
 
     audioSettingsComp.setSize (500, 450);
 
-    DialogWindow::showModalDialog ("Audio Settings",
-                                   &audioSettingsComp,
-                                   this,
-                                   Colours::azure,
-                                   true);
+    DialogWindow::LaunchOptions o;
+    o.content.setNonOwned (&audioSettingsComp);
+    o.dialogTitle                   = "Audio Settings";
+    o.componentToCentreAround       = this;
+    o.dialogBackgroundColour        = Colours::azure;
+    o.escapeKeyTriggersCloseButton  = true;
+    o.useNativeTitleBar             = false;
+    o.resizable                     = false;
+
+    o.runModal();
 
     ScopedPointer<XmlElement> audioState (deviceManager.createStateXml());
 
@@ -455,7 +464,7 @@ void MainHostWindow::filesDropped (const StringArray& files, int x, int y)
         else
         {
             OwnedArray <PluginDescription> typesFound;
-            knownPluginList.scanAndAddDragAndDroppedFiles (files, typesFound);
+            knownPluginList.scanAndAddDragAndDroppedFiles (formatManager, files, typesFound);
 
             Point<int> pos (graphEditor->getLocalPoint (this, Point<int> (x, y)));
 

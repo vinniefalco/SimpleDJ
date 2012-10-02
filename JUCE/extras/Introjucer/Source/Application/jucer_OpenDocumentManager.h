@@ -28,7 +28,6 @@
 
 #include "../Project/jucer_Project.h"
 
-
 //==============================================================================
 /**
 */
@@ -38,8 +37,6 @@ public:
     //==============================================================================
     OpenDocumentManager();
     ~OpenDocumentManager();
-
-    juce_DeclareSingleton_SingleThreaded_Minimal (OpenDocumentManager);
 
     //==============================================================================
     class Document
@@ -58,19 +55,20 @@ public:
         virtual File getFile() const = 0;
         virtual bool needsSaving() const = 0;
         virtual bool save() = 0;
-        virtual bool canSaveAs() const = 0;
-        virtual bool saveAs() = 0;
         virtual bool hasFileBeenModifiedExternally() = 0;
         virtual void reloadFromFile() = 0;
         virtual Component* createEditor() = 0;
         virtual Component* createViewer() = 0;
         virtual void fileHasBeenRenamed (const File& newFile) = 0;
+        virtual String getState() const = 0;
+        virtual void restoreState (const String& state) = 0;
+        virtual File getCounterpartFile() const   { return File::nonexistent; }
     };
 
     //==============================================================================
     int getNumOpenDocuments() const;
     Document* getOpenDocument (int index) const;
-    void moveDocumentToTopOfStack (Document* doc);
+    void clear();
 
     bool canOpenFile (const File& file);
     Document* openFile (Project* project, const File& file);
@@ -118,6 +116,36 @@ private:
     Array <DocumentCloseListener*> listeners;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenDocumentManager);
+};
+
+//==============================================================================
+class RecentDocumentList    : private OpenDocumentManager::DocumentCloseListener
+{
+public:
+    RecentDocumentList();
+    ~RecentDocumentList();
+
+    void clear();
+
+    void newDocumentOpened (OpenDocumentManager::Document* document);
+
+    OpenDocumentManager::Document* getCurrentDocument() const       { return previousDocs.getLast(); }
+
+    bool canGoToPrevious() const;
+    bool canGoToNext() const;
+
+    OpenDocumentManager::Document* getPrevious();
+    OpenDocumentManager::Document* getNext();
+
+    OpenDocumentManager::Document* getClosestPreviousDocOtherThan (OpenDocumentManager::Document* oneToAvoid) const;
+
+    void restoreFromXML (Project& project, const XmlElement& xml);
+    XmlElement* createXML() const;
+
+private:
+    void documentAboutToClose (OpenDocumentManager::Document*);
+
+    Array <OpenDocumentManager::Document*> previousDocs, nextDocs;
 };
 
 

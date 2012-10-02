@@ -169,6 +169,9 @@
 #ifndef  JucePlugin_Build_RTAS
  #define JucePlugin_Build_RTAS             0
 #endif
+#ifndef  JucePlugin_Build_AAX
+ #define JucePlugin_Build_AAX              0
+#endif
 #ifndef  JucePlugin_Name
  #define JucePlugin_Name                   "Juce Demo Plugin"
 #endif
@@ -211,6 +214,9 @@
 #ifndef  JucePlugin_EditorRequiresKeyboardFocus
  #define JucePlugin_EditorRequiresKeyboardFocus  1
 #endif
+#ifndef  JucePlugin_Version
+ #define JucePlugin_Version                1.0.0
+#endif
 #ifndef  JucePlugin_VersionCode
  #define JucePlugin_VersionCode            0x10000
 #endif
@@ -252,6 +258,27 @@
 #endif
 #ifndef  JucePlugin_RTASProductId
  #define JucePlugin_RTASProductId          JucePlugin_PluginCode
+#endif
+#ifndef  JucePlugin_RTASDisableBypass
+ #define JucePlugin_RTASDisableBypass      0
+#endif
+#ifndef  JucePlugin_AAXIdentifier
+ #define JucePlugin_AAXIdentifier          com.yourcompany.JuceDemoPlugin
+#endif
+#ifndef  JucePlugin_AAXManufacturerCode
+ #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
+#endif
+#ifndef  JucePlugin_AAXProductId
+ #define JucePlugin_AAXProductId           JucePlugin_PluginCode
+#endif
+#ifndef  JucePlugin_AAXPluginId
+ #define JucePlugin_AAXPluginId            JucePlugin_PluginCode
+#endif
+#ifndef  JucePlugin_AAXCategory
+ #define JucePlugin_AAXCategory            AAX_ePlugInCategory_Dynamics
+#endif
+#ifndef  JucePlugin_AAXDisableBypass
+ #define JucePlugin_AAXDisableBypass       0
 #endif
 
 #endif  // __JUCE_APPCONFIG_0NRD9LLGO__

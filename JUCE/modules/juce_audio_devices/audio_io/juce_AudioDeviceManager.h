@@ -121,7 +121,8 @@ public:
 
         /** The current sample rate.
             This rate is used for both the input and output devices.
-            A value of 0 indicates the default rate.
+            A value of 0 indicates that you don't care what rate is used, and the
+            device will choose a sensible rate for you.
         */
         double sampleRate;
 
@@ -471,27 +472,16 @@ private:
     double cpuUsageMs, timeToCpuScale;
 
     //==============================================================================
-    class CallbackHandler  : public AudioIODeviceCallback,
-                             public MidiInputCallback,
-                             public AudioIODeviceType::Listener
-    {
-    public:
-        void audioDeviceIOCallback (const float**, int, float**, int, int);
-        void audioDeviceAboutToStart (AudioIODevice*);
-        void audioDeviceStopped();
-        void handleIncomingMidiMessage (MidiInput*, const MidiMessage&);
-        void audioDeviceListChanged();
-
-        AudioDeviceManager* owner;
-    };
-
-    CallbackHandler callbackHandler;
+    class CallbackHandler;
     friend class CallbackHandler;
+    friend class ScopedPointer<CallbackHandler>;
+    ScopedPointer<CallbackHandler> callbackHandler;
 
     void audioDeviceIOCallbackInt (const float** inputChannelData, int totalNumInputChannels,
                                    float** outputChannelData, int totalNumOutputChannels, int numSamples);
     void audioDeviceAboutToStartInt (AudioIODevice*);
     void audioDeviceStoppedInt();
+    void audioDeviceErrorInt (const String&);
     void handleIncomingMidiMessageInt (MidiInput*, const MidiMessage&);
     void audioDeviceListChanged();
 

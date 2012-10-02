@@ -127,6 +127,9 @@ public:
     /** The time that this mouse-event occurred. */
     const Time eventTime;
 
+    /** The time that the corresponding mouse-down event occurred. */
+    const Time mouseDownTime;
+
     /** The source device that generated this event. */
     MouseInputSource& source;
 
@@ -312,10 +315,46 @@ public:
 private:
     //==============================================================================
     const Point<int> mouseDownPos;
-    const Time mouseDownTime;
     const uint8 numberOfClicks, wasMovedSinceMouseDown;
 
     MouseEvent& operator= (const MouseEvent&);
+};
+
+
+//==============================================================================
+/**
+    Contains status information about a mouse wheel event.
+
+    @see MouseListener, MouseEvent
+*/
+struct MouseWheelDetails
+{
+    //==============================================================================
+    /** The amount that the wheel has been moved in the X axis.
+
+        If isReversed is true, then a negative deltaX means that the wheel has been
+        pushed physically to the left.
+        If isReversed is false, then a negative deltaX means that the wheel has been
+        pushed physically to the right.
+    */
+    float deltaX;
+
+    /** The amount that the wheel has been moved in the Y axis.
+
+        If isReversed is true, then a negative deltaY means that the wheel has been
+        pushed physically upwards.
+        If isReversed is false, then a negative deltaY means that the wheel has been
+        pushed physically downwards.
+    */
+    float deltaY;
+
+    /** Indicates whether the user has reversed the direction of the wheel.
+        See deltaX and deltaY for an explanation of the effects of this value.
+    */
+    bool isReversed;
+
+    /** If true, then the wheel has continuous, un-stepped motion. */
+    bool isSmooth;
 };
 
 

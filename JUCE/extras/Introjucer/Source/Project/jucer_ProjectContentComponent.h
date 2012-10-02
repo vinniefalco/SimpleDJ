@@ -28,35 +28,60 @@
 
 #include "jucer_Project.h"
 #include "../Application/jucer_OpenDocumentManager.h"
-
+class ProjectTreeViewBase;
 
 //==============================================================================
 /**
 */
 class ProjectContentComponent  : public Component,
                                  public ApplicationCommandTarget,
-                                 public ChangeListener
+                                 private ChangeListener,
+                                 private OpenDocumentManager::DocumentCloseListener
 {
 public:
     //==============================================================================
     ProjectContentComponent();
     ~ProjectContentComponent();
 
-    void paint (Graphics& g);
+    Project* getProject() const noexcept    { return project; }
+    virtual void setProject (Project* project);
 
-    void setProject (Project* project);
     void saveTreeViewState();
+    void saveOpenDocumentList();
+    void reloadLastOpenDocuments();
 
-    bool showEditorForFile (const File& f);
-    bool showDocument (OpenDocumentManager::Document* doc);
+    bool showEditorForFile (const File& f, bool grabFocus);
+    File getCurrentFile() const;
+
+    bool showDocument (OpenDocumentManager::Document* doc, bool grabFocus);
     void hideDocument (OpenDocumentManager::Document* doc);
+    OpenDocumentManager::Document* getCurrentDocument() const   { return currentDocument; }
+    void closeDocument();
+    void saveDocument();
+
+    void hideEditor();
     bool setEditorComponent (Component* editor, OpenDocumentManager::Document* doc);
     Component* getEditorComponent() const                       { return contentView; }
-    OpenDocumentManager::Document* getCurrentDocument() const   { return currentDocument; }
+
+    bool goToPreviousFile();
+    bool goToNextFile();
+    bool canGoToCounterpart() const;
+    bool goToCounterpart();
+
+    bool saveProject();
+    void closeProject();
+    void openInIDE();
+
+    void deleteSelectedTreeItems();
+
+    void updateMainWindowTitle();
 
     void updateMissingFileStatuses();
+    virtual void createProjectTabs();
+    virtual void deleteProjectTabs();
+    void rebuildProjectTabs();
 
-    void changeListenerCallback (ChangeBroadcaster*);
+    void showBubbleMessage (const Rectangle<int>& pos, const String& text);
 
     //==============================================================================
     ApplicationCommandTarget* getNextCommandTarget();
@@ -65,19 +90,29 @@ public:
     bool isCommandActive (const CommandID commandID);
     bool perform (const InvocationInfo& info);
 
-private:
+    void paint (Graphics&);
+    void paintOverChildren (Graphics&);
+    void resized();
+    void childBoundsChanged (Component* child);
+    void lookAndFeelChanged();
+
+protected:
     Project* project;
     OpenDocumentManager::Document* currentDocument;
+    RecentDocumentList recentDocumentList;
+    ScopedPointer<Component> logo;
 
-    ScopedPointer<TreeView> projectTree;
+    TabbedComponent treeViewTabs;
     ScopedPointer<ResizableEdgeComponent> resizerBar;
     ScopedPointer<Component> contentView;
 
     ComponentBoundsConstrainer treeSizeConstrainer;
+    BubbleMessageComponent bubbleMessage;
 
-    void updateMainWindowTitle();
-    bool reinvokeCommandAfterClosingPropertyEditors (const InvocationInfo&);
-    bool canProjectBeLaunched() const;
+    void documentAboutToClose (OpenDocumentManager::Document*);
+    void changeListenerCallback (ChangeBroadcaster*);
+    TreeView* getFilesTreeView() const;
+    ProjectTreeViewBase* getFilesTreeRoot() const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectContentComponent);
 };

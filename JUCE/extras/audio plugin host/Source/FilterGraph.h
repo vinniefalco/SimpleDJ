@@ -67,7 +67,7 @@ class FilterGraph   : public FileBasedDocument
 {
 public:
     //==============================================================================
-    FilterGraph();
+    FilterGraph (AudioPluginFormatManager& formatManager);
     ~FilterGraph();
 
     //==============================================================================
@@ -114,10 +114,10 @@ public:
     void restoreFromXml (const XmlElement& xml);
 
     //==============================================================================
-    const String getDocumentTitle();
-    const String loadDocument (const File& file);
-    const String saveDocument (const File& file);
-    const File getLastDocumentOpened();
+    String getDocumentTitle();
+    Result loadDocument (const File& file);
+    Result saveDocument (const File& file);
+    File getLastDocumentOpened();
     void setLastDocumentOpened (const File& file);
 
     /** The special channel index used to refer to a filter's midi channel.
@@ -126,6 +126,7 @@ public:
 
 private:
     //==============================================================================
+    AudioPluginFormatManager& formatManager;
     AudioProcessorGraph graph;
     AudioProcessorPlayer player;
 

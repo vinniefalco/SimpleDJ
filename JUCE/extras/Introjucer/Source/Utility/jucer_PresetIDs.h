@@ -34,6 +34,7 @@ namespace Ids
 
     DECLARE_ID (name);
     DECLARE_ID (file);
+    DECLARE_ID (text);
     DECLARE_ID (version);
     DECLARE_ID (companyName);
     DECLARE_ID (position);
@@ -47,6 +48,11 @@ namespace Ids
     DECLARE_ID (vstFolder);
     DECLARE_ID (rtasFolder);
     DECLARE_ID (auFolder);
+    DECLARE_ID (flags);
+    DECLARE_ID (line);
+    DECLARE_ID (index);
+    DECLARE_ID (type);
+    DECLARE_ID (time);
     DECLARE_ID (extraCompilerFlags);
     DECLARE_ID (extraLinkerFlags);
     DECLARE_ID (extraDefs);
@@ -64,6 +70,7 @@ namespace Ids
     DECLARE_ID (osxSDK);
     DECLARE_ID (osxCompatibility);
     DECLARE_ID (osxArchitecture);
+    DECLARE_ID (iosCompatibility);
     DECLARE_ID (extraFrameworks);
     DECLARE_ID (winArchitecture);
     DECLARE_ID (winWarningLevel);
@@ -74,10 +81,12 @@ namespace Ids
     DECLARE_ID (prebuildCommand);
     DECLARE_ID (postbuildCommand);
     DECLARE_ID (generateManifest);
+    DECLARE_ID (wholeProgramOptimisation);
     DECLARE_ID (juceLinkage);
     DECLARE_ID (buildVST);
     DECLARE_ID (bundleIdentifier);
     DECLARE_ID (aaxIdentifier);
+    DECLARE_ID (aaxCategory);
     DECLARE_ID (aaxFolder);
     DECLARE_ID (compile);
     DECLARE_ID (noWarnings);
@@ -115,6 +124,10 @@ namespace Ids
     DECLARE_ID (androidKeyStorePass);
     DECLARE_ID (androidKeyAlias);
     DECLARE_ID (androidKeyAliasPass);
+    DECLARE_ID (font);
+    DECLARE_ID (colour);
+    DECLARE_ID (userNotes);
+    const Identifier ID ("id");
     const Identifier class_ ("class");
 
     #undef DECLARE_ID

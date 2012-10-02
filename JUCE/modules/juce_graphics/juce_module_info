@@ -1,7 +1,7 @@
 {
   "id":             "juce_graphics",
   "name":           "JUCE graphics classes",
-  "version":        "2.0.21",
+  "version":        "2.0.27",
   "description":    "Classes for 2D vector graphics, image loading/saving, font handling, etc.",
   "website":        "http://www.juce.com/juce",
   "license":        "GPL/Commercial",
@@ -25,5 +25,6 @@
                       "native/*" ],
 
   "OSXFrameworks":  "Cocoa",
-  "iOSFrameworks":  "CoreGraphics CoreText QuartzCore"
+  "iOSFrameworks":  "CoreGraphics CoreText QuartzCore",
+  "LinuxLibs":      "X11 Xinerama Xext freetype"
 }

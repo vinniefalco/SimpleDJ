@@ -77,18 +77,41 @@ public:
 private:
     ScopedPointer <Project> currentProject;
 
-    String getProjectWindowPosName() const
-    {
-        jassert (currentProject != nullptr);
-        if (currentProject == nullptr)
-            return String::empty;
-
-        return "projectWindowPos_" + currentProject->getProjectUID();
-    }
-
+    static const char* getProjectWindowPosName()   { return "projectWindowPos"; }
     void createProjectContentCompIfNeeded();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow);
+};
+
+//==============================================================================
+class MainWindowList
+{
+public:
+    MainWindowList();
+
+    void forceCloseAllWindows();
+    bool askAllWindowsToClose();
+    void closeWindow (MainWindow*);
+
+    void createWindowIfNoneAreOpen();
+    void openDocument (OpenDocumentManager::Document*, bool grabFocus);
+    bool openFile (const File& file);
+
+    MainWindow* createNewMainWindow();
+    MainWindow* getOrCreateFrontmostWindow();
+    MainWindow* getOrCreateEmptyWindow();
+
+    void reopenLastProjects();
+    void saveCurrentlyOpenProjectList();
+
+    void avoidSuperimposedWindows (MainWindow*);
+
+    void sendLookAndFeelChange();
+
+    OwnedArray<MainWindow> windows;
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindowList);
 };
 
 

@@ -23,7 +23,7 @@
   ==============================================================================
 */
 
-class DragOverlayComp   : public Component
+class TableHeaderComponent::DragOverlayComp   : public Component
 {
 public:
     DragOverlayComp (const Image& image_)
@@ -322,8 +322,7 @@ void TableHeaderComponent::resizeColumnsToFit (int firstColumnIndex, int targetT
     targetTotalWidth = jmax (targetTotalWidth, 0);
 
     StretchableObjectResizer sor;
-    int i;
-    for (i = firstColumnIndex; i < columns.size(); ++i)
+    for (int i = firstColumnIndex; i < columns.size(); ++i)
     {
         ColumnInfo* const ci = columns.getUnchecked(i);
 
@@ -334,7 +333,7 @@ void TableHeaderComponent::resizeColumnsToFit (int firstColumnIndex, int targetT
     sor.resizeToFit (targetTotalWidth);
 
     int visIndex = 0;
-    for (i = firstColumnIndex; i < columns.size(); ++i)
+    for (int i = firstColumnIndex; i < columns.size(); ++i)
     {
         ColumnInfo* const ci = columns.getUnchecked(i);
 
@@ -480,7 +479,7 @@ void TableHeaderComponent::addListener (Listener* const newListener)
 
 void TableHeaderComponent::removeListener (Listener* const listenerToRemove)
 {
-    listeners.removeValue (listenerToRemove);
+    listeners.removeFirstMatchingValue (listenerToRemove);
 }
 
 //==============================================================================

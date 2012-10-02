@@ -36,10 +36,10 @@ extern jobject createOpenGLView (ComponentPeer*);
 class OpenGLContext::NativeContext
 {
 public:
-    NativeContext (Component& component_,
+    NativeContext (Component& comp,
                    const OpenGLPixelFormat& pixelFormat,
                    void* /*contextToShareWith*/)
-        : component (component_),
+        : component (comp),
           isInsideGLCallback (false)
     {
         {
@@ -56,7 +56,7 @@ public:
     {
         {
             const ScopedLock sl (contextListLock);
-            contextList.removeValue (this);
+            contextList.removeFirstMatchingValue (this);
         }
 
         android.activity.callVoidMethod (JuceAppActivity.deleteView, glView.get());

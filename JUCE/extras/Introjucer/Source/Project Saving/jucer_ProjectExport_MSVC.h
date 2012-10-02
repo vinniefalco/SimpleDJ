@@ -33,8 +33,8 @@
 class MSVCProjectExporterBase   : public ProjectExporter
 {
 public:
-    MSVCProjectExporterBase (Project& project_, const ValueTree& settings_, const char* const folderName)
-        : ProjectExporter (project_, settings_)
+    MSVCProjectExporterBase (Project& p, const ValueTree& t, const char* const folderName)
+        : ProjectExporter (p, t)
     {
         if (getTargetLocationString().isEmpty())
             getTargetLocationValue() = getDefaultBuildsRootFolder() + folderName;
@@ -48,15 +48,21 @@ public:
     }
 
     //==============================================================================
-    bool isPossibleForCurrentProject()          { return true; }
     bool usesMMFiles() const                    { return false; }
     bool isVisualStudio() const                 { return true; }
     bool canCopeWithDuplicateFiles()            { return false; }
 
-    void createPropertyEditors (PropertyListBuilder& props)
+    bool launchProject()
     {
-        ProjectExporter::createPropertyEditors (props);
+       #if JUCE_WINDOWS
+        return getSLNFile().startAsProcess();
+       #else
+        return false;
+       #endif
+    }
 
+    void createExporterProperties (PropertyListBuilder& props)
+    {
         if (projectType.isLibrary())
         {
             const char* const libTypes[] = { "Static Library (.lib)", "Dynamic Library (.dll)", 0 };
@@ -71,8 +77,10 @@ protected:
     mutable File rcFile, iconFile;
 
     File getProjectFile (const String& extension) const   { return getTargetFolder().getChildFile (project.getProjectFilenameRoot()).withFileExtension (extension); }
+    File getSLNFile() const             { return getProjectFile (".sln"); }
 
     Value getLibraryType()              { return getSetting (Ids::libraryType); }
+    String getLibraryString() const     { return getSettingString (Ids::libraryType); }
     bool isLibraryDLL() const           { return msvcIsDLL || (projectType.isLibrary() && (int) settings [Ids::libraryType] == 2); }
 
     static String prependIfNotAbsolute (const String& file, const char* prefix)
@@ -89,7 +97,7 @@ protected:
     void updateOldSettings()
     {
         {
-            const String oldStylePrebuildCommand (getSetting (Ids::prebuildCommand).toString());
+            const String oldStylePrebuildCommand (getSettingString (Ids::prebuildCommand));
             settings.removeProperty (Ids::prebuildCommand, nullptr);
 
             if (oldStylePrebuildCommand.isNotEmpty())
@@ -98,7 +106,7 @@ protected:
         }
 
         {
-            const String oldStyleLibName (getSetting ("libraryName_Debug").toString());
+            const String oldStyleLibName (getSettingString ("libraryName_Debug"));
             settings.removeProperty ("libraryName_Debug", nullptr);
 
             if (oldStyleLibName.isNotEmpty())
@@ -108,7 +116,7 @@ protected:
         }
 
         {
-            const String oldStyleLibName (getSetting ("libraryName_Release").toString());
+            const String oldStyleLibName (getSettingString ("libraryName_Release"));
             settings.removeProperty ("libraryName_Release", nullptr);
 
             if (oldStyleLibName.isNotEmpty())
@@ -142,6 +150,9 @@ protected:
         Value shouldGenerateManifestValue()         { return getValue (Ids::generateManifest); }
         bool shouldGenerateManifest() const         { return config [Ids::generateManifest]; }
 
+        Value getWholeProgramOptValue()             { return getValue (Ids::wholeProgramOptimisation); }
+        bool shouldDisableWholeProgramOpt() const   { return static_cast<int> (config [Ids::wholeProgramOptimisation]) > 0; }
+
         String getOutputFilename (const String& suffix, bool forceSuffix) const
         {
             const String target (File::createLegalFileName (getTargetBinaryNameString().trim()));
@@ -152,15 +163,20 @@ protected:
             return target;
         }
 
-        void createPropertyEditors (PropertyListBuilder& props)
+        void createConfigProperties (PropertyListBuilder& props)
         {
-            createBasicPropertyEditors (props);
-
             const char* const warningLevelNames[] = { "Low", "Medium", "High", nullptr };
             const int warningLevels[] = { 2, 3, 4, 0 };
 
             props.add (new ChoicePropertyComponent (getWarningLevelValue(), "Warning Level",
                                                     StringArray (warningLevelNames), Array<var> (warningLevels)));
+
+            const char* const wpoNames[] = { "Enable link-time code generation when possible",
+                                             "Always disable link-time code generation", nullptr };
+            const var wpoValues[] = { var(), var (1) };
+
+            props.add (new ChoicePropertyComponent (getWholeProgramOptValue(), "Whole Program Optimisation",
+                                                    StringArray (wpoNames), Array<var> (wpoValues, numElementsInArray (wpoValues))));
 
             props.add (new TextPropertyComponent (getPrebuildCommand(),  "Pre-build Command",  2048, false));
             props.add (new TextPropertyComponent (getPostbuildCommand(), "Post-build Command", 2048, false));
@@ -434,7 +450,11 @@ protected:
 
         MemoryOutputStream mo;
 
-        mo << "#undef  WIN32_LEAN_AND_MEAN" << newLine
+        mo << "#ifdef JUCE_USER_DEFINED_RC_FILE" << newLine
+           << " #include JUCE_USER_DEFINED_RC_FILE" << newLine
+           << "#else" << newLine
+           << newLine
+           << "#undef  WIN32_LEAN_AND_MEAN" << newLine
            << "#define WIN32_LEAN_AND_MEAN" << newLine
            << "#include <windows.h>" << newLine
            << newLine
@@ -447,9 +467,9 @@ protected:
            << "    BEGIN" << newLine;
 
         writeRCValue (mo, "CompanyName", project.getCompanyName().toString());
-        writeRCValue (mo, "FileDescription", project.getProjectName().toString());
+        writeRCValue (mo, "FileDescription", project.getTitle());
         writeRCValue (mo, "FileVersion", version);
-        writeRCValue (mo, "ProductName", project.getProjectName().toString());
+        writeRCValue (mo, "ProductName", project.getTitle());
         writeRCValue (mo, "ProductVersion", version);
 
         mo << "    END" << newLine
@@ -459,7 +479,9 @@ protected:
            << "  BEGIN" << newLine
            << "    VALUE \"Translation\", 0x409, 65001" << newLine
            << "  END" << newLine
-           << "END" << newLine;
+           << "END" << newLine
+           << newLine
+           << "#endif" << newLine;
 
         if (iconFile != File::nonexistent)
            mo << newLine
@@ -512,17 +534,6 @@ public:
     static const char* getValueTreeTypeName()       { return "VS2008"; }
     int getVisualStudioVersion() const              { return 9; }
 
-    void launchProject()                            { getSLNFile().startAsProcess(); }
-
-    int getLaunchPreferenceOrderForCurrentOS()
-    {
-       #if JUCE_WINDOWS
-        return 4;
-       #else
-        return 0;
-       #endif
-    }
-
     static MSVCProjectExporterVC2008* createForSettings (Project& project, const ValueTree& settings)
     {
         if (settings.hasType (getValueTreeTypeName()))
@@ -538,9 +549,9 @@ public:
 
         if (hasResourceFile())
         {
-            for (int i = 0; i < groups.size(); ++i)
+            for (int i = 0; i < getAllGroups().size(); ++i)
             {
-                Project::Item& group = groups.getReference(i);
+                Project::Item& group = getAllGroups().getReference(i);
 
                 if (group.getID() == ProjectSaver::getGeneratedGroupID())
                 {
@@ -577,7 +588,6 @@ protected:
     virtual String getSolutionVersionString() const   { return "10.00" + newLine + "# Visual C++ Express 2008"; }
 
     File getVCProjFile() const    { return getProjectFile (".vcproj"); }
-    File getSLNFile() const       { return getProjectFile (".sln"); }
 
     //==============================================================================
     void fillInProjectXml (XmlElement& projectXml) const
@@ -655,9 +665,13 @@ protected:
 
     void createFiles (XmlElement& files) const
     {
-        for (int i = 0; i < groups.size(); ++i)
-            if (groups.getReference(i).getNumChildren() > 0)
-                addFiles (groups.getReference(i), files);
+        for (int i = 0; i < getAllGroups().size(); ++i)
+        {
+            const Project::Item& group = getAllGroups().getReference(i);
+
+            if (group.getNumChildren() > 0)
+                addFiles (group, files);
+        }
     }
 
     //==============================================================================
@@ -680,7 +694,7 @@ protected:
         xml.setAttribute ("ATLMinimizesCRunTimeLibraryUsage", "false");
         xml.setAttribute ("CharacterSet", "2");
 
-        if (! isDebug)
+        if (! (isDebug || config.shouldDisableWholeProgramOpt()))
             xml.setAttribute ("WholeProgramOptimization", "1");
 
         XmlElement* preBuildEvent = createToolElement (xml, "VCPreBuildEventTool");
@@ -849,8 +863,8 @@ protected:
 class MSVCProjectExporterVC2005   : public MSVCProjectExporterVC2008
 {
 public:
-    MSVCProjectExporterVC2005 (Project& project_, const ValueTree& settings_)
-        : MSVCProjectExporterVC2008 (project_, settings_, "VisualStudio2005")
+    MSVCProjectExporterVC2005 (Project& p, const ValueTree& t)
+        : MSVCProjectExporterVC2008 (p, t, "VisualStudio2005")
     {
         name = getName();
     }
@@ -858,15 +872,6 @@ public:
     static const char* getName()                    { return "Visual Studio 2005"; }
     static const char* getValueTreeTypeName()       { return "VS2005"; }
     int getVisualStudioVersion() const              { return 8; }
-
-    int getLaunchPreferenceOrderForCurrentOS()
-    {
-       #if JUCE_WINDOWS
-        return 2;
-       #else
-        return 0;
-       #endif
-    }
 
     static MSVCProjectExporterVC2005* createForSettings (Project& project, const ValueTree& settings)
     {
@@ -887,8 +892,8 @@ protected:
 class MSVCProjectExporterVC2010   : public MSVCProjectExporterBase
 {
 public:
-    MSVCProjectExporterVC2010 (Project& project_, const ValueTree& settings_)
-        : MSVCProjectExporterBase (project_, settings_, "VisualStudio2010")
+    MSVCProjectExporterVC2010 (Project& p, const ValueTree& t)
+        : MSVCProjectExporterBase (p, t, "VisualStudio2010")
     {
         name = getName();
     }
@@ -896,17 +901,6 @@ public:
     static const char* getName()                    { return "Visual Studio 2010"; }
     static const char* getValueTreeTypeName()       { return "VS2010"; }
     int getVisualStudioVersion() const              { return 10; }
-
-    int getLaunchPreferenceOrderForCurrentOS()
-    {
-       #if JUCE_WINDOWS
-        return 3;
-       #else
-        return 0;
-       #endif
-    }
-
-    void launchProject()                            { getSLNFile().startAsProcess(); }
 
     static MSVCProjectExporterVC2010* createForSettings (Project& project, const ValueTree& settings)
     {
@@ -961,9 +955,9 @@ protected:
         bool is64Bit() const                    { return config [Ids::winArchitecture].toString() == get64BitArchName(); }
 
         //==============================================================================
-        void createPropertyEditors (PropertyListBuilder& props)
+        void createConfigProperties (PropertyListBuilder& props)
         {
-            MSVCBuildConfiguration::createPropertyEditors (props);
+            MSVCBuildConfiguration::createConfigProperties (props);
 
             const char* const archTypes[] = { get32BitArchName(), get64BitArchName(), nullptr };
             props.add (new ChoicePropertyComponent (getArchitectureType(), "Architecture",
@@ -984,7 +978,6 @@ protected:
     //==============================================================================
     File getVCProjFile() const            { return getProjectFile (".vcxproj"); }
     File getVCProjFiltersFile() const     { return getProjectFile (".vcxproj.filters"); }
-    File getSLNFile() const               { return getProjectFile (".sln"); }
 
     String createConfigName (const BuildConfiguration& config) const
     {
@@ -1028,19 +1021,21 @@ protected:
             imports->setAttribute ("Project", "$(VCTargetsPath)\\Microsoft.Cpp.Default.props");
         }
 
-        for (ConstConfigIterator config (*this); config.next();)
+        for (ConstConfigIterator i (*this); i.next();)
         {
+            const MSVCBuildConfiguration& config = dynamic_cast <const MSVCBuildConfiguration&> (*i);
+
             XmlElement* e = projectXml.createNewChildElement ("PropertyGroup");
-            setConditionAttribute (*e, *config);
+            setConditionAttribute (*e, config);
             e->setAttribute ("Label", "Configuration");
             e->createNewChildElement ("ConfigurationType")->addTextElement (getProjectType());
             e->createNewChildElement ("UseOfMfc")->addTextElement ("false");
             e->createNewChildElement ("CharacterSet")->addTextElement ("MultiByte");
 
-            if (! config->isDebug())
+            if (! (config.isDebug() || config.shouldDisableWholeProgramOpt()))
                 e->createNewChildElement ("WholeProgramOptimization")->addTextElement ("true");
 
-            if (is64Bit (*config))
+            if (is64Bit (config))
                 e->createNewChildElement ("PlatformToolset")->addTextElement ("Windows7.1SDK");
         }
 
@@ -1132,9 +1127,13 @@ protected:
 
             {
                 XmlElement* cl = group->createNewChildElement ("ClCompile");
-                cl->createNewChildElement ("Optimization")->addTextElement (isDebug ? "Disabled" : "MaxSpeed");
 
-                if (isDebug)
+                const int optimiseLevel = config.getOptimisationLevelInt();
+                cl->createNewChildElement ("Optimization")->addTextElement (optimiseLevel <= 1 ? "Disabled"
+                                                                                               : optimiseLevel == 2 ? "MinSpace"
+                                                                                                                    : "MaxSpeed");
+
+                if (isDebug && optimiseLevel <= 1)
                     cl->createNewChildElement ("DebugInformationFormat")->addTextElement (is64Bit (config) ? "ProgramDatabase"
                                                                                                            : "EditAndContinue");
 
@@ -1219,9 +1218,13 @@ protected:
             XmlElement* cppFiles    = projectXml.createNewChildElement ("ItemGroup");
             XmlElement* headerFiles = projectXml.createNewChildElement ("ItemGroup");
 
-            for (int i = 0; i < groups.size(); ++i)
-                if (groups.getReference(i).getNumChildren() > 0)
-                    addFilesToCompile (groups.getReference(i), *cppFiles, *headerFiles, *otherFilesGroup);
+            for (int i = 0; i < getAllGroups().size(); ++i)
+            {
+                const Project::Item& group = getAllGroups().getReference(i);
+
+                if (group.getNumChildren() > 0)
+                    addFilesToCompile (group, *cppFiles, *headerFiles, *otherFilesGroup);
+            }
         }
 
         if (iconFile != File::nonexistent)
@@ -1363,10 +1366,13 @@ protected:
         XmlElement* headers    = filterXml.createNewChildElement ("ItemGroup");
         ScopedPointer<XmlElement> otherFilesGroup (new XmlElement ("ItemGroup"));
 
-        for (int i = 0; i < groups.size(); ++i)
-            if (groups.getReference(i).getNumChildren() > 0)
-                addFilesToFilter (groups.getReference(i), groups.getReference(i).getName(),
-                                  *cpps, *headers, *otherFilesGroup, *groupsXml);
+        for (int i = 0; i < getAllGroups().size(); ++i)
+        {
+            const Project::Item& group = getAllGroups().getReference(i);
+
+            if (group.getNumChildren() > 0)
+                addFilesToFilter (group, group.getName(), *cpps, *headers, *otherFilesGroup, *groupsXml);
+        }
 
         if (iconFile.exists())
         {

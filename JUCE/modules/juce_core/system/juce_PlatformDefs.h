@@ -272,10 +272,17 @@ namespace juce
 //==============================================================================
 #if JUCE_ANDROID && ! DOXYGEN
  #define JUCE_MODAL_LOOPS_PERMITTED 0
-#else
+#elif ! defined (JUCE_MODAL_LOOPS_PERMITTED)
  /** Some operating environments don't provide a modal loop mechanism, so this flag can be
      used to disable any functions that try to run a modal loop. */
  #define JUCE_MODAL_LOOPS_PERMITTED 1
+#endif
+
+//==============================================================================
+#if JUCE_GCC
+ #define JUCE_PACKED __attribute__((packed))
+#elif ! DOXYGEN
+ #define JUCE_PACKED
 #endif
 
 //==============================================================================
@@ -287,7 +294,7 @@ namespace juce
  #define JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS 1
 #endif
 
-#if defined (__clang__) && defined (__has_feature)
+#if JUCE_CLANG && defined (__has_feature)
  #if __has_feature (cxx_nullptr)
   #define JUCE_COMPILER_SUPPORTS_NULLPTR 1
  #endif
@@ -302,11 +309,6 @@ namespace juce
 #endif
 
 #if defined (_MSC_VER) && _MSC_VER >= 1600
- #if _MSC_VER >= 1700
-  #define JUCE_COMPILER_SUPPORTS_NOEXCEPT 1
- #else
-  #define JUCE_COMPILER_SUPPORTS_NOEXCEPT 0
- #endif
  #define JUCE_COMPILER_SUPPORTS_NULLPTR 1
  #define JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS 1
 #endif
@@ -315,6 +317,9 @@ namespace juce
 // Declare some fake versions of nullptr and noexcept, for older compilers:
 #if ! (DOXYGEN || JUCE_COMPILER_SUPPORTS_NOEXCEPT)
  #define noexcept  throw()
+ #if defined (_MSC_VER) && _MSC_VER > 1600
+  #define _ALLOW_KEYWORD_MACROS 1 // (to stop VC2012 complaining)
+ #endif
 #endif
 
 #if ! (DOXYGEN || JUCE_COMPILER_SUPPORTS_NULLPTR)

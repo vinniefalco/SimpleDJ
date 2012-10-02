@@ -253,13 +253,8 @@ public:
     /** Returns true if the editor is currently focused and active. */
     bool isBeingEdited() const noexcept;
 
-    //==============================================================================
-    struct Ids
-    {
-        static const Identifier tagType, text, font, editMode, justification, focusLossDiscardsChanges;
-    };
-
-    void refreshFromValueTree (const ValueTree&, ComponentBuilder&);
+    /** Returns the currently-visible text editor, or nullptr if none is open. */
+    TextEditor* getCurrentTextEditor() const noexcept;
 
 protected:
     //==============================================================================

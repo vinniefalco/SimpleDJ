@@ -281,21 +281,13 @@ TextEditor* Label::createEditorComponent()
 {
     TextEditor* const ed = new TextEditor (getName());
     ed->setFont (font);
-
-    // copy these colours from our own settings..
-    const int cols[] = { TextEditor::backgroundColourId,
-                         TextEditor::textColourId,
-                         TextEditor::highlightColourId,
-                         TextEditor::highlightedTextColourId,
-                         TextEditor::outlineColourId,
-                         TextEditor::focusedOutlineColourId,
-                         TextEditor::shadowColourId,
-                         CaretComponent::caretColourId };
-
-    for (int i = 0; i < numElementsInArray (cols); ++i)
-        ed->setColour (cols[i], findColour (cols[i]));
-
+    copyAllExplicitColoursTo (*ed);
     return ed;
+}
+
+TextEditor* Label::getCurrentTextEditor() const noexcept
+{
+    return editor;
 }
 
 //==============================================================================
@@ -447,23 +439,4 @@ void Label::textEditorEscapeKeyPressed (TextEditor& ed)
 void Label::textEditorFocusLost (TextEditor& ed)
 {
     textEditorTextChanged (ed);
-}
-
-
-const Identifier Label::Ids::tagType ("LABEL");
-const Identifier Label::Ids::text ("text");
-const Identifier Label::Ids::font ("font");
-const Identifier Label::Ids::editMode ("editMode");
-const Identifier Label::Ids::justification ("justification");
-const Identifier Label::Ids::focusLossDiscardsChanges ("focusLossDiscardsChanges");
-
-void Label::refreshFromValueTree (const ValueTree& state, ComponentBuilder&)
-{
-    ComponentBuilder::refreshBasicComponentProperties (*this, state);
-
-    setText (state [Ids::text].toString(), false);
-    setFont (Font::fromString (state [Ids::font]));
-    const int editMode = static_cast <int> (state [Ids::editMode]);
-    setEditable (editMode == 2, editMode == 3, static_cast <bool> (state [Ids::focusLossDiscardsChanges]));
-    setJustificationType (static_cast <int> (state [Ids::justification]));
 }

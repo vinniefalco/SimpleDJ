@@ -67,7 +67,7 @@ private:
 
 //==============================================================================
 class AudioDeviceSelectorComponent::MidiInputSelectorComponentListBox  : public ListBox,
-                                                                         public ListBoxModel
+                                                                         private ListBoxModel
 {
 public:
     //==============================================================================
@@ -196,9 +196,9 @@ struct AudioDeviceSetupDetails
 
 //==============================================================================
 class AudioDeviceSettingsPanel : public Component,
-                                 public ChangeListener,
-                                 public ComboBoxListener,  // (can't use ComboBox::Listener due to idiotic VC2005 bug)
-                                 public ButtonListener
+                                 private ChangeListener,
+                                 private ComboBoxListener,  // (can't use ComboBox::Listener due to idiotic VC2005 bug)
+                                 private ButtonListener
 {
 public:
     AudioDeviceSettingsPanel (AudioIODeviceType* type_,
@@ -661,7 +661,7 @@ private:
 public:
     //==============================================================================
     class ChannelSelectorListBox  : public ListBox,
-                                    public ListBoxModel
+                                    private ListBoxModel
     {
     public:
         enum BoxType
@@ -842,8 +842,7 @@ public:
                     BigInteger& original = (type == audioInputType ? config.inputChannels
                                                                    : config.outputChannels);
 
-                    int i;
-                    for (i = 0; i < 256; i += 2)
+                    for (int i = 0; i < 256; i += 2)
                         bits.setBit (i / 2, original [i] || original [i + 1]);
 
                     if (type == audioInputType)
@@ -857,7 +856,7 @@ public:
                         flipBit (bits, row, setup.minNumOutputChannels / 2, setup.maxNumOutputChannels / 2);
                     }
 
-                    for (i = 0; i < 256; ++i)
+                    for (int i = 0; i < 256; ++i)
                         original.setBit (i, bits [i / 2]);
                 }
                 else
@@ -896,7 +895,7 @@ public:
             {
                 if (numActive >= maxNumber)
                 {
-                    const int firstActiveChan = chans.findNextSetBit();
+                    const int firstActiveChan = chans.findNextSetBit (0);
 
                     chans.setBit (index > firstActiveChan
                                      ? firstActiveChan : chans.getHighestBit(),

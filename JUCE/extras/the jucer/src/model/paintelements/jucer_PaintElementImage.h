@@ -153,7 +153,7 @@ public:
             {
                 if (resourceName.isNotEmpty())
                 {
-                    const String imageVariable (L"drawable" + String (code.getUniqueSuffix()));
+                    const String imageVariable ("drawable" + String (code.getUniqueSuffix()));
 
                     code.privateMemberDeclarations
                         << "Drawable* " << imageVariable << ";\n";
@@ -175,9 +175,9 @@ public:
 
                     r << "jassert (" << imageVariable << " != 0);\n"
                       << "if (" << imageVariable << " != 0)\n    "
-                      << imageVariable  << "->drawWithin (g, "
+                      << imageVariable  << "->drawWithin (g, Rectangle<float> ("
                       << x << ", " << y << ", " << w << ", " << h
-                      << ",\n"
+                      << "),\n"
                       << String::repeatedString (" ", imageVariable.length() + 18)
                       << (mode == stretched ? "RectanglePlacement::stretchToFit"
                                             : (mode == proportionalReducingOnly ? "RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize"

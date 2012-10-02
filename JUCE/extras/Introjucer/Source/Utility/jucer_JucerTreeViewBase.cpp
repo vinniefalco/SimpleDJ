@@ -24,13 +24,64 @@
 */
 
 #include "jucer_JucerTreeViewBase.h"
+#include "../Project/jucer_ProjectContentComponent.h"
 
 
 //==============================================================================
-JucerTreeViewBase::JucerTreeViewBase()
-    : textX (0)
+void TreePanelBase::setRoot (JucerTreeViewBase* root)
+{
+    rootItem = root;
+    tree.setRootItem (root);
+    tree.getRootItem()->setOpen (true);
+
+    if (project != nullptr)
+    {
+        const ScopedPointer<XmlElement> treeOpenness (project->getStoredProperties()
+                                                          .getXmlValue (opennessStateKey));
+        if (treeOpenness != nullptr)
+        {
+            tree.restoreOpennessState (*treeOpenness, true);
+
+            for (int i = tree.getNumSelectedItems(); --i >= 0;)
+            {
+                JucerTreeViewBase* item = dynamic_cast<JucerTreeViewBase*> (tree.getSelectedItem (i));
+
+                if (item != nullptr)
+                    item->cancelDelayedSelectionTimer();
+            }
+        }
+    }
+}
+
+void TreePanelBase::saveOpenness()
+{
+    if (project != nullptr)
+    {
+        const ScopedPointer<XmlElement> opennessState (tree.getOpennessState (true));
+
+        if (opennessState != nullptr)
+            project->getStoredProperties().setValue (opennessStateKey, opennessState);
+        else
+            project->getStoredProperties().removeValue (opennessStateKey);
+    }
+}
+
+//==============================================================================
+JucerTreeViewBase::JucerTreeViewBase()  : textX (0)
 {
     setLinesDrawnForSubItems (false);
+}
+
+JucerTreeViewBase::~JucerTreeViewBase()
+{
+    masterReference.clear();
+}
+
+void JucerTreeViewBase::refreshSubItems()
+{
+    WholeTreeOpennessRestorer openness (*this);
+    clearSubItems();
+    addSubItems();
 }
 
 Font JucerTreeViewBase::getFont() const
@@ -41,7 +92,12 @@ Font JucerTreeViewBase::getFont() const
 void JucerTreeViewBase::paintItem (Graphics& g, int width, int height)
 {
     if (isSelected())
-        g.fillAll (Colour (0x401111ee));
+        g.fillAll (getOwnerView()->findColour (treeviewHighlightColourId));
+}
+
+float JucerTreeViewBase::getIconSize() const
+{
+    return jmin (getItemHeight() - 4.0f, 18.0f);
 }
 
 void JucerTreeViewBase::paintOpenCloseButton (Graphics& g, int width, int height, bool isMouseOver)
@@ -53,64 +109,38 @@ void JucerTreeViewBase::paintOpenCloseButton (Graphics& g, int width, int height
     else
         p.addTriangle (width * 0.25f, height * 0.25f, width * 0.8f, height * 0.5f,  width * 0.25f, height * 0.75f);
 
-    g.setColour (Colours::lightgrey);
+    g.setColour (getOwnerView()->findColour (mainBackgroundColourId).contrasting (0.3f));
     g.fillPath (p);
 }
 
-//==============================================================================
-class TreeItemComponent   : public Component
+Colour JucerTreeViewBase::getBackgroundColour() const
 {
-public:
-    TreeItemComponent (JucerTreeViewBase& item_)
-        : item (item_)
-    {
-        setInterceptsMouseClicks (false, true);
+    Colour background (getOwnerView()->findColour (mainBackgroundColourId));
 
-        item.createLeftEdgeComponents (leftComps);
+    if (isSelected())
+        background = background.overlaidWith (getOwnerView()->findColour (treeviewHighlightColourId));
 
-        for (int i = 0; i < leftComps.size(); ++i)
-            addAndMakeVisible (leftComps.getUnchecked(i));
+    return background;
+}
 
-        addAndMakeVisible (rightHandComponent = item.createRightEdgeComponent());
-    }
+Colour JucerTreeViewBase::getContrastingColour (float contrast) const
+{
+    return getBackgroundColour().contrasting (contrast);
+}
 
-    void paint (Graphics& g)
-    {
-        g.setColour (Colours::black);
+Colour JucerTreeViewBase::getContrastingColour (const Colour& target, float minContrast) const
+{
+    return getBackgroundColour().contrasting (target, minContrast);
+}
 
-        const int height = getHeight();
+void JucerTreeViewBase::paintContent (Graphics& g, const Rectangle<int>& area)
+{
+    g.setFont (getFont());
+    g.setColour (isMissing() ? getContrastingColour (Colours::red, 0.8f)
+                             : getContrastingColour (0.8f));
 
-        item.getIcon()->drawWithin (g, Rectangle<float> (0.0f, 2.0f, height + 6.0f, height - 4.0f),
-                                    RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
-
-        g.setFont (item.getFont());
-        g.setColour (item.isMissing() ? Colours::red : Colours::black);
-
-        const int right = rightHandComponent != nullptr ? rightHandComponent->getX() - 2
-                                                        : getWidth();
-
-        g.drawFittedText (item.getDisplayName(),
-                          item.textX, 0, right - item.textX, height, Justification::centredLeft, 1, 0.8f);
-    }
-
-    void resized()
-    {
-        const int edge = 1;
-        const int itemSize = getHeight() - edge * 2;
-        item.textX = (leftComps.size() + 1) * getHeight() + 8;
-
-        for (int i = 0; i < leftComps.size(); ++i)
-            leftComps.getUnchecked(i)->setBounds (5 + (i + 1) * getHeight(), edge, itemSize, itemSize);
-
-        if (rightHandComponent != nullptr)
-            rightHandComponent->setBounds (getWidth() - itemSize - edge, edge, itemSize, itemSize);
-    }
-
-private:
-    JucerTreeViewBase& item;
-    OwnedArray<Component> leftComps;
-    ScopedPointer<Component> rightHandComponent;
-};
+    g.drawFittedText (getDisplayName(), area, Justification::centredLeft, 1, 0.8f);
+}
 
 Component* JucerTreeViewBase::createItemComponent()
 {
@@ -175,10 +205,83 @@ void JucerTreeViewBase::itemClicked (const MouseEvent& e)
     }
 }
 
-void JucerTreeViewBase::showPopupMenu()
+void JucerTreeViewBase::deleteItem()    {}
+void JucerTreeViewBase::deleteAllSelectedItems() {}
+void JucerTreeViewBase::showDocument()  {}
+void JucerTreeViewBase::showPopupMenu() {}
+void JucerTreeViewBase::showMultiSelectionPopupMenu() {}
+
+static void treeViewMenuItemChosen (int resultCode, WeakReference<JucerTreeViewBase> item)
+{
+    if (item != nullptr)
+        item->handlePopupMenuResult (resultCode);
+}
+
+void JucerTreeViewBase::launchPopupMenu (PopupMenu& m)
+{
+    m.showMenuAsync (PopupMenu::Options(),
+                     ModalCallbackFunction::create (treeViewMenuItemChosen, WeakReference<JucerTreeViewBase> (this)));
+}
+
+void JucerTreeViewBase::handlePopupMenuResult (int)
 {
 }
 
-void JucerTreeViewBase::showMultiSelectionPopupMenu()
+ProjectContentComponent* JucerTreeViewBase::getProjectContentComponent() const
 {
+    Component* c = getOwnerView();
+
+    while (c != nullptr)
+    {
+        ProjectContentComponent* pcc = dynamic_cast <ProjectContentComponent*> (c);
+
+        if (pcc != nullptr)
+            return pcc;
+
+        c = c->getParentComponent();
+    }
+
+    return nullptr;
+}
+
+//==============================================================================
+class JucerTreeViewBase::ItemSelectionTimer  : public Timer
+{
+public:
+    ItemSelectionTimer (JucerTreeViewBase& owner_)  : owner (owner_) {}
+
+    void timerCallback()    { owner.invokeShowDocument(); }
+
+private:
+    JucerTreeViewBase& owner;
+    JUCE_DECLARE_NON_COPYABLE (ItemSelectionTimer);
+};
+
+void JucerTreeViewBase::itemSelectionChanged (bool isNowSelected)
+{
+    if (isNowSelected)
+    {
+        delayedSelectionTimer = new ItemSelectionTimer (*this);
+        delayedSelectionTimer->startTimer (getMillisecsAllowedForDragGesture());
+    }
+    else
+    {
+        cancelDelayedSelectionTimer();
+    }
+}
+
+void JucerTreeViewBase::invokeShowDocument()
+{
+    cancelDelayedSelectionTimer();
+    showDocument();
+}
+
+void JucerTreeViewBase::itemDoubleClicked (const MouseEvent& e)
+{
+    invokeShowDocument();
+}
+
+void JucerTreeViewBase::cancelDelayedSelectionTimer()
+{
+    delayedSelectionTimer = nullptr;
 }

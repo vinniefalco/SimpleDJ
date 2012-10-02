@@ -225,12 +225,6 @@ public:
     */
     void setSingleStepSizes (int stepX, int stepY);
 
-    /** Shows or hides the buttons on any scrollbars that are used.
-
-        @see ScrollBar::setButtonVisibility
-    */
-    void setScrollBarButtonVisibility (bool buttonsVisible);
-
     /** Returns a pointer to the scrollbar component being used.
         Handy if you need to customise the bar somehow.
     */
@@ -243,26 +237,18 @@ public:
 
 
     //==============================================================================
-    struct Ids
-    {
-        static const Identifier showScrollBarV, showScrollBarH, scrollBarWidth;
-    };
-
-    void refreshFromValueTree (const ValueTree&, ComponentBuilder&);
-
-    //==============================================================================
     /** @internal */
     void resized();
     /** @internal */
     void scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart);
     /** @internal */
-    void mouseWheelMove (const MouseEvent& e, float wheelIncrementX, float wheelIncrementY);
+    void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&);
     /** @internal */
-    bool keyPressed (const KeyPress& key);
+    bool keyPressed (const KeyPress&);
     /** @internal */
-    void componentMovedOrResized (Component& component, bool wasMoved, bool wasResized);
+    void componentMovedOrResized (Component&, bool wasMoved, bool wasResized);
     /** @internal */
-    bool useMouseWheelMoveIfNeeded (const MouseEvent& e, float wheelIncrementX, float wheelIncrementY);
+    bool useMouseWheelMoveIfNeeded (const MouseEvent&, const MouseWheelDetails&);
 
 private:
     //==============================================================================

@@ -434,8 +434,15 @@ void Path::addRectangle (const float x, const float y,
 
 void Path::addRoundedRectangle (const float x, const float y,
                                 const float w, const float h,
-                                float csx,
-                                float csy)
+                                float csx, float csy)
+{
+    addRoundedRectangle (x, y, w, h, csx, csy, true, true, true, true);
+}
+
+void Path::addRoundedRectangle (const float x, const float y, const float w, const float h,
+                                float csx, float csy,
+                                const bool curveTopLeft, const bool curveTopRight,
+                                const bool curveBottomLeft, const bool curveBottomRight)
 {
     csx = jmin (csx, w * 0.5f);
     csy = jmin (csy, h * 0.5f);
@@ -444,15 +451,46 @@ void Path::addRoundedRectangle (const float x, const float y,
     const float x2 = x + w;
     const float y2 = y + h;
 
-    startNewSubPath (x + csx, y);
-    lineTo (x2 - csx, y);
-    cubicTo (x2 - cs45x, y, x2, y + cs45y, x2, y + csy);
-    lineTo (x2, y2 - csy);
-    cubicTo (x2, y2 - cs45y, x2 - cs45x, y2, x2 - csx, y2);
-    lineTo (x + csx, y2);
-    cubicTo (x + cs45x, y2, x, y2 - cs45y, x, y2 - csy);
-    lineTo (x, y + csy);
-    cubicTo (x, y + cs45y, x + cs45x, y, x + csx, y);
+    if (curveTopLeft)
+    {
+        startNewSubPath (x, y + csy);
+        cubicTo (x, y + cs45y, x + cs45x, y, x + csx, y);
+    }
+    else
+    {
+        startNewSubPath (x, y);
+    }
+
+    if (curveTopRight)
+    {
+        lineTo (x2 - csx, y);
+        cubicTo (x2 - cs45x, y, x2, y + cs45y, x2, y + csy);
+    }
+    else
+    {
+        lineTo (x2, y);
+    }
+
+    if (curveBottomRight)
+    {
+        lineTo (x2, y2 - csy);
+        cubicTo (x2, y2 - cs45y, x2 - cs45x, y2, x2 - csx, y2);
+    }
+    else
+    {
+        lineTo (x2, y2);
+    }
+
+    if (curveBottomLeft)
+    {
+        lineTo (x + csx, y2);
+        cubicTo (x + cs45x, y2, x, y2 - cs45y, x, y2 - csy);
+    }
+    else
+    {
+        lineTo (x, y2);
+    }
+
     closeSubPath();
 }
 
@@ -688,80 +726,66 @@ void Path::addStar (const Point<float>& centre, const int numberOfPoints,
     }
 }
 
-void Path::addBubble (float x, float y,
-                      float w, float h,
-                      float cs,
-                      float tipX,
-                      float tipY,
-                      int whichSide,
-                      float arrowPos,
-                      float arrowWidth)
+void Path::addBubble (const Rectangle<float>& bodyArea,
+                      const Rectangle<float>& maximumArea,
+                      const Point<float>& arrowTip,
+                      const float cornerSize,
+                      const float arrowBaseWidth)
 {
-    if (w > 1.0f && h > 1.0f)
+    const float cornerSize2 = 2.0f * cornerSize;
+
+    startNewSubPath (bodyArea.getX() + cornerSize, bodyArea.getY());
+
+    const float targetLimitX = bodyArea.getX() + cornerSize + arrowBaseWidth;
+    const float targetLimitW = bodyArea.getWidth() - cornerSize2 - arrowBaseWidth * 2.0f;
+
+    const float targetLimitY = bodyArea.getY() + cornerSize + arrowBaseWidth;
+    const float targetLimitH = bodyArea.getHeight() - cornerSize2 - arrowBaseWidth * 2.0f;
+
+    if (Rectangle<float> (targetLimitX, maximumArea.getY(),
+                          targetLimitW, bodyArea.getY() - maximumArea.getY()).contains (arrowTip))
     {
-        cs = jmin (cs, w * 0.5f, h * 0.5f);
-        const float cs2 = 2.0f * cs;
-
-        startNewSubPath (x + cs, y);
-
-        if (whichSide == 0)
-        {
-            const float halfArrowW = jmin (arrowWidth, w - cs2) * 0.5f;
-            const float arrowX1 = x + cs + jmax (0.0f, (w - cs2 - arrowWidth) * arrowPos - halfArrowW);
-            lineTo (arrowX1, y);
-            lineTo (tipX, tipY);
-            lineTo (arrowX1 + halfArrowW * 2.0f, y);
-        }
-
-        lineTo (x + w - cs, y);
-
-        if (cs > 0.0f)
-            addArc (x + w - cs2, y, cs2, cs2, 0, float_Pi * 0.5f);
-
-        if (whichSide == 3)
-        {
-            const float halfArrowH = jmin (arrowWidth, h - cs2) * 0.5f;
-            const float arrowY1 = y + cs + jmax (0.0f, (h - cs2 - arrowWidth) * arrowPos - halfArrowH);
-            lineTo (x + w, arrowY1);
-            lineTo (tipX, tipY);
-            lineTo (x + w, arrowY1 + halfArrowH * 2.0f);
-        }
-
-        lineTo (x + w, y + h - cs);
-
-        if (cs > 0.0f)
-            addArc (x + w - cs2, y + h - cs2, cs2, cs2, float_Pi * 0.5f, float_Pi);
-
-        if (whichSide == 2)
-        {
-            const float halfArrowW = jmin (arrowWidth, w - cs2) * 0.5f;
-            const float arrowX1 = x + cs + jmax (0.0f, (w - cs2 - arrowWidth) * arrowPos - halfArrowW);
-            lineTo (arrowX1 + halfArrowW * 2.0f, y + h);
-            lineTo (tipX, tipY);
-            lineTo (arrowX1, y + h);
-        }
-
-        lineTo (x + cs, y + h);
-
-        if (cs > 0.0f)
-            addArc (x, y + h - cs2, cs2, cs2, float_Pi, float_Pi * 1.5f);
-
-        if (whichSide == 1)
-        {
-            const float halfArrowH = jmin (arrowWidth, h - cs2) * 0.5f;
-            const float arrowY1 = y + cs + jmax (0.0f, (h - cs2 - arrowWidth) * arrowPos - halfArrowH);
-            lineTo (x, arrowY1 + halfArrowH * 2.0f);
-            lineTo (tipX, tipY);
-            lineTo (x, arrowY1);
-        }
-
-        lineTo (x, y + cs);
-
-        if (cs > 0.0f)
-            addArc (x, y, cs2, cs2, float_Pi * 1.5f, float_Pi * 2.0f - PathHelpers::ellipseAngularIncrement);
-
-        closeSubPath();
+        lineTo (arrowTip.x - arrowBaseWidth, bodyArea.getY());
+        lineTo (arrowTip.x, arrowTip.y);
+        lineTo (arrowTip.x + arrowBaseWidth, bodyArea.getY());
     }
+
+    lineTo (bodyArea.getRight() - cornerSize, bodyArea.getY());
+    addArc (bodyArea.getRight() - cornerSize2, bodyArea.getY(), cornerSize2, cornerSize2, 0, float_Pi * 0.5f);
+
+    if (Rectangle<float> (bodyArea.getRight(), targetLimitY,
+                          maximumArea.getRight() - bodyArea.getRight(), targetLimitH).contains (arrowTip))
+    {
+        lineTo (bodyArea.getRight(), arrowTip.y - arrowBaseWidth);
+        lineTo (arrowTip.x, arrowTip.y);
+        lineTo (bodyArea.getRight(), arrowTip.y + arrowBaseWidth);
+    }
+
+    lineTo (bodyArea.getRight(), bodyArea.getBottom() - cornerSize);
+    addArc (bodyArea.getRight() - cornerSize2, bodyArea.getBottom() - cornerSize2, cornerSize2, cornerSize2, float_Pi * 0.5f, float_Pi);
+
+    if (Rectangle<float> (targetLimitX, bodyArea.getBottom(),
+                          targetLimitW, maximumArea.getBottom() - bodyArea.getBottom()).contains (arrowTip))
+    {
+        lineTo (arrowTip.x + arrowBaseWidth, bodyArea.getBottom());
+        lineTo (arrowTip.x, arrowTip.y);
+        lineTo (arrowTip.x - arrowBaseWidth, bodyArea.getBottom());
+    }
+
+    lineTo (bodyArea.getX() + cornerSize, bodyArea.getBottom());
+    addArc (bodyArea.getX(), bodyArea.getBottom() - cornerSize2, cornerSize2, cornerSize2, float_Pi, float_Pi * 1.5f);
+
+    if (Rectangle<float> (maximumArea.getX(), targetLimitY, bodyArea.getX() - maximumArea.getX(), targetLimitH).contains (arrowTip))
+    {
+        lineTo (bodyArea.getX(), arrowTip.y + arrowBaseWidth);
+        lineTo (arrowTip.x, arrowTip.y);
+        lineTo (bodyArea.getX(), arrowTip.y - arrowBaseWidth);
+    }
+
+    lineTo (bodyArea.getX(), bodyArea.getY() + cornerSize);
+    addArc (bodyArea.getX(), bodyArea.getY(), cornerSize2, cornerSize2, float_Pi * 1.5f, float_Pi * 2.0f - 0.05f);
+
+    closeSubPath();
 }
 
 void Path::addPath (const Path& other)
@@ -917,15 +941,15 @@ AffineTransform Path::getTransformToScaleToFit (const float x, const float y,
                                                 const bool preserveProportions,
                                                 const Justification& justification) const
 {
-    Rectangle<float> bounds (getBounds());
+    Rectangle<float> boundsRect (getBounds());
 
     if (preserveProportions)
     {
-        if (w <= 0 || h <= 0 || bounds.isEmpty())
+        if (w <= 0 || h <= 0 || boundsRect.isEmpty())
             return AffineTransform::identity;
 
         float newW, newH;
-        const float srcRatio = bounds.getHeight() / bounds.getWidth();
+        const float srcRatio = boundsRect.getHeight() / boundsRect.getWidth();
 
         if (srcRatio > h / w)
         {
@@ -949,17 +973,17 @@ AffineTransform Path::getTransformToScaleToFit (const float x, const float y,
         else if (justification.testFlags (Justification::bottom))   newYCentre += h - newH * 0.5f;
         else                                                        newYCentre += h * 0.5f;
 
-        return AffineTransform::translation (bounds.getWidth()  * -0.5f - bounds.getX(),
-                                             bounds.getHeight() * -0.5f - bounds.getY())
-                    .scaled (newW / bounds.getWidth(),
-                             newH / bounds.getHeight())
+        return AffineTransform::translation (boundsRect.getWidth()  * -0.5f - boundsRect.getX(),
+                                             boundsRect.getHeight() * -0.5f - boundsRect.getY())
+                    .scaled (newW / boundsRect.getWidth(),
+                             newH / boundsRect.getHeight())
                     .translated (newXCentre, newYCentre);
     }
     else
     {
-        return AffineTransform::translation (-bounds.getX(), -bounds.getY())
-                    .scaled (w / bounds.getWidth(),
-                             h / bounds.getHeight())
+        return AffineTransform::translation (-boundsRect.getX(), -boundsRect.getY())
+                    .scaled (w / boundsRect.getWidth(),
+                             h / boundsRect.getHeight())
                     .translated (x, y);
     }
 }

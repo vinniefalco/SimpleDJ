@@ -23,14 +23,14 @@
   ==============================================================================
 */
 
-class MouseInputSourceInternal   : public AsyncUpdater
+class MouseInputSourceInternal   : private AsyncUpdater
 {
 public:
     //==============================================================================
     MouseInputSourceInternal (MouseInputSource& source_, const int index_, const bool isMouseDevice_)
         : index (index_), isMouseDevice (isMouseDevice_), source (source_), lastPeer (nullptr),
           isUnboundedMouseModeOn (false), isCursorVisibleUntilOffscreen (false), currentCursorHandle (nullptr),
-          mouseEventCounter (0)
+          mouseEventCounter (0), mouseMovedSignificantlySincePressed (false)
     {
     }
 
@@ -64,12 +64,12 @@ public:
 
         if (peer != nullptr)
         {
-            Component* const comp = peer->getComponent();
-            const Point<int> relativePos (comp->getLocalPoint (nullptr, screenPos));
+            Component& comp = peer->getComponent();
+            const Point<int> relativePos (comp.getLocalPoint (nullptr, screenPos));
 
             // (the contains() call is needed to test for overlapping desktop windows)
-            if (comp->contains (relativePos))
-                return comp->getComponentAt (relativePos);
+            if (comp.contains (relativePos))
+                return comp.getComponentAt (relativePos);
         }
 
         return nullptr;
@@ -120,10 +120,10 @@ public:
         comp->internalMouseUp (source, comp->getLocalPoint (nullptr, screenPos), time, oldMods);
     }
 
-    void sendMouseWheel (Component* const comp, const Point<int>& screenPos, const Time& time, float x, float y)
+    void sendMouseWheel (Component* const comp, const Point<int>& screenPos, const Time& time, const MouseWheelDetails& wheel)
     {
         //DBG ("Mouse " + String (source.getIndex()) + " wheel: " + comp->getLocalPoint (nullptr, screenPos).toString() + " - Comp: " + String::toHexString ((int) comp));
-        comp->internalMouseWheel (source, comp->getLocalPoint (nullptr, screenPos), time, x, y);
+        comp->internalMouseWheel (source, comp->getLocalPoint (nullptr, screenPos), time, wheel);
     }
 
     //==============================================================================
@@ -285,13 +285,15 @@ public:
         }
     }
 
-    void handleWheel (ComponentPeer* const peer, const Point<int>& positionWithinPeer, const Time& time, float x, float y)
+    void handleWheel (ComponentPeer* const peer, const Point<int>& positionWithinPeer,
+                      const Time& time, const MouseWheelDetails& wheel)
     {
         jassert (peer != nullptr);
         lastTime = time;
         ++mouseEventCounter;
-        const Point<int> screenPos (peer->localToGlobal (positionWithinPeer));
+        Desktop::getInstance().incrementMouseWheelCounter();
 
+        const Point<int> screenPos (peer->localToGlobal (positionWithinPeer));
         setPeer (peer, screenPos, time);
         setScreenPos (screenPos, time, false);
         triggerFakeMove();
@@ -300,20 +302,13 @@ public:
         {
             Component* current = getComponentUnderMouse();
             if (current != nullptr)
-                sendMouseWheel (current, screenPos, time, x, y);
+                sendMouseWheel (current, screenPos, time, wheel);
         }
     }
 
     //==============================================================================
-    Time getLastMouseDownTime() const noexcept
-    {
-        return Time (mouseDowns[0].time);
-    }
-
-    Point<int> getLastMouseDownPosition() const noexcept
-    {
-        return mouseDowns[0].position;
-    }
+    const Time& getLastMouseDownTime() const noexcept              { return mouseDowns[0].time; }
+    const Point<int>& getLastMouseDownPosition() const noexcept    { return mouseDowns[0].position; }
 
     int getNumberOfMultipleClicks() const noexcept
     {
@@ -446,9 +441,7 @@ private:
 
     struct RecentMouseDown
     {
-        RecentMouseDown()  : component (nullptr)
-        {
-        }
+        RecentMouseDown() noexcept  : component (nullptr) {}
 
         Point<int> position;
         Time time;
@@ -465,8 +458,8 @@ private:
     };
 
     RecentMouseDown mouseDowns[4];
-    bool mouseMovedSignificantlySincePressed;
     Time lastTime;
+    bool mouseMovedSignificantlySincePressed;
 
     void registerMouseDown (const Point<int>& screenPos, const Time& time,
                             Component* const component, const ModifierKeys& modifiers) noexcept
@@ -487,7 +480,7 @@ private:
                || mouseDowns[0].position.getDistanceFrom (screenPos) >= 4;
     }
 
-    JUCE_DECLARE_NON_COPYABLE (MouseInputSourceInternal);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MouseInputSourceInternal);
 };
 
 //==============================================================================
@@ -496,9 +489,7 @@ MouseInputSource::MouseInputSource (const int index, const bool isMouseDevice)
     pimpl = new MouseInputSourceInternal (*this, index, isMouseDevice);
 }
 
-MouseInputSource::~MouseInputSource()
-{
-}
+MouseInputSource::~MouseInputSource() {}
 
 bool MouseInputSource::isMouse() const                                  { return pimpl->isMouseDevice; }
 bool MouseInputSource::isTouch() const                                  { return ! isMouse(); }
@@ -522,12 +513,14 @@ void MouseInputSource::hideCursor()                                     { pimpl-
 void MouseInputSource::revealCursor()                                   { pimpl->revealCursor (false); }
 void MouseInputSource::forceMouseCursorUpdate()                         { pimpl->revealCursor (true); }
 
-void MouseInputSource::handleEvent (ComponentPeer* peer, const Point<int>& positionWithinPeer, const int64 time, const ModifierKeys& mods)
+void MouseInputSource::handleEvent (ComponentPeer* peer, const Point<int>& positionWithinPeer,
+                                    const int64 time, const ModifierKeys& mods)
 {
     pimpl->handleEvent (peer, positionWithinPeer, Time (time), mods.withOnlyMouseButtons());
 }
 
-void MouseInputSource::handleWheel (ComponentPeer* const peer, const Point<int>& positionWithinPeer, const int64 time, const float x, const float y)
+void MouseInputSource::handleWheel (ComponentPeer* const peer, const Point<int>& positionWithinPeer,
+                                    const int64 time, const MouseWheelDetails& wheel)
 {
-    pimpl->handleWheel (peer, positionWithinPeer, Time (time), x, y);
+    pimpl->handleWheel (peer, positionWithinPeer, Time (time), wheel);
 }

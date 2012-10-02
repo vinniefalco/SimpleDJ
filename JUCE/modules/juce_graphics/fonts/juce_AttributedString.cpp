@@ -40,6 +40,13 @@ AttributedString::Attribute::Attribute (const Attribute& other)
 {
 }
 
+AttributedString::Attribute::Attribute (const Attribute& other, const int offset)
+    : range (other.range + offset),
+      font (other.font.createCopy()),
+      colour (other.colour.createCopy())
+{
+}
+
 AttributedString::Attribute::~Attribute() {}
 
 //==============================================================================
@@ -149,6 +156,15 @@ void AttributedString::append (const String& textToAppend, const Font& font, con
     setColour (Range<int> (oldLength, oldLength + newLength), colour);
 }
 
+void AttributedString::append (const AttributedString& other)
+{
+    const int originalLength = text.length();
+    text += other.text;
+
+    for (int i = 0; i < other.attributes.size(); ++i)
+        attributes.add (new Attribute (*other.attributes.getUnchecked(i), originalLength));
+}
+
 void AttributedString::clear()
 {
     text = String::empty;
@@ -207,7 +223,7 @@ void AttributedString::draw (Graphics& g, const Rectangle<float>& area) const
 {
     if (text.isNotEmpty() && g.clipRegionIntersects (area.getSmallestIntegerContainer()))
     {
-        if (! g.getInternalContext()->drawTextLayout (*this, area))
+        if (! g.getInternalContext().drawTextLayout (*this, area))
         {
             TextLayout layout;
             layout.createLayout (*this, area.getWidth());

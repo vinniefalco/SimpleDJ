@@ -57,6 +57,10 @@
  #import <QuartzCore/QuartzCore.h>
  #import <CoreText/CoreText.h>
 
+ #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_3_2
+  #error "JUCE no longer supports targets earlier than iOS 3.2"
+ #endif
+
 #elif JUCE_LINUX
  #include <ft2build.h>
  #include FT_FREETYPE_H
@@ -107,7 +111,6 @@ namespace juce
 //==============================================================================
 #if JUCE_MAC || JUCE_IOS
  #include "../juce_core/native/juce_osx_ObjCHelpers.h"
- #include "../juce_core/native/juce_mac_ObjCSuffix.h"
  #include "native/juce_mac_CoreGraphicsHelpers.h"
  #include "native/juce_mac_Fonts.mm"
  #include "native/juce_mac_CoreGraphicsContext.mm"

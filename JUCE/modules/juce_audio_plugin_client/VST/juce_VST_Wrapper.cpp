@@ -66,6 +66,12 @@
  #define __cdecl
 #endif
 
+#ifdef __clang__
+ #pragma clang diagnostic push
+ #pragma clang diagnostic ignored "-Wconversion"
+ #pragma clang diagnostic ignored "-Wshadow"
+#endif
+
 // VSTSDK V2.4 includes..
 #include <public.sdk/source/vst2.x/audioeffectx.h>
 #include <public.sdk/source/vst2.x/aeffeditor.h>
@@ -74,6 +80,10 @@
 
 #if ! VST_2_4_EXTENSIONS
  #error "It looks like you're trying to include an out-of-date VSTSDK version - make sure you have at least version 2.4"
+#endif
+
+#ifdef __clang__
+ #pragma clang diagnostic pop
 #endif
 
 //==============================================================================
@@ -311,7 +321,7 @@ public:
             deleteTempChannels();
 
             jassert (activePlugins.contains (this));
-            activePlugins.removeValue (this);
+            activePlugins.removeFirstMatchingValue (this);
         }
 
         if (activePlugins.size() == 0)
@@ -460,15 +470,14 @@ public:
         const int numOut = numOutChans;
 
         AudioSampleBuffer temp (numIn, numSamples);
-        int i;
-        for (i = numIn; --i >= 0;)
+        for (int i = numIn; --i >= 0;)
             memcpy (temp.getSampleData (i), outputs[i], sizeof (float) * numSamples);
 
         processReplacing (inputs, outputs, numSamples);
 
         AudioSampleBuffer dest (outputs, numOut, numSamples);
 
-        for (i = jmin (numIn, numOut); --i >= 0;)
+        for (int i = jmin (numIn, numOut); --i >= 0;)
             dest.addFrom (i, 0, temp, i, 0, numSamples);
     }
 
@@ -682,6 +691,7 @@ public:
             info.timeSigDenominator = 4;
         }
 
+        info.timeInSamples = (int64) ti->samplePos;
         info.timeInSeconds = ti->samplePos / ti->sampleRate;
         info.ppqPosition = (ti->flags & kVstPpqPosValid) != 0 ? ti->ppqPos : 0.0;
         info.ppqPositionOfLastBarStart = (ti->flags & kVstBarsValid) != 0 ? ti->barStartPos : 0.0;
@@ -820,6 +830,8 @@ public:
 
     void audioProcessorChanged (AudioProcessor*)
     {
+        setInitialDelay (filter->getLatencySamples());
+        ioChanged();
         updateDisplay();
     }
 
@@ -1252,19 +1264,19 @@ public:
             editor->setTopLeftPosition (0, 0);
             addAndMakeVisible (editor);
 
-          #if JUCE_WINDOWS
+           #if JUCE_WINDOWS
             if (! getHostType().isReceptor())
                 addMouseListener (this, true);
 
             registerMouseWheelHook();
-          #endif
+           #endif
         }
 
         ~EditorCompWrapper()
         {
-          #if JUCE_WINDOWS
+           #if JUCE_WINDOWS
             unregisterMouseWheelHook();
-          #endif
+           #endif
 
             deleteAllChildren(); // note that we can't use a ScopedPointer because the editor may
                                  // have been transferred to another parent which takes over ownership.
@@ -1309,6 +1321,10 @@ public:
 
             const int cw = child->getWidth();
             const int ch = child->getHeight();
+
+           #if JUCE_MAC && JUCE_64BIT
+            setTopLeftPosition (0, getHeight() - ch);
+           #endif
 
             wrapper.resizeHostWindow (cw, ch);
 
@@ -1463,17 +1479,23 @@ namespace
     }
 }
 
+#if ! JUCE_WINDOWS
+ #define JUCE_EXPORTED_FUNCTION extern "C" __attribute__ ((visibility("default")))
+#endif
+
 //==============================================================================
 // Mac startup code..
 #if JUCE_MAC
 
-    extern "C" __attribute__ ((visibility("default"))) AEffect* VSTPluginMain (audioMasterCallback audioMaster)
+    JUCE_EXPORTED_FUNCTION AEffect* VSTPluginMain (audioMasterCallback audioMaster);
+    JUCE_EXPORTED_FUNCTION AEffect* VSTPluginMain (audioMasterCallback audioMaster)
     {
         initialiseMac();
         return pluginEntryPoint (audioMaster);
     }
 
-    extern "C" __attribute__ ((visibility("default"))) AEffect* main_macho (audioMasterCallback audioMaster)
+    JUCE_EXPORTED_FUNCTION AEffect* main_macho (audioMasterCallback audioMaster);
+    JUCE_EXPORTED_FUNCTION AEffect* main_macho (audioMasterCallback audioMaster)
     {
         initialiseMac();
         return pluginEntryPoint (audioMaster);
@@ -1483,15 +1505,15 @@ namespace
 // Linux startup code..
 #elif JUCE_LINUX
 
-    extern "C" __attribute__ ((visibility("default"))) AEffect* VSTPluginMain (audioMasterCallback audioMaster)
+    JUCE_EXPORTED_FUNCTION AEffect* VSTPluginMain (audioMasterCallback audioMaster);
+    JUCE_EXPORTED_FUNCTION AEffect* VSTPluginMain (audioMasterCallback audioMaster)
     {
         SharedMessageThread::getInstance();
         return pluginEntryPoint (audioMaster);
     }
 
-    extern "C" __attribute__ ((visibility("default"))) AEffect* main_plugin (audioMasterCallback audioMaster) asm ("main");
-
-    extern "C" __attribute__ ((visibility("default"))) AEffect* main_plugin (audioMasterCallback audioMaster)
+    JUCE_EXPORTED_FUNCTION AEffect* main_plugin (audioMasterCallback audioMaster) asm ("main");
+    JUCE_EXPORTED_FUNCTION AEffect* main_plugin (audioMasterCallback audioMaster)
     {
         return VSTPluginMain (audioMaster);
     }
@@ -1515,18 +1537,6 @@ namespace
         return (int) pluginEntryPoint (audioMaster);
     }
    #endif
-
-   #if JucePlugin_Build_RTAS
-    BOOL WINAPI DllMainVST (HINSTANCE instance, DWORD dwReason, LPVOID)
-   #else
-    extern "C" BOOL WINAPI DllMain (HINSTANCE instance, DWORD dwReason, LPVOID)
-   #endif
-    {
-        if (dwReason == DLL_PROCESS_ATTACH)
-            Process::setCurrentModuleInstanceHandle (instance);
-
-        return TRUE;
-    }
 #endif
 
 #endif

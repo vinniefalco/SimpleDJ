@@ -38,10 +38,10 @@ public:
         addAndMakeVisible (&chooserComponent);
 
         addAndMakeVisible (&okButton);
-        okButton.addShortcut (KeyPress::returnKey);
+        okButton.addShortcut (KeyPress (KeyPress::returnKey));
 
         addAndMakeVisible (&cancelButton);
-        cancelButton.addShortcut (KeyPress::escapeKey);
+        cancelButton.addShortcut (KeyPress (KeyPress::escapeKey));
 
         addChildComponent (&newFolderButton);
 
@@ -230,7 +230,7 @@ void FileChooserDialogBox::createNewFolderCallback (int result, FileChooserDialo
     if (result != 0 && alert != nullptr && box != nullptr)
     {
         alert->setVisible (false);
-        box->createNewFolderConfirmed (alert->getTextEditorContents ("name"));
+        box->createNewFolderConfirmed (alert->getTextEditorContents ("Folder Name"));
     }
 }
 
@@ -244,9 +244,9 @@ void FileChooserDialogBox::createNewFolder()
                                            TRANS("Please enter the name for the folder"),
                                            AlertWindow::NoIcon, this);
 
-        aw->addTextEditor ("name", String::empty, String::empty, false);
-        aw->addButton (TRANS("ok"), 1, KeyPress::returnKey);
-        aw->addButton (TRANS("cancel"), KeyPress::escapeKey);
+        aw->addTextEditor ("Folder Name", String::empty, String::empty, false);
+        aw->addButton (TRANS("Create Folder"), 1, KeyPress (KeyPress::returnKey));
+        aw->addButton (TRANS("Cancel"),        0, KeyPress (KeyPress::escapeKey));
 
         aw->enterModalState (true,
                              ModalCallbackFunction::forComponent (createNewFolderCallback, this,

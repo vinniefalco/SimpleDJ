@@ -33,17 +33,87 @@
 class ItemPreviewComponent  : public Component
 {
 public:
-    //==============================================================================
-    ItemPreviewComponent (const File& file);
+    ItemPreviewComponent (const File& f)
+        : file (f)
+    {
+        setOpaque (true);
+        tryToLoadImage();
+    }
 
-    void paint (Graphics& g);
+    void paint (Graphics& g)
+    {
+        IntrojucerLookAndFeel::fillWithBackgroundTexture (*this, g);
+
+        if (drawable != nullptr)
+        {
+            Rectangle<int> area = RectanglePlacement (RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize)
+                                    .appliedTo (drawable->getBounds(), Rectangle<int> (4, 22, getWidth() - 8, getHeight() - 26));
+
+            Path p;
+            p.addRectangle (area);
+            DropShadow (Colours::black.withAlpha (0.5f), 6, Point<int> (0, 1)).drawForPath (g, p);
+
+            g.fillCheckerBoard (area, 24, 24, Colour (0xffffffff), Colour (0xffeeeeee));
+
+            g.setOpacity (1.0f);
+            drawable->drawWithin (g, area.toFloat(), RectanglePlacement::stretchToFit, 1.0f);
+        }
+
+        g.setFont (Font (14.0f, Font::bold));
+        g.setColour (findColour (mainBackgroundColourId).contrasting());
+        g.drawMultiLineText (facts.joinIntoString ("\n"), 10, 15, getWidth() - 16);
+    }
 
 private:
     StringArray facts;
     File file;
-    Image image;
+    ScopedPointer<Drawable> drawable;
 
-    void tryToLoadImage();
+    void tryToLoadImage()
+    {
+        facts.clear();
+        facts.add (file.getFullPathName());
+        drawable = nullptr;
+
+        {
+            ScopedPointer <InputStream> input (file.createInputStream());
+
+            if (input != nullptr)
+            {
+                const int64 totalSize = input->getTotalLength();
+                ImageFileFormat* format = ImageFileFormat::findImageFormatForStream (*input);
+                input = nullptr;
+
+                String formatName;
+                if (format != nullptr)
+                    formatName = " " + format->getFormatName();
+
+                Image image (ImageCache::getFromFile (file));
+
+                if (image.isValid())
+                {
+                    DrawableImage* d = new DrawableImage();
+                    d->setImage (image);
+                    drawable = d;
+
+                    facts.add (String (image.getWidth()) + " x " + String (image.getHeight()) + formatName);
+                }
+
+                if (totalSize > 0)
+                    facts.add (File::descriptionOfSizeInBytes (totalSize));
+            }
+        }
+
+        if (drawable == nullptr)
+        {
+            ScopedPointer<XmlElement> svg (XmlDocument::parse (file));
+
+            if (svg != nullptr)
+                drawable = Drawable::createFromSVG (*svg);
+        }
+
+        facts.removeEmptyStrings (true);
+    }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ItemPreviewComponent);
 };

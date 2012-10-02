@@ -526,14 +526,6 @@ public:
     Viewport* getViewport() const noexcept;
 
     //==============================================================================
-    struct Ids
-    {
-        static const Identifier rowHeight, borderThickness;
-    };
-
-    void refreshFromValueTree (const ValueTree&, ComponentBuilder&);
-
-    //==============================================================================
     /** @internal */
     bool keyPressed (const KeyPress&);
     /** @internal */
@@ -547,7 +539,7 @@ public:
     /** @internal */
     void visibilityChanged();
     /** @internal */
-    void mouseWheelMove (const MouseEvent&, float wheelIncrementX, float wheelIncrementY);
+    void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&);
     /** @internal */
     void mouseMove (const MouseEvent&);
     /** @internal */
@@ -561,7 +553,8 @@ public:
 
 private:
     //==============================================================================
-    class ListViewport;
+    JUCE_PUBLIC_IN_DLL_BUILD (class ListViewport);
+    JUCE_PUBLIC_IN_DLL_BUILD (class RowComponent);
     friend class ListViewport;
     friend class TableListBox;
     ListBoxModel* model;

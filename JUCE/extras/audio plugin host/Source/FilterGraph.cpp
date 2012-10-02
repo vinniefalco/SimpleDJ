@@ -49,16 +49,15 @@ FilterConnection::~FilterConnection()
 {
 }
 
-
 //==============================================================================
 const int FilterGraph::midiChannelNumber = 0x1000;
 
-FilterGraph::FilterGraph()
+FilterGraph::FilterGraph (AudioPluginFormatManager& formatManager_)
     : FileBasedDocument (filenameSuffix,
                          filenameWildcard,
                          "Load a filter graph",
                          "Save a filter graph"),
-      lastUID (0)
+      formatManager (formatManager_), lastUID (0)
 {
     InternalPluginFormat internalFormat;
 
@@ -106,8 +105,7 @@ void FilterGraph::addFilter (const PluginDescription* desc, double x, double y)
     {
         String errorMessage;
 
-        AudioPluginInstance* instance
-            = AudioPluginFormatManager::getInstance()->createPluginInstance (*desc, errorMessage);
+        AudioPluginInstance* instance = formatManager.createPluginInstance (*desc, errorMessage);
 
         AudioProcessorGraph::Node* node = nullptr;
 
@@ -233,7 +231,7 @@ void FilterGraph::clear()
 }
 
 //==============================================================================
-const String FilterGraph::getDocumentTitle()
+String FilterGraph::getDocumentTitle()
 {
     if (! getFile().exists())
         return "Unnamed";
@@ -241,29 +239,29 @@ const String FilterGraph::getDocumentTitle()
     return getFile().getFileNameWithoutExtension();
 }
 
-const String FilterGraph::loadDocument (const File& file)
+Result FilterGraph::loadDocument (const File& file)
 {
     XmlDocument doc (file);
     ScopedPointer<XmlElement> xml (doc.getDocumentElement());
 
     if (xml == nullptr || ! xml->hasTagName ("FILTERGRAPH"))
-        return "Not a valid filter graph file";
+        return Result::fail ("Not a valid filter graph file");
 
     restoreFromXml (*xml);
-    return String::empty;
+    return Result::ok();
 }
 
-const String FilterGraph::saveDocument (const File& file)
+Result FilterGraph::saveDocument (const File& file)
 {
     ScopedPointer<XmlElement> xml (createXml());
 
     if (! xml->writeToFile (file, String::empty))
-        return "Couldn't write to the file";
+        return Result::fail ("Couldn't write to the file");
 
-    return String::empty;
+    return Result::ok();
 }
 
-const File FilterGraph::getLastDocumentOpened()
+File FilterGraph::getLastDocumentOpened()
 {
     RecentlyOpenedFilesList recentFiles;
     recentFiles.restoreFromString (appProperties->getUserSettings()
@@ -329,8 +327,7 @@ void FilterGraph::createNodeFromXml (const XmlElement& xml)
 
     String errorMessage;
 
-    AudioPluginInstance* instance
-        = AudioPluginFormatManager::getInstance()->createPluginInstance (pd, errorMessage);
+    AudioPluginInstance* instance = formatManager.createPluginInstance (pd, errorMessage);
 
     if (instance == nullptr)
     {

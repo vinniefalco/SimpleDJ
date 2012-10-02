@@ -170,7 +170,7 @@ bool ThreadPool::waitForJobToFinish (const ThreadPoolJob* const job,
 
         while (contains (job))
         {
-            if (timeOutMs >= 0 && Time::getMillisecondCounter() >= start + timeOutMs)
+            if (timeOutMs >= 0 && Time::getMillisecondCounter() >= start + (uint32) timeOutMs)
                 return false;
 
             jobFinishedSignal.wait (2);
@@ -202,7 +202,7 @@ bool ThreadPool::removeJob (ThreadPoolJob* const job,
             }
             else
             {
-                jobs.removeValue (job);
+                jobs.removeFirstMatchingValue (job);
                 addToDeleteList (deletionList, job);
             }
         }
@@ -260,7 +260,7 @@ bool ThreadPool::removeAllJobs (const bool interruptRunningJobs, const int timeO
         if (jobsToWaitFor.size() == 0)
             break;
 
-        if (timeOutMs >= 0 && Time::getMillisecondCounter() >= start + timeOutMs)
+        if (timeOutMs >= 0 && Time::getMillisecondCounter() >= start + (uint32) timeOutMs)
             return false;
 
         jobFinishedSignal.wait (20);
@@ -351,7 +351,7 @@ bool ThreadPool::runNextJob()
 
             if (result != ThreadPoolJob::jobNeedsRunningAgain || job->shouldStop)
             {
-                jobs.removeValue (job);
+                jobs.removeFirstMatchingValue (job);
                 addToDeleteList (deletionList, job);
 
                 jobFinishedSignal.signal();

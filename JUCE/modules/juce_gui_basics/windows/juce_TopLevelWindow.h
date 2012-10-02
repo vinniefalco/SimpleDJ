@@ -76,7 +76,7 @@ public:
 
         @see activeWindowStatusChanged
     */
-    bool isActiveWindow() const noexcept                    { return windowIsActive_; }
+    bool isActiveWindow() const noexcept                    { return isCurrentlyActive; }
 
     //==============================================================================
     /** This will set the bounds of the window so that it's centred in front of another
@@ -101,33 +101,28 @@ public:
     bool isDropShadowEnabled() const noexcept               { return useDropShadow; }
 
     /** Sets whether an OS-native title bar will be used, or a Juce one.
-
         @see isUsingNativeTitleBar
     */
     void setUsingNativeTitleBar (bool useNativeTitleBar);
 
     /** Returns true if the window is currently using an OS-native title bar.
-
         @see setUsingNativeTitleBar
     */
-    bool isUsingNativeTitleBar() const noexcept             { return useNativeTitleBar && isOnDesktop(); }
+    bool isUsingNativeTitleBar() const noexcept;
 
     //==============================================================================
     /** Returns the number of TopLevelWindow objects currently in use.
-
         @see getTopLevelWindow
     */
     static int getNumTopLevelWindows() noexcept;
 
     /** Returns one of the TopLevelWindow objects currently in use.
-
         The index is 0 to (getNumTopLevelWindows() - 1).
     */
     static TopLevelWindow* getTopLevelWindow (int index) noexcept;
 
     /** Returns the currently-active top level window.
-
-        There might not be one, of course, so this can return 0.
+        There might not be one, of course, so this can return nullptr.
     */
     static TopLevelWindow* getActiveTopLevelWindow() noexcept;
 
@@ -139,7 +134,6 @@ public:
 protected:
     //==============================================================================
     /** This callback happens when this window becomes active or inactive.
-
         @see isActiveWindow
     */
     virtual void activeWindowStatusChanged();
@@ -159,7 +153,7 @@ protected:
 
 private:
     friend class TopLevelWindowManager;
-    bool useDropShadow, useNativeTitleBar, windowIsActive_;
+    bool useDropShadow, useNativeTitleBar, isCurrentlyActive;
     ScopedPointer <DropShadower> shadower;
 
     void setWindowActive (bool isNowActive);

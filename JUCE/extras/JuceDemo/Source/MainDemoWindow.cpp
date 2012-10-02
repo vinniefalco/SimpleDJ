@@ -54,24 +54,29 @@ public:
         g.fillAll (Colours::white);
     }
 
+    void resized()
+    {
+        if (currentDemo != nullptr)
+            currentDemo->setBounds (getLocalBounds());
+    }
+
     //==============================================================================
     void showDemo (Component* demoComp)
     {
         currentDemo = demoComp;
         addAndMakeVisible (currentDemo);
-
-        currentDemo->setBounds ("0, 0, parent.width, parent.height");
+        resized();
     }
 
     //==============================================================================
-    const StringArray getMenuBarNames()
+    StringArray getMenuBarNames()
     {
         const char* const names[] = { "Demo", "Look-and-feel", nullptr };
 
         return StringArray (names);
     }
 
-    const PopupMenu getMenuForIndex (int menuIndex, const String& /*menuName*/)
+    PopupMenu getMenuForIndex (int menuIndex, const String& /*menuName*/)
     {
         ApplicationCommandManager* commandManager = &(mainWindow.commandManager);
 
@@ -573,7 +578,7 @@ public:
         Graphics g (icon);
         g.fillAll (Colours::lightblue);
         g.setColour (Colours::black);
-        g.setFont ((float) icon.getHeight(), Font::bold);
+        g.setFont (Font ((float) icon.getHeight(), Font::bold));
         g.drawText ("j", 0, 0, icon.getWidth(), icon.getHeight(), Justification::centred, false);
 
         setIconImage (icon);

@@ -115,7 +115,7 @@ public:
         // Listeners can't be null pointers!
         jassert (listenerToRemove != nullptr);
 
-        listeners.removeValue (listenerToRemove);
+        listeners.removeFirstMatchingValue (listenerToRemove);
     }
 
     /** Returns the number of registered listeners. */
@@ -281,8 +281,8 @@ public:
     {
     public:
         //==============================================================================
-        Iterator (const ListType& list_) noexcept
-            : list (list_), index (list_.size())
+        Iterator (const ListType& listToIterate) noexcept
+            : list (listToIterate), index (listToIterate.size())
         {}
 
         ~Iterator() noexcept {}
