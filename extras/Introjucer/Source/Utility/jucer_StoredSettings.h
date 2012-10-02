@@ -26,31 +26,27 @@
 #ifndef __JUCER_STOREDSETTINGS_JUCEHEADER__
 #define __JUCER_STOREDSETTINGS_JUCEHEADER__
 
+#include "../Application/jucer_AppearanceSettings.h"
+
 
 //==============================================================================
-/**
-    A singleton to hold persistent settings, and to save them in a
-    suitable PropertiesFile.
-*/
 class StoredSettings
 {
 public:
-    //==============================================================================
     StoredSettings();
     ~StoredSettings();
 
-    juce_DeclareSingleton (StoredSettings, false);
+    PropertiesFile& getGlobalProperties();
+    PropertiesFile& getProjectProperties (const String& projectUID);
 
-    PropertiesFile& getProps();
     void flush();
+    void reload();
 
     //==============================================================================
     RecentlyOpenedFilesList recentFiles;
 
-    Array<File> getLastProjects() const;
+    Array<File> getLastProjects();
     void setLastProjects (const Array<File>& files);
-
-    const StringArray& getFontNames();
 
     //==============================================================================
     Array <Colour> swatchColours;
@@ -60,26 +56,27 @@ public:
     public:
         ColourSelectorWithSwatches() {}
 
-        int getNumSwatches() const                                      { return StoredSettings::getInstance()->swatchColours.size(); }
-        Colour getSwatchColour (int index) const                        { return StoredSettings::getInstance()->swatchColours [index]; }
-        void setSwatchColour (int index, const Colour& newColour) const { StoredSettings::getInstance()->swatchColours.set (index, newColour); }
+        int getNumSwatches() const;
+        Colour getSwatchColour (int index) const;
+        void setSwatchColour (int index, const Colour& newColour) const;
     };
 
-
     //==============================================================================
-    Image getFallbackImage();
-    const Drawable* getImageFileIcon();
+    AppearanceSettings appearance;
 
+    StringArray monospacedFontNames;
 
 private:
-    ScopedPointer<PropertiesFile> props;
-    StringArray fontNames;
+    OwnedArray<PropertiesFile> propertyFiles;
 
-    ScopedPointer<Drawable> imageFileIcon;
-    Image fallbackImage;
+    void updateGlobalProps();
+    void loadSwatchColours();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StoredSettings);
 };
+
+StoredSettings& getAppSettings();
+PropertiesFile& getGlobalProperties();
 
 
 #endif   // __JUCER_STOREDSETTINGS_JUCEHEADER__

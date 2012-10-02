@@ -29,7 +29,7 @@ void Logger::outputDebugString (const String& text)
 }
 
 //==============================================================================
-#ifdef JUCE_DLL
+#ifdef JUCE_DLL_BUILD
  JUCE_API void* juceDLL_malloc (size_t sz)    { return std::malloc (sz); }
  JUCE_API void  juceDLL_free (void* block)    { std::free (block); }
 #endif
@@ -139,19 +139,25 @@ SystemStats::OperatingSystemType SystemStats::getOperatingSystemType()
 
     if (info.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-        switch (info.dwMajorVersion)
+        if (info.dwMajorVersion == 5)
+            return (info.dwMinorVersion == 0) ? Win2000 : WinXP;
+
+        if (info.dwMajorVersion == 6)
         {
-            case 5:     return (info.dwMinorVersion == 0) ? Win2000 : WinXP;
-            case 6:     return (info.dwMinorVersion == 0) ? WinVista : Windows7;
-            default:    jassertfalse; break; // !! not a supported OS!
+            switch (info.dwMinorVersion)
+            {
+                case 0:  return WinVista;
+                case 1:  return Windows7;
+                case 2:  return Windows8;
+
+                default:
+                    jassertfalse;  // new version needs to be added here!
+                    return Windows8;
+            }
         }
     }
-    else if (info.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
-    {
-        jassert (info.dwMinorVersion != 0); // !! still running on Windows 95??
-        return Win98;
-    }
 
+    jassertfalse;  // need to support whatever new version is running!
     return UnknownOS;
 }
 
@@ -162,10 +168,10 @@ String SystemStats::getOperatingSystemName()
     switch (getOperatingSystemType())
     {
         case Windows7:          name = "Windows 7";         break;
+        case Windows8:          name = "Windows 8";         break;
         case WinVista:          name = "Windows Vista";     break;
         case WinXP:             name = "Windows XP";        break;
         case Win2000:           name = "Windows 2000";      break;
-        case Win98:             name = "Windows 98";        break;
         default:                jassertfalse; break; // !! new type of OS?
     }
 
@@ -174,18 +180,19 @@ String SystemStats::getOperatingSystemName()
 
 bool SystemStats::isOperatingSystem64Bit()
 {
-   #ifdef _WIN64
+   #if JUCE_64BIT
     return true;
    #else
     typedef BOOL (WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
-    LPFN_ISWOW64PROCESS fnIsWow64Process = (LPFN_ISWOW64PROCESS) GetProcAddress (GetModuleHandle (_T("kernel32")), "IsWow64Process");
+    LPFN_ISWOW64PROCESS fnIsWow64Process
+        = (LPFN_ISWOW64PROCESS) GetProcAddress (GetModuleHandleA ("kernel32"), "IsWow64Process");
 
     BOOL isWow64 = FALSE;
 
-    return fnIsWow64Process != 0
+    return fnIsWow64Process != nullptr
             && fnIsWow64Process (GetCurrentProcess(), &isWow64)
-            && (isWow64 != FALSE);
+            && isWow64 != FALSE;
    #endif
 }
 
@@ -196,6 +203,20 @@ int SystemStats::getMemorySizeInMegabytes()
     mem.dwLength = sizeof (mem);
     GlobalMemoryStatusEx (&mem);
     return (int) (mem.ullTotalPhys / (1024 * 1024)) + 1;
+}
+
+//==============================================================================
+String SystemStats::getEnvironmentVariable (const String& name, const String& defaultValue)
+{
+    DWORD len = GetEnvironmentVariableW (name.toWideCharPointer(), nullptr, 0);
+    if (GetLastError() == ERROR_ENVVAR_NOT_FOUND)
+        return String (defaultValue);
+
+    HeapBlock<WCHAR> buffer (len);
+    len = GetEnvironmentVariableW (name.toWideCharPointer(), buffer, len);
+
+    return String (CharPointer_wchar_t (buffer),
+                   CharPointer_wchar_t (buffer + len));
 }
 
 //==============================================================================
@@ -371,14 +392,15 @@ String SystemStats::getComputerName()
     return String (text, len);
 }
 
-static String getLocaleValue (LCTYPE key, const char* defaultValue)
+static String getLocaleValue (LCID locale, LCTYPE key, const char* defaultValue)
 {
     TCHAR buffer [256] = { 0 };
-    if (GetLocaleInfo (LOCALE_USER_DEFAULT, key, buffer, 255) > 0)
+    if (GetLocaleInfo (locale, key, buffer, 255) > 0)
         return buffer;
 
     return defaultValue;
 }
 
-String SystemStats::getUserLanguage()   { return getLocaleValue (LOCALE_SISO639LANGNAME,  "en"); }
-String SystemStats::getUserRegion()     { return getLocaleValue (LOCALE_SISO3166CTRYNAME, "US"); }
+String SystemStats::getUserLanguage()     { return getLocaleValue (LOCALE_USER_DEFAULT, LOCALE_SISO639LANGNAME,  "en"); }
+String SystemStats::getUserRegion()       { return getLocaleValue (LOCALE_USER_DEFAULT, LOCALE_SISO3166CTRYNAME, "US"); }
+String SystemStats::getDisplayLanguage()  { return getLocaleValue (MAKELCID (GetUserDefaultUILanguage(), SORT_DEFAULT), LOCALE_SISO639LANGNAME, "en"); }

@@ -23,65 +23,49 @@
   ==============================================================================
 */
 
-} // (juce namespace)
-
-class WebBrowserComponentInternal;
-
 #if JUCE_MAC
 
-#define DownloadClickDetector MakeObjCClassName(DownloadClickDetector)
-
-@interface DownloadClickDetector   : NSObject
+struct DownloadClickDetectorClass  : public ObjCClass <NSObject>
 {
-    juce::WebBrowserComponent* ownerComponent;
-}
-
-- (DownloadClickDetector*) initWithWebBrowserOwner: (juce::WebBrowserComponent*) ownerComponent;
-
-- (void) webView: (WebView*) webView decidePolicyForNavigationAction: (NSDictionary*) actionInformation
-                                                             request: (NSURLRequest*) request
-                                                               frame: (WebFrame*) frame
-                                                    decisionListener: (id <WebPolicyDecisionListener>) listener;
-- (void) webView: (WebView*) webView didFinishLoadForFrame: (WebFrame*) frame;
-
-@end
-
-@implementation DownloadClickDetector
-
-- (DownloadClickDetector*) initWithWebBrowserOwner: (juce::WebBrowserComponent*) ownerComponent_
-{
-    [super init];
-    ownerComponent = ownerComponent_;
-    return self;
-}
-
-- (void) webView: (WebView*) sender decidePolicyForNavigationAction: (NSDictionary*) actionInformation
-                                                            request: (NSURLRequest*) request
-                                                              frame: (WebFrame*) frame
-                                                   decisionListener: (id <WebPolicyDecisionListener>) listener
-{
-    (void) sender; (void) request; (void) frame;
-
-    NSURL* url = [actionInformation valueForKey: nsStringLiteral ("WebActionOriginalURLKey")];
-
-    if (ownerComponent->pageAboutToLoad (nsStringToJuce ([url absoluteString])))
-        [listener use];
-    else
-        [listener ignore];
-}
-
-- (void) webView: (WebView*) sender didFinishLoadForFrame: (WebFrame*) frame
-{
-    if ([frame isEqual: [sender mainFrame]])
+    DownloadClickDetectorClass()  : ObjCClass <NSObject> ("JUCEWebClickDetector_")
     {
-        NSURL* url = [[[frame dataSource] request] URL];
-        ownerComponent->pageFinishedLoading (nsStringToJuce ([url absoluteString]));
-    }
-}
+        addIvar <WebBrowserComponent*> ("owner");
 
-@end
+        addMethod (@selector (webView:decidePolicyForNavigationAction:request:frame:decisionListener:),
+                   decidePolicyForNavigationAction, "v@:@@@@@");
+        addMethod (@selector (webView:didFinishLoadForFrame:), didFinishLoadForFrame, "v@:@@");
+
+        registerClass();
+    }
+
+    static void setOwner (id self, WebBrowserComponent* owner)   { object_setInstanceVariable (self, "owner", owner); }
+    static WebBrowserComponent* getOwner (id self)               { return getIvar<WebBrowserComponent*> (self, "owner"); }
+
+private:
+    static void decidePolicyForNavigationAction (id self, SEL, WebView*, NSDictionary* actionInformation,
+                                                 NSURLRequest*, WebFrame*, id <WebPolicyDecisionListener> listener)
+    {
+        NSURL* url = [actionInformation valueForKey: nsStringLiteral ("WebActionOriginalURLKey")];
+
+        if (getOwner (self)->pageAboutToLoad (nsStringToJuce ([url absoluteString])))
+            [listener use];
+        else
+            [listener ignore];
+    }
+
+    static void didFinishLoadForFrame (id self, SEL, WebView* sender, WebFrame* frame)
+    {
+        if ([frame isEqual: [sender mainFrame]])
+        {
+            NSURL* url = [[[frame dataSource] request] URL];
+            getOwner (self)->pageFinishedLoading (nsStringToJuce ([url absoluteString]));
+        }
+    }
+};
 
 #else
+
+} // (juce namespace)
 
 //==============================================================================
 @interface WebViewTapDetector  : NSObject <UIGestureRecognizerDelegate>
@@ -126,13 +110,13 @@ class WebBrowserComponentInternal;
     return ownerComponent->pageAboutToLoad (nsStringToJuce (request.URL.absoluteString));
 }
 @end
+
+namespace juce {
+
 #endif
 
-namespace juce
-{
-
 //==============================================================================
-class WebBrowserComponentInternal
+class WebBrowserComponent::Pimpl
                                    #if JUCE_MAC
                                     : public NSViewComponent
                                    #else
@@ -140,7 +124,7 @@ class WebBrowserComponentInternal
                                    #endif
 {
 public:
-    WebBrowserComponentInternal (WebBrowserComponent* owner)
+    Pimpl (WebBrowserComponent* owner)
     {
        #if JUCE_MAC
         webView = [[WebView alloc] initWithFrame: NSMakeRect (0, 0, 100.0f, 100.0f)
@@ -148,7 +132,9 @@ public:
                                        groupName: nsEmptyString()];
         setView (webView);
 
-        clickListener = [[DownloadClickDetector alloc] initWithWebBrowserOwner: owner];
+        static DownloadClickDetectorClass cls;
+        clickListener = [cls.createInstance() init];
+        DownloadClickDetectorClass::setOwner (clickListener, owner);
         [webView setPolicyDelegate: clickListener];
         [webView setFrameLoadDelegate: clickListener];
        #else
@@ -162,7 +148,7 @@ public:
        #endif
     }
 
-    ~WebBrowserComponentInternal()
+    ~Pimpl()
     {
        #if JUCE_MAC
         [webView setPolicyDelegate: nil];
@@ -238,7 +224,7 @@ public:
 private:
    #if JUCE_MAC
     WebView* webView;
-    DownloadClickDetector* clickListener;
+    NSObject* clickListener;
    #else
     UIWebView* webView;
     WebViewTapDetector* tapDetector;
@@ -255,7 +241,7 @@ WebBrowserComponent::WebBrowserComponent (const bool unloadPageWhenBrowserIsHidd
 {
     setOpaque (true);
 
-    addAndMakeVisible (browser = new WebBrowserComponentInternal (this));
+    addAndMakeVisible (browser = new Pimpl (this));
 }
 
 WebBrowserComponent::~WebBrowserComponent()

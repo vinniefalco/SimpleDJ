@@ -51,18 +51,9 @@ Image ImageType::convert (const Image& source) const
     jassert (src.pixelStride == dest.pixelStride && src.pixelFormat == dest.pixelFormat);
 
     for (int y = 0; y < dest.height; ++y)
-        memcpy (dest.getLinePointer (y), src.getLinePointer (y), dest.lineStride);
+        memcpy (dest.getLinePointer (y), src.getLinePointer (y), (size_t) dest.lineStride);
 
     return newImage;
-}
-
-//==============================================================================
-NativeImageType::NativeImageType() {}
-NativeImageType::~NativeImageType() {}
-
-int NativeImageType::getTypeID() const
-{
-    return 1;
 }
 
 //==============================================================================
@@ -109,7 +100,7 @@ private:
 SoftwareImageType::SoftwareImageType() {}
 SoftwareImageType::~SoftwareImageType() {}
 
-ImagePixelData* SoftwareImageType::create (Image::PixelFormat format, int width, int height, bool clearImage) const
+ImagePixelData::Ptr SoftwareImageType::create (Image::PixelFormat format, int width, int height, bool clearImage) const
 {
     return new SoftwarePixelData (format, width, height, clearImage);
 }
@@ -118,6 +109,22 @@ int SoftwareImageType::getTypeID() const
 {
     return 2;
 }
+
+//==============================================================================
+NativeImageType::NativeImageType() {}
+NativeImageType::~NativeImageType() {}
+
+int NativeImageType::getTypeID() const
+{
+    return 1;
+}
+
+#if JUCE_WINDOWS || JUCE_LINUX
+ImagePixelData::Ptr NativeImageType::create (Image::PixelFormat format, int width, int height, bool clearImage) const
+{
+    return new SoftwarePixelData (format, width, height, clearImage);
+}
+#endif
 
 //==============================================================================
 class SubsectionPixelData  : public ImagePixelData
@@ -161,7 +168,7 @@ public:
     ImageType* createType() const    { return image->createType(); }
 
 private:
-    const ReferenceCountedObjectPtr<ImagePixelData> image;
+    const ImagePixelData::Ptr image;
     const Rectangle<int> area;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SubsectionPixelData);
@@ -210,13 +217,13 @@ Image& Image::operator= (const Image& other)
 
 #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 Image::Image (Image&& other) noexcept
-    : image (static_cast <ReferenceCountedObjectPtr<ImagePixelData>&&> (other.image))
+    : image (static_cast <ImagePixelData::Ptr&&> (other.image))
 {
 }
 
 Image& Image::operator= (Image&& other) noexcept
 {
-    image = static_cast <ReferenceCountedObjectPtr<ImagePixelData>&&> (other.image);
+    image = static_cast <ImagePixelData::Ptr&&> (other.image);
     return *this;
 }
 #endif
@@ -331,38 +338,36 @@ NamedValueSet* Image::getProperties() const
 }
 
 //==============================================================================
-Image::BitmapData::BitmapData (Image& image, const int x, const int y, const int w, const int h, BitmapData::ReadWriteMode mode)
-    : width (w),
-      height (h)
+Image::BitmapData::BitmapData (Image& im, const int x, const int y, const int w, const int h, BitmapData::ReadWriteMode mode)
+    : width (w), height (h)
 {
     // The BitmapData class must be given a valid image, and a valid rectangle within it!
-    jassert (image.image != nullptr);
-    jassert (x >= 0 && y >= 0 && w > 0 && h > 0 && x + w <= image.getWidth() && y + h <= image.getHeight());
+    jassert (im.image != nullptr);
+    jassert (x >= 0 && y >= 0 && w > 0 && h > 0 && x + w <= im.getWidth() && y + h <= im.getHeight());
 
-    image.image->initialiseBitmapData (*this, x, y, mode);
+    im.image->initialiseBitmapData (*this, x, y, mode);
     jassert (data != nullptr && pixelStride > 0 && lineStride != 0);
 }
 
-Image::BitmapData::BitmapData (const Image& image, const int x, const int y, const int w, const int h)
-    : width (w),
-      height (h)
+Image::BitmapData::BitmapData (const Image& im, const int x, const int y, const int w, const int h)
+    : width (w), height (h)
 {
     // The BitmapData class must be given a valid image, and a valid rectangle within it!
-    jassert (image.image != nullptr);
-    jassert (x >= 0 && y >= 0 && w > 0 && h > 0 && x + w <= image.getWidth() && y + h <= image.getHeight());
+    jassert (im.image != nullptr);
+    jassert (x >= 0 && y >= 0 && w > 0 && h > 0 && x + w <= im.getWidth() && y + h <= im.getHeight());
 
-    image.image->initialiseBitmapData (*this, x, y, readOnly);
+    im.image->initialiseBitmapData (*this, x, y, readOnly);
     jassert (data != nullptr && pixelStride > 0 && lineStride != 0);
 }
 
-Image::BitmapData::BitmapData (const Image& image, BitmapData::ReadWriteMode mode)
-    : width (image.getWidth()),
-      height (image.getHeight())
+Image::BitmapData::BitmapData (const Image& im, BitmapData::ReadWriteMode mode)
+    : width (im.getWidth()),
+      height (im.getHeight())
 {
     // The BitmapData class must be given a valid image!
-    jassert (image.image != nullptr);
+    jassert (im.image != nullptr);
 
-    image.image->initialiseBitmapData (*this, 0, 0, mode);
+    im.image->initialiseBitmapData (*this, 0, 0, mode);
     jassert (data != nullptr && pixelStride > 0 && lineStride != 0);
 }
 

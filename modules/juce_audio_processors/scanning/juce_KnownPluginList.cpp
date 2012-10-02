@@ -163,14 +163,15 @@ bool KnownPluginList::scanAndAddFile (const String& fileOrIdentifier,
     return addedOne;
 }
 
-void KnownPluginList::scanAndAddDragAndDroppedFiles (const StringArray& files,
+void KnownPluginList::scanAndAddDragAndDroppedFiles (AudioPluginFormatManager& formatManager,
+                                                     const StringArray& files,
                                                      OwnedArray <PluginDescription>& typesFound)
 {
     for (int i = 0; i < files.size(); ++i)
     {
-        for (int j = 0; j < AudioPluginFormatManager::getInstance()->getNumFormats(); ++j)
+        for (int j = 0; j < formatManager.getNumFormats(); ++j)
         {
-            AudioPluginFormat* const format = AudioPluginFormatManager::getInstance()->getFormat (j);
+            AudioPluginFormat* const format = formatManager.getFormat (j);
 
             if (scanAndAddFile (files[i], true, typesFound, *format))
                 return;
@@ -190,7 +191,7 @@ void KnownPluginList::scanAndAddDragAndDroppedFiles (const StringArray& files,
                     s.add (subFiles.getReference(j).getFullPathName());
             }
 
-            scanAndAddDragAndDroppedFiles (s, typesFound);
+            scanAndAddDragAndDroppedFiles (formatManager, s, typesFound);
         }
     }
 }
@@ -290,8 +291,7 @@ public:
 
     void addToMenu (PopupMenu& m, const OwnedArray <PluginDescription>& allPlugins) const
     {
-        int i;
-        for (i = 0; i < subFolders.size(); ++i)
+        for (int i = 0; i < subFolders.size(); ++i)
         {
             const PluginFilesystemTree* const sub = subFolders.getUnchecked(i);
 
@@ -306,7 +306,7 @@ public:
            #endif
         }
 
-        for (i = 0; i < plugins.size(); ++i)
+        for (int i = 0; i < plugins.size(); ++i)
         {
             PluginDescription* const plugin = plugins.getUnchecked(i);
 

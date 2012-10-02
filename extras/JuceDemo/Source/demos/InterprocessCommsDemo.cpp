@@ -112,7 +112,7 @@ public:
             // The send button has been pressed, so write out the contents of the
             // text box to the socket or pipe, depending on which is active.
             const String text (sendText.getText());
-            MemoryBlock messageData (text.toUTF8(), text.getNumBytesAsUTF8());
+            MemoryBlock messageData (text.toUTF8(), (size_t) text.getNumBytesAsUTF8());
 
             for (int i = activeConnections.size(); --i >= 0;)
             {
@@ -190,7 +190,7 @@ public:
             }
             else
             {
-                openedOk = newConnection->connectToPipe (pipeName.getText());
+                openedOk = newConnection->connectToPipe (pipeName.getText(), 5000);
             }
 
             if (openedOk)
@@ -211,7 +211,7 @@ public:
             {
                 ScopedPointer<DemoInterprocessConnection> newConnection (new DemoInterprocessConnection (*this));
 
-                openedOk = newConnection->createPipe (pipeName.getText());
+                openedOk = newConnection->createPipe (pipeName.getText(), 2000);
 
                 if (openedOk)
                 {

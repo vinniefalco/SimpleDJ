@@ -31,6 +31,13 @@
 //==============================================================================
 namespace
 {
+    void hideDockIcon()
+    {
+       #if JUCE_MAC
+        Process::setDockIconVisible (false);
+       #endif
+    }
+
     File getFile (const String& filename)
     {
         return File::getCurrentWorkingDirectory().getChildFile (filename.unquoted());
@@ -53,6 +60,8 @@ namespace
     */
     int resaveProject (const StringArray& args, bool justSaveResources)
     {
+        hideDockIcon();
+
         if (! checkArgumentCount (args, 2))
             return 1;
 
@@ -82,12 +91,12 @@ namespace
                                         : "The Introjucer - Re-saving file: ")
                   << projectFile.getFullPathName() << std::endl;
 
-        String error (justSaveResources ? proj.saveResourcesOnly (projectFile)
+        Result error (justSaveResources ? proj.saveResourcesOnly (projectFile)
                                         : proj.saveProject (projectFile, true));
 
-        if (error.isNotEmpty())
+        if (error.failed())
         {
-            std::cout << "Error when saving: " << error << std::endl;
+            std::cout << "Error when saving: " << error.getErrorMessage() << std::endl;
             return 1;
         }
 
@@ -145,6 +154,8 @@ namespace
 
     int buildModules (const StringArray& args, const bool buildAllWithIndex)
     {
+        hideDockIcon();
+
         if (! checkArgumentCount (args, 3))
             return 1;
 
@@ -200,6 +211,8 @@ namespace
 
     int listModules()
     {
+        hideDockIcon();
+
         std::cout << "Downloading list of available modules..." << std::endl;
         ModuleList list;
         list.loadFromWebsite();
@@ -216,21 +229,24 @@ namespace
 
     int showStatus (const StringArray& args)
     {
+        hideDockIcon();
+
         if (! checkArgumentCount (args, 2))
             return 1;
 
         const File projectFile (getFile (args[1]));
 
         Project proj (projectFile);
+        const Result result (proj.loadDocument (projectFile));
 
-        if (proj.loadDocument (projectFile).isNotEmpty())
+        if (result.failed())
         {
             std::cout << "Failed to load project: " << projectFile.getFullPathName() << std::endl;
             return 1;
         }
 
         std::cout << "Project file: " << projectFile.getFullPathName() << std::endl
-                  << "Name: " << proj.getProjectName().toString() << std::endl
+                  << "Name: " << proj.getTitle() << std::endl
                   << "UID: " << proj.getProjectUID() << std::endl;
 
         const int numModules = proj.getNumModules();
@@ -255,6 +271,8 @@ namespace
     //==============================================================================
     int showHelp()
     {
+        hideDockIcon();
+
         std::cout << "The Introjucer!" << std::endl
                   << std::endl
                   << "Usage: " << std::endl

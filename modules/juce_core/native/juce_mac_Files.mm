@@ -35,15 +35,15 @@ bool File::copyInternal (const File& dest) const
     NSFileManager* fm = [NSFileManager defaultManager];
 
     return [fm fileExistsAtPath: juceStringToNS (fullPath)]
-#if defined (MAC_OS_X_VERSION_10_6) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+           #if defined (MAC_OS_X_VERSION_10_6) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
             && [fm copyItemAtPath: juceStringToNS (fullPath)
                            toPath: juceStringToNS (dest.getFullPathName())
                             error: nil];
-#else
+           #else
             && [fm copyPath: juceStringToNS (fullPath)
                      toPath: juceStringToNS (dest.getFullPathName())
                     handler: nil];
-#endif
+           #endif
 }
 
 void File::findFileSystemRoots (Array<File>& destArray)
@@ -73,7 +73,7 @@ namespace FileHelpers
 
     static bool isHiddenFile (const String& path)
     {
-      #if defined (MAC_OS_X_VERSION_10_6) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
+       #if defined (MAC_OS_X_VERSION_10_6) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6
         JUCE_AUTORELEASEPOOL
         NSNumber* hidden = nil;
         NSError* err = nil;
@@ -81,25 +81,25 @@ namespace FileHelpers
         return [[NSURL fileURLWithPath: juceStringToNS (path)]
                     getResourceValue: &hidden forKey: NSURLIsHiddenKey error: &err]
                 && [hidden boolValue];
-      #elif JUCE_IOS
+       #elif JUCE_IOS
         return File (path).getFileName().startsWithChar ('.');
-      #else
+       #else
         FSRef ref;
         LSItemInfoRecord info;
 
         return FSPathMakeRefWithOptions ((const UInt8*) path.toUTF8().getAddress(), kFSPathMakeRefDoNotFollowLeafSymlink, &ref, 0) == noErr
                  && LSCopyItemInfoForRef (&ref, kLSRequestBasicFlagsOnly, &info) == noErr
                  && (info.flags & kLSItemInfoIsInvisible) != 0;
-      #endif
+       #endif
     }
 
-  #if JUCE_IOS
+   #if JUCE_IOS
     String getIOSSystemLocation (NSSearchPathDirectory type)
     {
         return nsStringToJuce ([NSSearchPathForDirectoriesInDomains (type, NSUserDomainMask, YES)
                                 objectAtIndex: 0]);
     }
-  #endif
+   #endif
 
     static bool launchExecutable (const String& pathAndArguments)
     {
@@ -163,7 +163,8 @@ bool File::isHidden() const
 }
 
 //==============================================================================
-const char* juce_Argv0 = nullptr;  // referenced from juce_Application.cpp
+const char* const* juce_argv = nullptr;
+int juce_argc = 0;
 
 File File::getSpecialLocation (const SpecialLocationType type)
 {
@@ -204,8 +205,8 @@ File File::getSpecialLocation (const SpecialLocationType type)
         case globalApplicationsDirectory:       resultPath = "/Applications"; break;
 
         case invokedExecutableFile:
-            if (juce_Argv0 != 0)
-                return File (CharPointer_UTF8 (juce_Argv0));
+            if (juce_argv != nullptr && juce_argc > 0)
+                return File (CharPointer_UTF8 (juce_argv[0]));
             // deliberate fall-through...
 
         case currentExecutableFile:
@@ -232,7 +233,7 @@ File File::getSpecialLocation (const SpecialLocationType type)
             buffer.calloc (size + 8);
 
             _NSGetExecutablePath (buffer.getData(), &size);
-            return String::fromUTF8 (buffer, size);
+            return String::fromUTF8 (buffer, (int) size);
         }
 
         default:
@@ -273,7 +274,7 @@ String File::getVersion() const
 //==============================================================================
 File File::getLinkedTarget() const
 {
-  #if JUCE_IOS || (defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MIN_ALLOWED >= MAC_OS_X_VERSION_10_5)
+  #if JUCE_IOS || (defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5)
     NSString* dest = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: juceStringToNS (getFullPathName()) error: nil];
 
   #else
@@ -350,11 +351,11 @@ public:
             if (fnmatch (wildcardUTF8, filenameFound.toUTF8(), FNM_CASEFOLD) != 0)
                 continue;
 
-            const String path (parentDir + filenameFound);
-            updateStatInfoForFile (path, isDir, fileSize, modTime, creationTime, isReadOnly);
+            const String fullPath (parentDir + filenameFound);
+            updateStatInfoForFile (fullPath, isDir, fileSize, modTime, creationTime, isReadOnly);
 
             if (isHidden != nullptr)
-                *isHidden = FileHelpers::isHiddenFile (path);
+                *isHidden = FileHelpers::isHiddenFile (fullPath);
 
             return true;
         }
@@ -367,8 +368,8 @@ private:
     JUCE_DECLARE_NON_COPYABLE (Pimpl);
 };
 
-DirectoryIterator::NativeIterator::NativeIterator (const File& directory, const String& wildCard)
-    : pimpl (new DirectoryIterator::NativeIterator::Pimpl (directory, wildCard))
+DirectoryIterator::NativeIterator::NativeIterator (const File& directory, const String& wildcard)
+    : pimpl (new DirectoryIterator::NativeIterator::Pimpl (directory, wildcard))
 {
 }
 
@@ -427,12 +428,12 @@ bool Process::openDocument (const String& fileName, const String& parameters)
 
 void File::revealToUser() const
 {
-  #if ! JUCE_IOS
+   #if ! JUCE_IOS
     if (exists())
         [[NSWorkspace sharedWorkspace] selectFile: juceStringToNS (getFullPathName()) inFileViewerRootedAtPath: nsEmptyString()];
     else if (getParentDirectory().exists())
         getParentDirectory().revealToUser();
-  #endif
+   #endif
 }
 
 //==============================================================================
@@ -440,7 +441,7 @@ OSType File::getMacOSType() const
 {
     JUCE_AUTORELEASEPOOL
 
-   #if JUCE_IOS || (defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MIN_ALLOWED >= MAC_OS_X_VERSION_10_5)
+   #if JUCE_IOS || (defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5)
     NSDictionary* fileDict = [[NSFileManager defaultManager] attributesOfItemAtPath: juceStringToNS (getFullPathName()) error: nil];
    #else
     // (the cast here avoids a deprecation warning)

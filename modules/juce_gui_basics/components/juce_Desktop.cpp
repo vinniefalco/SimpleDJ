@@ -24,7 +24,7 @@
 */
 
 Desktop::Desktop()
-    : mouseClickCounter (0),
+    : mouseClickCounter (0), mouseWheelCounter (0),
       kioskModeComponent (nullptr),
       allowedOrientations (allOrientations)
 {
@@ -119,7 +119,7 @@ void Desktop::addDesktopComponent (Component* const c)
 
 void Desktop::removeDesktopComponent (Component* const c)
 {
-    desktopComponents.removeValue (c);
+    desktopComponents.removeFirstMatchingValue (c);
 }
 
 void Desktop::componentBroughtToFront (Component* const c)
@@ -156,15 +156,11 @@ Point<int> Desktop::getLastMouseDownPosition()
     return getInstance().getMainMouseSource().getLastMouseDownPosition();
 }
 
-int Desktop::getMouseButtonClickCounter()
-{
-    return getInstance().mouseClickCounter;
-}
+int Desktop::getMouseButtonClickCounter() const noexcept    { return mouseClickCounter; }
+int Desktop::getMouseWheelMoveCounter() const noexcept      { return mouseWheelCounter; }
 
-void Desktop::incrementMouseClickCounter() noexcept
-{
-    ++mouseClickCounter;
-}
+void Desktop::incrementMouseClickCounter() noexcept         { ++mouseClickCounter; }
+void Desktop::incrementMouseWheelCounter() noexcept         { ++mouseWheelCounter; }
 
 int Desktop::getNumDraggingMouseSources() const noexcept
 {
@@ -208,10 +204,11 @@ public:
 
         for (int i = desktop.getNumMouseSources(); --i >= 0;)
         {
-            MouseInputSource* const source = desktop.getMouseSource(i);
-            if (source->isDragging())
+            MouseInputSource& source = *desktop.getMouseSource(i);
+
+            if (source.isDragging())
             {
-                source->triggerFakeMove();
+                source.triggerFakeMove();
                 ++numMiceDown;
             }
         }
@@ -382,6 +379,7 @@ Rectangle<int> Desktop::Displays::getTotalBounds (bool userAreasOnly) const
     return getRectangleList (userAreasOnly).getBounds();
 }
 
+bool operator== (const Desktop::Displays::Display& d1, const Desktop::Displays::Display& d2) noexcept;
 bool operator== (const Desktop::Displays::Display& d1, const Desktop::Displays::Display& d2) noexcept
 {
     return d1.userArea == d2.userArea
@@ -390,6 +388,7 @@ bool operator== (const Desktop::Displays::Display& d1, const Desktop::Displays::
         && d1.isMain == d2.isMain;
 }
 
+bool operator!= (const Desktop::Displays::Display& d1, const Desktop::Displays::Display& d2) noexcept;
 bool operator!= (const Desktop::Displays::Display& d1, const Desktop::Displays::Display& d2) noexcept
 {
     return ! (d1 == d2);

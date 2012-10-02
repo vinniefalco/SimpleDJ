@@ -62,9 +62,9 @@ bool OpenGLShaderProgram::addShader (const char* const code, GLenum type)
     if (status == GL_FALSE)
     {
         GLchar infoLog [16384];
-        GLsizei infologLength = 0;
-        context.extensions.glGetShaderInfoLog (shaderID, sizeof (infoLog), &infologLength, infoLog);
-        errorLog = String (infoLog, infologLength);
+        GLsizei infoLogLength = 0;
+        context.extensions.glGetShaderInfoLog (shaderID, sizeof (infoLog), &infoLogLength, infoLog);
+        errorLog = String (infoLog, (size_t) infoLogLength);
 
        #if JUCE_DEBUG
         DBG (errorLog);
@@ -90,9 +90,9 @@ bool OpenGLShaderProgram::link() noexcept
     if (status == GL_FALSE)
     {
         GLchar infoLog [16384];
-        GLsizei infologLength = 0;
-        context.extensions.glGetProgramInfoLog (programID, sizeof (infoLog), &infologLength, infoLog);
-        errorLog = String (infoLog, infologLength);
+        GLsizei infoLogLength = 0;
+        context.extensions.glGetProgramInfoLog (programID, sizeof (infoLog), &infoLogLength, infoLog);
+        errorLog = String (infoLog, (size_t) infoLogLength);
 
        #if JUCE_DEBUG
         DBG (errorLog);
@@ -128,5 +128,9 @@ void OpenGLShaderProgram::Uniform::set (GLfloat n1, GLfloat n2, GLfloat n3) cons
 void OpenGLShaderProgram::Uniform::set (GLfloat n1, GLfloat n2, GLfloat n3, float n4) const noexcept  { context.extensions.glUniform4f (uniformID, n1, n2, n3, n4); }
 void OpenGLShaderProgram::Uniform::set (GLint n1, GLint n2, GLint n3, GLint n4) const noexcept        { context.extensions.glUniform4i (uniformID, n1, n2, n3, n4); }
 void OpenGLShaderProgram::Uniform::set (const GLfloat* values, GLsizei numValues) const noexcept      { context.extensions.glUniform1fv (uniformID, numValues, values); }
+
+void OpenGLShaderProgram::Uniform::setMatrix2 (const GLfloat* v, GLint num, GLboolean trns) const noexcept { context.extensions.glUniformMatrix2fv (uniformID, num, trns, v); }
+void OpenGLShaderProgram::Uniform::setMatrix3 (const GLfloat* v, GLint num, GLboolean trns) const noexcept { context.extensions.glUniformMatrix3fv (uniformID, num, trns, v); }
+void OpenGLShaderProgram::Uniform::setMatrix4 (const GLfloat* v, GLint num, GLboolean trns) const noexcept { context.extensions.glUniformMatrix4fv (uniformID, num, trns, v); }
 
 #endif

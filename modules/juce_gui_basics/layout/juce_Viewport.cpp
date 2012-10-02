@@ -328,12 +328,6 @@ int Viewport::getScrollBarThickness() const
                                   : getLookAndFeel().getDefaultScrollbarWidth();
 }
 
-void Viewport::setScrollBarButtonVisibility (const bool buttonsVisible)
-{
-    verticalScrollBar.setButtonVisibility (buttonsVisible);
-    horizontalScrollBar.setButtonVisibility (buttonsVisible);
-}
-
 void Viewport::scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart)
 {
     const int newRangeStartInt = roundToInt (newRangeStart);
@@ -348,13 +342,13 @@ void Viewport::scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRange
     }
 }
 
-void Viewport::mouseWheelMove (const MouseEvent& e, const float wheelIncrementX, const float wheelIncrementY)
+void Viewport::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel)
 {
-    if (! useMouseWheelMoveIfNeeded (e, wheelIncrementX, wheelIncrementY))
-        Component::mouseWheelMove (e, wheelIncrementX, wheelIncrementY);
+    if (! useMouseWheelMoveIfNeeded (e, wheel))
+        Component::mouseWheelMove (e, wheel);
 }
 
-bool Viewport::useMouseWheelMoveIfNeeded (const MouseEvent& e, float wheelIncrementX, float wheelIncrementY)
+bool Viewport::useMouseWheelMoveIfNeeded (const MouseEvent& e, const MouseWheelDetails& wheel)
 {
     if (! (e.mods.isAltDown() || e.mods.isCtrlDown()))
     {
@@ -363,6 +357,9 @@ bool Viewport::useMouseWheelMoveIfNeeded (const MouseEvent& e, float wheelIncrem
 
         if (hasHorzBar || hasVertBar)
         {
+            float wheelIncrementX = wheel.deltaX;
+            float wheelIncrementY = wheel.deltaY;
+
             if (wheelIncrementX != 0)
             {
                 wheelIncrementX *= 14.0f * singleStepX;
@@ -409,34 +406,21 @@ bool Viewport::useMouseWheelMoveIfNeeded (const MouseEvent& e, float wheelIncrem
 
 bool Viewport::keyPressed (const KeyPress& key)
 {
-    const bool isUpDownKey = key.isKeyCode (KeyPress::upKey)
-                                || key.isKeyCode (KeyPress::downKey)
-                                || key.isKeyCode (KeyPress::pageUpKey)
-                                || key.isKeyCode (KeyPress::pageDownKey)
-                                || key.isKeyCode (KeyPress::homeKey)
-                                || key.isKeyCode (KeyPress::endKey);
+    const bool isUpDownKey = key == KeyPress::upKey
+                          || key == KeyPress::downKey
+                          || key == KeyPress::pageUpKey
+                          || key == KeyPress::pageDownKey
+                          || key == KeyPress::homeKey
+                          || key == KeyPress::endKey;
 
     if (verticalScrollBar.isVisible() && isUpDownKey)
         return verticalScrollBar.keyPressed (key);
 
-    const bool isLeftRightKey = key.isKeyCode (KeyPress::leftKey)
-                                 || key.isKeyCode (KeyPress::rightKey);
+    const bool isLeftRightKey = key == KeyPress::leftKey
+                             || key == KeyPress::rightKey;
 
     if (horizontalScrollBar.isVisible() && (isUpDownKey || isLeftRightKey))
         return horizontalScrollBar.keyPressed (key);
 
     return false;
-}
-
-//==============================================================================
-const Identifier Viewport::Ids::showScrollBarV ("showScrollBarV");
-const Identifier Viewport::Ids::showScrollBarH ("showScrollBarH");
-const Identifier Viewport::Ids::scrollBarWidth ("scrollBarWidth");
-
-void Viewport::refreshFromValueTree (const ValueTree& state, ComponentBuilder&)
-{
-    ComponentBuilder::refreshBasicComponentProperties (*this, state);
-
-    setScrollBarsShown (state [Ids::showScrollBarV], state [Ids::showScrollBarH]);
-    setScrollBarThickness (state [Ids::scrollBarWidth]);
 }

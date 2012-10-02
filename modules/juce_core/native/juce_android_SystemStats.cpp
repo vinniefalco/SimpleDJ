@@ -31,7 +31,7 @@ JNIClassBase::JNIClassBase (const char* classPath_)
 
 JNIClassBase::~JNIClassBase()
 {
-    getClasses().removeValue (this);
+    getClasses().removeFirstMatchingValue (this);
 }
 
 Array<JNIClassBase*>& JNIClassBase::getClasses()
@@ -259,10 +259,9 @@ String SystemStats::getComputerName()
 }
 
 
-
-String SystemStats::getUserLanguage()   { return AndroidStatsHelpers::getLocaleValue (false); }
-String SystemStats::getUserRegion()     { return AndroidStatsHelpers::getLocaleValue (true); }
-
+String SystemStats::getUserLanguage()    { return AndroidStatsHelpers::getLocaleValue (false); }
+String SystemStats::getUserRegion()      { return AndroidStatsHelpers::getLocaleValue (true); }
+String SystemStats::getDisplayLanguage() { return getUserLanguage(); }
 
 //==============================================================================
 SystemStats::CPUFlags::CPUFlags()

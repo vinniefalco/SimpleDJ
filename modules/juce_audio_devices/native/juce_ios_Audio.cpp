@@ -45,7 +45,7 @@ public:
 
     ~IPhoneAudioIODevice()
     {
-        getSessionHolder().activeDevices.removeValue (this);
+        getSessionHolder().activeDevices.removeFirstMatchingValue (this);
         close();
     }
 
@@ -374,20 +374,21 @@ private:
 
     void interruptionListener (const UInt32 interruptionType)
     {
-        /*if (interruptionType == kAudioSessionBeginInterruption)
+        if (interruptionType == kAudioSessionBeginInterruption)
         {
             isRunning = false;
             AudioOutputUnitStop (audioUnit);
 
-            if (juce_iPhoneShowModalAlert ("Audio Interrupted",
-                                           "This could have been interrupted by another application or by unplugging a headset",
-                                           @"Resume",
-                                           @"Cancel"))
             {
-                isRunning = true;
-                routingChanged (nullptr);
+                const ScopedLock sl (callbackLock);
+
+                if (callback != nullptr)
+                    callback->audioDeviceError ("iOS audio session interruption");
             }
-        }*/
+
+            isRunning = true;
+            routingChanged (nullptr);
+        }
 
         if (interruptionType == kAudioSessionEndInterruption)
         {

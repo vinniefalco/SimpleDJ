@@ -63,8 +63,6 @@ JUCE_API void JUCE_CALLTYPE  shutdownJuce_GUI();
     This class is particularly handy to use at the beginning of a console app's
     main() function, because it'll take care of shutting down whenever you return
     from the main() call.
-
-    @see ScopedJuceInitialiser_NonGUI
 */
 class ScopedJuceInitialiser_GUI
 {
@@ -86,50 +84,31 @@ public:
 
 */
 #if JUCE_ANDROID
-  #define START_JUCE_APPLICATION(AppClass) \
-    juce::JUCEApplication* juce_CreateApplication() { return new AppClass(); }
+ #define START_JUCE_APPLICATION(AppClass) \
+   juce::JUCEApplication* juce_CreateApplication() { return new AppClass(); }
 
-#elif defined (JUCE_GCC) || defined (__MWERKS__)
+#else
+ #if JUCE_WINDOWS
+  #if defined (WINAPI) || defined (_WINDOWS_)
+   #define JUCE_MAIN_FUNCTION       int __stdcall WinMain (HINSTANCE, HINSTANCE, const LPSTR, int)
+  #elif defined (_UNICODE)
+   #define JUCE_MAIN_FUNCTION       int __stdcall WinMain (void*, void*, const wchar_t*, int)
+  #else
+   #define JUCE_MAIN_FUNCTION       int __stdcall WinMain (void*, void*, const char*, int)
+  #endif
+  #define  JUCE_MAIN_FUNCTION_ARGS
+ #else
+  #define  JUCE_MAIN_FUNCTION       int main (int argc, char* argv[])
+  #define  JUCE_MAIN_FUNCTION_ARGS  argc, (const char**) argv
+ #endif
 
-  #define START_JUCE_APPLICATION(AppClass) \
+ #define START_JUCE_APPLICATION(AppClass) \
     static juce::JUCEApplicationBase* juce_CreateApplication() { return new AppClass(); } \
-    int main (int argc, char* argv[]) \
+    JUCE_MAIN_FUNCTION \
     { \
         juce::JUCEApplication::createInstance = &juce_CreateApplication; \
-        return juce::JUCEApplication::main (argc, (const char**) argv); \
+        return juce::JUCEApplication::main (JUCE_MAIN_FUNCTION_ARGS); \
     }
-
-#elif JUCE_WINDOWS
-
-  #ifdef _CONSOLE
-    #define START_JUCE_APPLICATION(AppClass) \
-        static juce::JUCEApplicationBase* juce_CreateApplication() { return new AppClass(); } \
-        int main (int, char* argv[]) \
-        { \
-            juce::JUCEApplication::createInstance = &juce_CreateApplication; \
-            return juce::JUCEApplication::main (juce::Process::getCurrentCommandLineParams()); \
-        }
-  #elif ! defined (_AFXDLL)
-    #ifdef _WINDOWS_
-      #define START_JUCE_APPLICATION(AppClass) \
-          static juce::JUCEApplicationBase* juce_CreateApplication() { return new AppClass(); } \
-          int WINAPI WinMain (HINSTANCE, HINSTANCE, LPSTR, int) \
-          { \
-              juce::JUCEApplication::createInstance = &juce_CreateApplication; \
-              return juce::JUCEApplication::main (juce::Process::getCurrentCommandLineParams()); \
-          }
-    #else
-      #define START_JUCE_APPLICATION(AppClass) \
-          static juce::JUCEApplicationBase* juce_CreateApplication() { return new AppClass(); } \
-          int __stdcall WinMain (void*, void*, const char*, int) \
-          { \
-              juce::JUCEApplication::createInstance = &juce_CreateApplication; \
-              return juce::JUCEApplication::main (juce::Process::getCurrentCommandLineParams()); \
-          }
-    #endif
-  #endif
-
 #endif
-
 
 #endif   // __JUCE_INITIALISATION_JUCEHEADER__

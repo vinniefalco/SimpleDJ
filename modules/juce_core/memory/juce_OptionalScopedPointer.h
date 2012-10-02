@@ -107,6 +107,9 @@ public:
     inline operator ObjectType*() const noexcept                    { return object; }
 
     /** Returns the object that this pointer is managing. */
+    inline ObjectType* get() const noexcept                         { return object; }
+
+    /** Returns the object that this pointer is managing. */
     inline ObjectType& operator*() const noexcept                   { return *object; }
 
     /** Lets you access methods and properties of the object that this pointer is holding. */
@@ -125,6 +128,36 @@ public:
     {
         if (! shouldDelete)
             object.release();
+    }
+
+    /** Makes this OptionalScopedPointer point at a new object, specifying whether the
+        OptionalScopedPointer will take ownership of the object.
+
+        If takeOwnership is true, then the OptionalScopedPointer will act like a ScopedPointer,
+        deleting the object when it is itself deleted. If this parameter is false, then the
+        OptionalScopedPointer just holds a normal pointer to the object, and won't delete it.
+    */
+    void set (ObjectType* newObject, bool takeOwnership)
+    {
+        if (object != newObject)
+        {
+            clear();
+            object = newObject;
+        }
+
+        shouldDelete = takeOwnership;
+    }
+
+    /** Makes this OptionalScopedPointer point at a new object, and take ownership of that object. */
+    void setOwned (ObjectType* newObject)
+    {
+        set (newObject, true);
+    }
+
+    /** Makes this OptionalScopedPointer point at a new object, but will not take ownership of that object. */
+    void setNonOwned (ObjectType* newObject)
+    {
+        set (newObject, false);
     }
 
     /** Returns true if the target object will be deleted when this pointer

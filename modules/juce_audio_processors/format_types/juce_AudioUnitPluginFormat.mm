@@ -30,9 +30,9 @@
 #include <AudioUnit/AudioUnit.h>
 #include <AudioUnit/AUCocoaUIView.h>
 #include <CoreAudioKit/AUGenericView.h>
+#include <AudioToolbox/AudioUnitUtilities.h>
 
 #if JUCE_SUPPORT_CARBON
- #include <AudioToolbox/AudioUnitUtilities.h>
  #include <AudioUnit/AudioUnitCarbonView.h>
 #endif
 
@@ -161,9 +161,7 @@ namespace AudioUnitFormatHelpers
                 desc.componentSubType = stringToOSType (tokens[1]);
                 desc.componentManufacturer = stringToOSType (tokens[2]);
 
-                ComponentRecord* comp = FindNextComponent (0, &desc);
-
-                if (comp != nullptr)
+                if (ComponentRecord* comp = FindNextComponent (0, &desc))
                 {
                     getAUDetails (comp, name, manufacturer);
                     return true;
@@ -295,9 +293,7 @@ public:
 
             if (getComponentDescFromFile (fileOrIdentifier, componentDesc, pluginName, version, manufacturer))
             {
-                ComponentRecord* const comp = FindNextComponent (0, &componentDesc);
-
-                if (comp != nullptr)
+                if (ComponentRecord* const comp = FindNextComponent (0, &componentDesc))
                 {
                     audioUnit = (AudioUnit) OpenComponent (comp);
 
@@ -330,7 +326,7 @@ public:
 
     void initialise()
     {
-        refreshParameterListFromPlugin();
+        refreshParameterList();
         updateNumChannels();
         setPluginCallbacks();
         setPlayConfigDetails (numInputBusChannels * numInputBusses,
@@ -393,6 +389,10 @@ public:
                 if (sampleRateOut != sr)
                     AudioUnitSetProperty (audioUnit, kAudioUnitProperty_SampleRate, kAudioUnitScope_Output, i, &sr, sizeof (sr));
             }
+
+            UInt32 frameSize = (UInt32) estimatedSamplesPerBlock;
+            AudioUnitSetProperty (audioUnit, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0,
+                                  &frameSize, sizeof (frameSize));
 
             setPlayConfigDetails (numInputBusChannels * numInputBusses,
                                   numOutputBusChannels * numOutputBusses,
@@ -568,15 +568,39 @@ public:
         const ScopedLock sl (lock);
 
         if (audioUnit != 0 && isPositiveAndBelow (index, parameterIds.size()))
+        {
             AudioUnitSetParameter (audioUnit,
                                    (UInt32) parameterIds.getUnchecked (index),
                                    kAudioUnitScope_Global, 0,
                                    newValue, 0);
+
+            sendParameterChangeEvent (index);
+        }
+    }
+
+    void sendParameterChangeEvent (int index)
+    {
+        jassert (audioUnit != 0 && isPositiveAndBelow (index, parameterIds.size()));
+
+        AudioUnitEvent ev;
+        ev.mEventType                        = kAudioUnitEvent_ParameterValueChange;
+        ev.mArgument.mParameter.mAudioUnit   = audioUnit;
+        ev.mArgument.mParameter.mParameterID = (UInt32) parameterIds.getUnchecked (index);
+        ev.mArgument.mParameter.mScope       = kAudioUnitScope_Global;
+        ev.mArgument.mParameter.mElement     = 0;
+
+        AUEventListenerNotify (nullptr, nullptr, &ev);
+    }
+
+    void sendAllParametersChangedEvents()
+    {
+        for (int i = 0; i < parameterIds.size(); ++i)
+            sendParameterChangeEvent (i);
     }
 
     const String getParameterName (int index)
     {
-        AudioUnitParameterInfo info = { 0 };
+        AudioUnitParameterInfo info;
         UInt32 sz = sizeof (info);
         String name;
 
@@ -647,6 +671,8 @@ public:
 
         AudioUnitSetProperty (audioUnit, kAudioUnitProperty_PresentPreset,
                               kAudioUnitScope_Global, 0, &current, sizeof (AUPreset));
+
+        sendAllParametersChangedEvents();
     }
 
     const String getProgramName (int index)
@@ -736,13 +762,17 @@ public:
         CFRelease (stream);
 
         if (propertyList != 0)
+        {
             AudioUnitSetProperty (audioUnit,
                                   kAudioUnitProperty_ClassInfo,
                                   kAudioUnitScope_Global,
                                   0, &propertyList, sizeof (propertyList));
+
+            sendAllParametersChangedEvents();
+        }
     }
 
-    void refreshParameterListFromPlugin()
+    void refreshParameterList()
     {
         parameterIds.clear();
 
@@ -904,7 +934,7 @@ private:
             }
 
             if (outCurrentSampleInTimeLine != nullptr)
-                *outCurrentSampleInTimeLine = roundToInt (result.timeInSeconds * getSampleRate());
+                *outCurrentSampleInTimeLine = (Float64) result.timeInSamples;
 
             if (outIsCycling != nullptr)        *outIsCycling = false;
             if (outCycleStartBeat != nullptr)   *outCycleStartBeat = 0;
@@ -1360,9 +1390,8 @@ void AudioUnitPluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>&
     try
     {
         ScopedPointer <AudioPluginInstance> createdInstance (createInstanceFromDescription (desc));
-        AudioUnitPluginInstance* const auInstance = dynamic_cast <AudioUnitPluginInstance*> ((AudioPluginInstance*) createdInstance);
 
-        if (auInstance != nullptr)
+        if (AudioUnitPluginInstance* const auInstance = dynamic_cast <AudioUnitPluginInstance*> ((AudioPluginInstance*) createdInstance))
         {
             auInstance->fillInPluginDescription (desc);
             results.add (new PluginDescription (desc));

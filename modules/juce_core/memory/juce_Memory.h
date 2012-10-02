@@ -27,12 +27,6 @@
 #define __JUCE_MEMORY_JUCEHEADER__
 
 //==============================================================================
-#if JUCE_MINGW
- /** This allocator is not defined in mingw gcc. */
- #define alloca              __builtin_alloca
-#endif
-
-//==============================================================================
 /** Fills a block of memory with zeros. */
 inline void zeromem (void* memory, size_t numBytes) noexcept        { memset (memory, 0, numBytes); }
 
@@ -52,8 +46,8 @@ inline void deleteAndZero (Type& pointer)                           { delete poi
     This can be useful to avoid casting pointers to a char* and back when you want to move them by
     a specific number of bytes,
 */
-template <typename Type>
-inline Type* addBytesToPointer (Type* pointer, int bytes) noexcept  { return (Type*) (((char*) pointer) + bytes); }
+template <typename Type, typename IntegerType>
+inline Type* addBytesToPointer (Type* pointer, IntegerType bytes) noexcept  { return (Type*) (((char*) pointer) + bytes); }
 
 /** A handy function which returns the difference between any two pointers, in bytes.
     The address of the second pointer is subtracted from the first, and the difference in bytes is returned.
@@ -65,7 +59,32 @@ inline int getAddressDifference (Type1* pointer1, Type2* pointer2) noexcept  { r
     nullptr if the pointer is null.
 */
 template <class Type>
-inline Type* createCopyIfNotNull (Type* pointer)     { return pointer != nullptr ? new Type (*pointer) : nullptr; }
+inline Type* createCopyIfNotNull (const Type* pointer)     { return pointer != nullptr ? new Type (*pointer) : nullptr; }
+
+//==============================================================================
+#if JUCE_MAC || JUCE_IOS || DOXYGEN
+
+ /** A handy C++ wrapper that creates and deletes an NSAutoreleasePool object using RAII.
+     You should use the JUCE_AUTORELEASEPOOL macro to create a local auto-release pool on the stack.
+ */
+ class JUCE_API  ScopedAutoReleasePool
+ {
+ public:
+     ScopedAutoReleasePool();
+     ~ScopedAutoReleasePool();
+
+ private:
+     void* pool;
+
+     JUCE_DECLARE_NON_COPYABLE (ScopedAutoReleasePool);
+ };
+
+ /** A macro that can be used to easily declare a local ScopedAutoReleasePool object for RAII-based obj-C autoreleasing. */
+ #define JUCE_AUTORELEASEPOOL  const juce::ScopedAutoReleasePool JUCE_JOIN_MACRO (autoReleasePool_, __LINE__);
+
+#else
+ #define JUCE_AUTORELEASEPOOL
+#endif
 
 //==============================================================================
 /* In a Windows DLL build, we'll expose some malloc/free functions that live inside the DLL, and use these for
@@ -73,15 +92,15 @@ inline Type* createCopyIfNotNull (Type* pointer)     { return pointer != nullptr
    avoiding problems when an object is created in one module and passed across to another where it is deleted.
    By piggy-backing on the JUCE_LEAK_DETECTOR macro, these allocators can be injected into most juce classes.
 */
-#if JUCE_MSVC && defined (JUCE_DLL) && ! DOXYGEN
+#if JUCE_MSVC && (defined (JUCE_DLL) || defined (JUCE_DLL_BUILD)) && ! DOXYGEN
  extern JUCE_API void* juceDLL_malloc (size_t);
  extern JUCE_API void  juceDLL_free (void*);
 
  #define JUCE_LEAK_DETECTOR(OwnerClass)  public:\
-              static void* operator new (size_t sz)           { return juce::juceDLL_malloc ((int) sz); } \
-              static void* operator new (size_t, void* p)     { return p; } \
-              static void operator delete (void* p)           { juce::juceDLL_free (p); } \
-              static void operator delete (void*, void*)      {}
+    static void* operator new (size_t sz)           { return juce::juceDLL_malloc (sz); } \
+    static void* operator new (size_t, void* p)     { return p; } \
+    static void operator delete (void* p)           { juce::juceDLL_free (p); } \
+    static void operator delete (void*, void*)      {}
 #endif
 
 //==============================================================================

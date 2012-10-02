@@ -61,32 +61,33 @@ public:
     */
     enum SliderStyle
     {
-        LinearHorizontal,       /**< A traditional horizontal slider. */
-        LinearVertical,         /**< A traditional vertical slider. */
-        LinearBar,              /**< A horizontal bar slider with the text label drawn on top of it. */
-        Rotary,                 /**< A rotary control that you move by dragging the mouse in a circular motion, like a knob.
-                                     @see setRotaryParameters */
-        RotaryHorizontalDrag,   /**< A rotary control that you move by dragging the mouse left-to-right.
-                                     @see setRotaryParameters */
-        RotaryVerticalDrag,     /**< A rotary control that you move by dragging the mouse up-and-down.
-                                     @see setRotaryParameters */
-        IncDecButtons,          /**< A pair of buttons that increment or decrement the slider's value by the increment set in setRange(). */
+        LinearHorizontal,               /**< A traditional horizontal slider. */
+        LinearVertical,                 /**< A traditional vertical slider. */
+        LinearBar,                      /**< A horizontal bar slider with the text label drawn on top of it. */
+        Rotary,                         /**< A rotary control that you move by dragging the mouse in a circular motion, like a knob.
+                                             @see setRotaryParameters */
+        RotaryHorizontalDrag,           /**< A rotary control that you move by dragging the mouse left-to-right.
+                                             @see setRotaryParameters */
+        RotaryVerticalDrag,             /**< A rotary control that you move by dragging the mouse up-and-down.
+                                             @see setRotaryParameters */
+        RotaryHorizontalVerticalDrag,   /**< A rotary control that you move by dragging the mouse up-and-down or left-to-right.
+                                             @see setRotaryParameters */
+        IncDecButtons,                  /**< A pair of buttons that increment or decrement the slider's value by the increment set in setRange(). */
 
-        TwoValueHorizontal,     /**< A horizontal slider that has two thumbs instead of one, so it can show a minimum and maximum value.
-                                     @see setMinValue, setMaxValue */
-        TwoValueVertical,       /**< A vertical slider that has two thumbs instead of one, so it can show a minimum and maximum value.
-                                     @see setMinValue, setMaxValue */
+        TwoValueHorizontal,             /**< A horizontal slider that has two thumbs instead of one, so it can show a minimum and maximum value.
+                                             @see setMinValue, setMaxValue */
+        TwoValueVertical,               /**< A vertical slider that has two thumbs instead of one, so it can show a minimum and maximum value.
+                                             @see setMinValue, setMaxValue */
 
-        ThreeValueHorizontal,   /**< A horizontal slider that has three thumbs instead of one, so it can show a minimum and maximum
-                                     value, with the current value being somewhere between them.
-                                     @see setMinValue, setMaxValue */
-        ThreeValueVertical,     /**< A vertical slider that has three thumbs instead of one, so it can show a minimum and maximum
-                                     value, with the current value being somewhere between them.
-                                     @see setMinValue, setMaxValue */
+        ThreeValueHorizontal,           /**< A horizontal slider that has three thumbs instead of one, so it can show a minimum and maximum
+                                             value, with the current value being somewhere between them.
+                                             @see setMinValue, setMaxValue */
+        ThreeValueVertical,             /**< A vertical slider that has three thumbs instead of one, so it can show a minimum and maximum
+                                             value, with the current value being somewhere between them.
+                                             @see setMinValue, setMaxValue */
     };
 
     /** The position of the slider's text-entry box.
-
         @see setTextBoxStyle
     */
     enum TextEntryBoxPosition
@@ -109,8 +110,7 @@ public:
     */
     explicit Slider (const String& componentName);
 
-    /** Creates a slider with some explicit options.
-    */
+    /** Creates a slider with some explicit options. */
     Slider (SliderStyle style, TextEntryBoxPosition textBoxPosition);
 
     /** Destructor. */
@@ -503,7 +503,7 @@ public:
 
         @see Slider::addListener, Slider::removeListener
     */
-    class JUCE_API  Listener
+    class Listener
     {
     public:
         //==============================================================================
@@ -531,13 +531,12 @@ public:
 
             @see sliderDragEnded, Slider::startedDragging
         */
-        virtual void sliderDragStarted (Slider* slider);
+        virtual void sliderDragStarted (Slider*) {}
 
         /** Called after a drag operation has finished.
-
             @see sliderDragStarted, Slider::stoppedDragging
         */
-        virtual void sliderDragEnded (Slider* slider);
+        virtual void sliderDragEnded (Slider*) {}
     };
 
     /** Adds a listener to be called when this slider's value changes. */
@@ -780,15 +779,6 @@ public:
         textBoxOutlineColourId      = 0x1001700   /**< The colour to use for a border around the text-editor box. */
     };
 
-    //==============================================================================
-    struct Ids
-    {
-        static const Identifier tagType, min, max, interval, type, editable,
-                                textBoxPos, textBoxWidth, textBoxHeight, skew;
-    };
-
-    void refreshFromValueTree (const ValueTree&, ComponentBuilder&);
-
 protected:
     //==============================================================================
     /** @internal */
@@ -804,7 +794,7 @@ protected:
     /** @internal */
     void mouseDoubleClick (const MouseEvent&);
     /** @internal */
-    void mouseWheelMove (const MouseEvent&, float wheelIncrementX, float wheelIncrementY);
+    void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&);
     /** @internal */
     void modifierKeysChanged (const ModifierKeys&);
     /** @internal */
@@ -823,7 +813,7 @@ protected:
 
 private:
     //==============================================================================
-    class Pimpl;
+    JUCE_PUBLIC_IN_DLL_BUILD (class Pimpl);
     friend class Pimpl;
     friend class ScopedPointer<Pimpl>;
     ScopedPointer<Pimpl> pimpl;

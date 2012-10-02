@@ -68,10 +68,10 @@ SystemStats::CPUFlags::CPUFlags()
     uint32 familyModel = 0, extFeatures = 0, features = 0, dummy = 0;
     SystemStatsHelpers::doCPUID (familyModel, extFeatures, dummy, features, 1);
 
-    hasMMX   = (features & (1 << 23)) != 0;
-    hasSSE   = (features & (1 << 25)) != 0;
-    hasSSE2  = (features & (1 << 26)) != 0;
-    has3DNow = (extFeatures & (1 << 31)) != 0;
+    hasMMX   = (features    & (1u << 23)) != 0;
+    hasSSE   = (features    & (1u << 25)) != 0;
+    hasSSE2  = (features    & (1u << 26)) != 0;
+    has3DNow = (extFeatures & (1u << 31)) != 0;
    #else
     hasMMX = false;
     hasSSE = false;
@@ -104,7 +104,15 @@ static RLimitInitialiser rLimitInitialiser;
 //==============================================================================
 SystemStats::OperatingSystemType SystemStats::getOperatingSystemType()
 {
-    return MacOSX;
+   #if JUCE_IOS
+    return iOS;
+   #else
+    SInt32 versionMinor = 0;
+    OSErr err = Gestalt (gestaltSystemVersionMinor, &versionMinor);
+    (void) err;
+    jassert (err == noErr);
+    return (OperatingSystemType) (versionMinor + MacOSX_10_4 - 4);
+   #endif
 }
 
 String SystemStats::getOperatingSystemName()
@@ -122,17 +130,6 @@ String SystemStats::getOperatingSystemName()
    #endif
 }
 
-#if ! JUCE_IOS
-int SystemStats::getOSXMinorVersionNumber()
-{
-    SInt32 versionMinor = 0;
-    OSErr err = Gestalt (gestaltSystemVersionMinor, &versionMinor);
-    (void) err;
-    jassert (err == noErr);
-    return (int) versionMinor;
-}
-#endif
-
 bool SystemStats::isOperatingSystem64Bit()
 {
    #if JUCE_IOS
@@ -140,7 +137,7 @@ bool SystemStats::isOperatingSystem64Bit()
    #elif JUCE_64BIT
     return true;
    #else
-    return getOSXMinorVersionNumber() >= 6;
+    return getOperatingSystemType() >= MacOSX_10_6;
    #endif
 }
 
@@ -213,6 +210,14 @@ static String getLocaleValue (CFStringRef key)
 String SystemStats::getUserLanguage()   { return getLocaleValue (kCFLocaleLanguageCode); }
 String SystemStats::getUserRegion()     { return getLocaleValue (kCFLocaleCountryCode); }
 
+String SystemStats::getDisplayLanguage()
+{
+    CFArrayRef cfPrefLangs = CFLocaleCopyPreferredLanguages();
+    const String result (String::fromCFString ((CFStringRef) CFArrayGetValueAtIndex (cfPrefLangs, 0)));
+    CFRelease (cfPrefLangs);
+    return result;
+}
+
 //==============================================================================
 class HiResCounterHandler
 {
@@ -224,16 +229,16 @@ public:
 
         if (timebase.numer % 1000000 == 0)
         {
-            numerator = timebase.numer / 1000000;
+            numerator   = timebase.numer / 1000000;
             denominator = timebase.denom;
         }
         else
         {
-            numerator = timebase.numer;
-            denominator = timebase.denom * (int64) 1000000;
+            numerator   = timebase.numer;
+            denominator = timebase.denom * (uint64) 1000000;
         }
 
-        highResTimerFrequency = (timebase.denom * (int64) 1000000000) / timebase.numer;
+        highResTimerFrequency = (timebase.denom * (uint64) 1000000000) / timebase.numer;
         highResTimerToMillisecRatio = numerator / (double) denominator;
     }
 
@@ -250,7 +255,7 @@ public:
     int64 highResTimerFrequency;
 
 private:
-    int64 numerator, denominator;
+    uint64 numerator, denominator;
     double highResTimerToMillisecRatio;
 };
 

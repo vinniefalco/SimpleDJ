@@ -38,23 +38,19 @@ public:
     ProjectExporter (Project&, const ValueTree& settings);
     virtual ~ProjectExporter();
 
-    static int getNumExporters();
     static StringArray getExporterNames();
 
     static ProjectExporter* createNewExporter (Project&, const int index);
     static ProjectExporter* createNewExporter (Project&, const String& name);
     static ProjectExporter* createExporter (Project&, const ValueTree& settings);
-    static ProjectExporter* createPlatformDefaultExporter (Project&);
+    static bool canProjectBeLaunched (Project*);
 
-    static StringArray getDefaultExporters();
+    static String getCurrentPlatformExporterName();
 
     //=============================================================================
-    // return 0 if this can't be opened in the current OS, or a higher value, where higher numbers are more preferable.
-    virtual int getLaunchPreferenceOrderForCurrentOS() = 0;
-    virtual bool isPossibleForCurrentProject() = 0;
     virtual bool usesMMFiles() const = 0;
-    virtual void createPropertyEditors (PropertyListBuilder&);
-    virtual void launchProject() = 0;
+    virtual void createExporterProperties (PropertyListBuilder&) = 0;
+    virtual bool launchProject() = 0;
     virtual void create (const OwnedArray<LibraryModule>&) const = 0; // may throw a SaveError
     virtual bool shouldFileBeCompiledByDefault (const RelativePath& path) const;
     virtual bool canCopeWithDuplicateFiles() = 0;
@@ -86,7 +82,9 @@ public:
     String getExtraCompilerFlagsString() const  { return getSettingString (Ids::extraCompilerFlags); }
 
     Value getExtraLinkerFlags()                 { return getSetting (Ids::extraLinkerFlags); }
-    String getExtraLinkerFlagsString() const    { return getSettingString (Ids::extraLinkerFlags); }
+    String getExtraLinkerFlagsString() const    { return getSettingString (Ids::extraLinkerFlags).replaceCharacters ("\r\n", "  "); }
+
+    Value getUserNotes()                        { return getSetting (Ids::userNotes); }
 
     // This adds the quotes, and may return angle-brackets, eg: <foo/bar.h> or normal quotes.
     String getIncludePathForFileInJuceFolder (const String& pathFromJuceFolder, const File& targetIncludeFile) const;
@@ -123,15 +121,18 @@ public:
     RelativePath getJucePathFromTargetFolder() const;
     RelativePath getJucePathFromProjectFolder() const;
 
+    void createPropertyEditors (PropertyListBuilder& props);
+
     //==============================================================================
-    Array<Project::Item> groups;
+    void copyMainGroupFromProject();
+    Array<Project::Item>& getAllGroups() noexcept               { jassert (itemGroups.size() > 0); return itemGroups; }
+    const Array<Project::Item>& getAllGroups() const noexcept   { jassert (itemGroups.size() > 0); return itemGroups; }
     Project::Item& getModulesGroup();
 
     //==============================================================================
     String xcodePackageType, xcodeBundleSignature, xcodeBundleExtension;
     String xcodeProductType, xcodeProductInstallPath, xcodeFileType;
-    String xcodeShellScript, xcodeShellScriptTitle, xcodeOtherRezFlags;
-    String xcodeExcludedFiles64Bit;
+    String xcodeOtherRezFlags, xcodeExcludedFiles64Bit;
     bool xcodeIsBundle, xcodeCreatePList, xcodeCanUseDwarf;
     StringArray xcodeFrameworks;
     Array<RelativePath> xcodeExtraLibrariesDebug, xcodeExtraLibrariesRelease;
@@ -140,6 +141,7 @@ public:
     //==============================================================================
     String makefileTargetSuffix;
     bool makefileIsDLL;
+    StringArray linuxLibs;
 
     //==============================================================================
     String msvcTargetSuffix;
@@ -160,7 +162,7 @@ public:
         typedef ReferenceCountedObjectPtr<BuildConfiguration> Ptr;
 
         //==============================================================================
-        virtual void createPropertyEditors (PropertyListBuilder&) = 0;
+        virtual void createConfigProperties (PropertyListBuilder&) = 0;
 
         //==============================================================================
         Value getNameValue()                                { return getValue (Ids::name); }
@@ -193,22 +195,25 @@ public:
         StringArray getLibrarySearchPaths() const;
         String getGCCLibraryPathFlags() const;
 
+        Value getUserNotes()                                { return getValue (Ids::userNotes); }
+
         Value getValue (const Identifier& name)             { return config.getPropertyAsValue (name, getUndoManager()); }
         UndoManager* getUndoManager() const                 { return project.getUndoManagerFor (config); }
+
+        void createPropertyEditors (PropertyListBuilder&);
+        void removeFromExporter();
 
         //==============================================================================
         ValueTree config;
         Project& project;
 
     protected:
-        void createBasicPropertyEditors (PropertyListBuilder&);
 
     private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BuildConfiguration);
     };
 
     void addNewConfiguration (const BuildConfiguration* configToCopy);
-    void deleteConfiguration (int index);
     bool hasConfigurationNamed (const String& name) const;
     String getUniqueConfigName (String name) const;
 
@@ -275,6 +280,9 @@ protected:
     const ProjectType& projectType;
     const String projectName;
     const File projectFolder;
+
+    mutable Array<Project::Item> itemGroups;
+    void initItemGroups() const;
     Project::Item* modulesGroup;
 
     virtual BuildConfiguration::Ptr createBuildConfig (const ValueTree&) const = 0;

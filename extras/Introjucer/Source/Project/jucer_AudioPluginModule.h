@@ -51,6 +51,9 @@ namespace
     Value getPluginAUCocoaViewClassName (Project& project)        { return project.getProjectValue ("pluginAUViewClass"); }
     Value getPluginAUMainType (Project& project)                  { return project.getProjectValue ("pluginAUMainType"); }
     Value getPluginRTASCategory (Project& project)                { return project.getProjectValue ("pluginRTASCategory"); }
+    Value getPluginRTASBypassDisabled (Project& project)          { return project.getProjectValue ("pluginRTASDisableBypass"); }
+    Value getPluginAAXCategory (Project& project)                 { return project.getProjectValue ("pluginAAXCategory"); }
+    Value getPluginAAXBypassDisabled (Project& project)           { return project.getProjectValue ("pluginAAXDisableBypass"); }
 
     String getPluginRTASCategoryCode (Project& project)
     {
@@ -99,6 +102,7 @@ namespace
         Project& project = projectSaver.getProject();
 
         StringPairArray flags;
+        //flags.set ("JUCE_MODAL_LOOPS_PERMITTED",             "0");
         flags.set ("JucePlugin_Build_VST",                   valueToBool (shouldBuildVST  (project)));
         flags.set ("JucePlugin_Build_AU",                    valueToBool (shouldBuildAU   (project)));
         flags.set ("JucePlugin_Build_RTAS",                  valueToBool (shouldBuildRTAS (project)));
@@ -117,6 +121,7 @@ namespace
         flags.set ("JucePlugin_SilenceInProducesSilenceOut", valueToBool (getPluginSilenceInProducesSilenceOut (project)));
         flags.set ("JucePlugin_TailLengthSeconds",           String (static_cast <double> (getPluginTailLengthSeconds (project).getValue())));
         flags.set ("JucePlugin_EditorRequiresKeyboardFocus", valueToBool (getPluginEditorNeedsKeyFocus (project)));
+        flags.set ("JucePlugin_Version",                     project.getVersionString());
         flags.set ("JucePlugin_VersionCode",                 project.getVersionAsHex());
         flags.set ("JucePlugin_VersionString",               project.getVersionString().quoted());
         flags.set ("JucePlugin_VSTUniqueID",                 "JucePlugin_PluginCode");
@@ -131,11 +136,13 @@ namespace
         flags.set ("JucePlugin_RTASCategory",                getPluginRTASCategoryCode (project));
         flags.set ("JucePlugin_RTASManufacturerCode",        "JucePlugin_ManufacturerCode");
         flags.set ("JucePlugin_RTASProductId",               "JucePlugin_PluginCode");
+        flags.set ("JucePlugin_RTASDisableBypass",           valueToBool (getPluginRTASBypassDisabled (project)));
         flags.set ("JucePlugin_AAXIdentifier",               project.getAAXIdentifier().toString());
         flags.set ("JucePlugin_AAXManufacturerCode",         "JucePlugin_ManufacturerCode");
         flags.set ("JucePlugin_AAXProductId",                "JucePlugin_PluginCode");
         flags.set ("JucePlugin_AAXPluginId",                 "JucePlugin_PluginCode");
-        flags.set ("JucePlugin_AAXCategory",                 "AAX_ePlugInCategory_None");
+        flags.set ("JucePlugin_AAXCategory",                 getPluginAAXCategory (project).toString());
+        flags.set ("JucePlugin_AAXDisableBypass",            valueToBool (getPluginAAXBypassDisabled (project)));
 
         MemoryOutputStream mem;
 
@@ -152,6 +159,13 @@ namespace
         }
 
         projectSaver.setExtraAppConfigFileContent (mem.toString());
+    }
+
+    static void fixMissingXcodePostBuildScript (ProjectExporter& exporter)
+    {
+        if (exporter.isXcode() && exporter.settings [Ids::postbuildCommand].toString().isEmpty())
+            exporter.getSetting (Ids::postbuildCommand) = String::fromUTF8 (BinaryData::AudioPluginXCodeScript_txt,
+                                                                            BinaryData::AudioPluginXCodeScript_txtSize);
     }
 }
 
@@ -186,6 +200,8 @@ namespace VSTHelpers
         if (getVSTFolder(exporter).toString().isEmpty())
             getVSTFolder(exporter) = (exporter.isVisualStudio() ? "c:\\SDKs\\vstsdk2.4"
                                                                 : "~/SDKs/vstsdk2.4");
+
+        fixMissingXcodePostBuildScript (exporter);
     }
 
     static inline void prepareExporter (ProjectExporter& exporter, ProjectSaver& projectSaver)
@@ -239,6 +255,8 @@ namespace RTASHelpers
             else
                 getRTASFolder (exporter) = "~/SDKs/PT_80_SDK";
         }
+
+        fixMissingXcodePostBuildScript (exporter);
     }
 
     static void addExtraSearchPaths (ProjectExporter& exporter)
@@ -269,6 +287,7 @@ namespace RTASHelpers
                                 "AlturaPorts/TDMPlugIns/DSPManager/Interfaces",
                                 "AlturaPorts/SADriver/Interfaces",
                                 "AlturaPorts/DigiPublic/Interfaces",
+                                "AlturaPorts/DigiPublic",
                                 "AlturaPorts/Fic/Interfaces/DAEClient",
                                 "AlturaPorts/NewFileLibs/Cmn",
                                 "AlturaPorts/NewFileLibs/DOA",
@@ -282,7 +301,7 @@ namespace RTASHelpers
         }
         else if (exporter.isXcode())
         {
-            exporter.extraSearchPaths.add ("/Developer/Headers/FlatCarbon");
+            exporter.extraSearchPaths.add ("$(DEVELOPER_DIR)/Headers/FlatCarbon");
 
             const char* p[] = { "AlturaPorts/TDMPlugIns/PlugInLibrary/Controls",
                                 "AlturaPorts/TDMPlugIns/PlugInLibrary/CoreClasses",
@@ -344,7 +363,7 @@ namespace RTASHelpers
 
                 exporter.msvcDelayLoadedDLLs = "DAE.dll; DigiExt.dll; DSI.dll; PluginLib.dll; DSPManager.dll";
 
-                if (! exporter.getExtraLinkerFlags().toString().contains ("/FORCE:multiple"))
+                if (! exporter.getExtraLinkerFlagsString().contains ("/FORCE:multiple"))
                     exporter.getExtraLinkerFlags() = exporter.getExtraLinkerFlags().toString() + " /FORCE:multiple";
 
                 for (ProjectExporter::ConfigIterator config (exporter); config.next();)
@@ -474,12 +493,6 @@ namespace AAXHelpers
 
     static bool isExporterSupported (ProjectExporter& exporter)       { return exporter.isVisualStudio() || exporter.isXcode(); }
 
-    static RelativePath getAAXFolderRelativePath (ProjectExporter& exporter)
-    {
-        return exporter.rebaseFromProjectFolderToBuildTarget (RelativePath (getAAXFolder (exporter).toString(),
-                                                                            RelativePath::projectFolder));
-    }
-
     static void fixMissingAAXValues (ProjectExporter& exporter)
     {
         if (getAAXFolder (exporter).toString().isEmpty())
@@ -489,6 +502,8 @@ namespace AAXHelpers
             else
                 getAAXFolder (exporter) = "~/SDKs/AAX";
         }
+
+        fixMissingXcodePostBuildScript (exporter);
     }
 
     static void addExtraSearchPaths (ProjectExporter& exporter)
@@ -510,7 +525,8 @@ namespace AAXHelpers
 
             if (exporter.isVisualStudio())
             {
-                exporter.msvcTargetSuffix = ".aax";
+                exporter.msvcTargetSuffix = ".aaxplugin";
+                exporter.msvcNeedsDLLRuntimeLib = true;
             }
             else
             {

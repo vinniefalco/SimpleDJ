@@ -43,21 +43,22 @@ public:
 
     //==============================================================================
     // FileBasedDocument stuff..
-    const String getDocumentTitle();
-    const String loadDocument (const File& file);
-    const String saveDocument (const File& file);
-    String saveProject (const File& file, bool isCommandLineApp);
-    String saveResourcesOnly (const File& file);
-    const File getLastDocumentOpened();
+    String getDocumentTitle();
+    Result loadDocument (const File& file);
+    Result saveDocument (const File& file);
+    Result saveProject (const File& file, bool isCommandLineApp);
+    Result saveResourcesOnly (const File& file);
+    File getLastDocumentOpened();
     void setLastDocumentOpened (const File& file);
 
     void setTitle (const String& newTitle);
 
     //==============================================================================
     ValueTree getProjectRoot() const                    { return projectRoot; }
-    Value getProjectName()                              { return getMainGroup().getNameValue(); }
+    String getTitle() const;
+    Value getProjectNameValue()                         { return getMainGroup().getNameValue(); }
     String getProjectFilenameRoot()                     { return File::createLegalFileName (getDocumentTitle()); }
-    String getProjectUID() const                        { return projectRoot [ComponentBuilder::idProperty]; }
+    String getProjectUID() const                        { return projectRoot [Ids::ID]; }
 
     //==============================================================================
     template <class FileType>
@@ -84,7 +85,7 @@ public:
     String getVersionAsHex() const;
 
     Value getBundleIdentifier()                         { return getProjectValue (Ids::bundleIdentifier); }
-    String getDefaultBundleIdentifier()                 { return "com.yourcompany." + CodeHelpers::makeValidIdentifier (getProjectName().toString(), false, true, false); }
+    String getDefaultBundleIdentifier()                 { return "com.yourcompany." + CodeHelpers::makeValidIdentifier (getTitle(), false, true, false); }
 
     Value getAAXIdentifier()                            { return getProjectValue (Ids::aaxIdentifier); }
     String getDefaultAAXIdentifier()                    { return getDefaultBundleIdentifier(); }
@@ -97,9 +98,13 @@ public:
     Value getProjectPreprocessorDefs()                  { return getProjectValue (Ids::defines); }
     StringPairArray getPreprocessorDefs() const;
 
+    Value getProjectUserNotes()                         { return getProjectValue (Ids::userNotes); }
+
     //==============================================================================
-    File getAppIncludeFile() const                      { return getGeneratedCodeFolder().getChildFile (getJuceSourceHFilename()); }
     File getGeneratedCodeFolder() const                 { return getFile().getSiblingFile ("JuceLibraryCode"); }
+    File getAppIncludeFile() const                      { return getGeneratedCodeFolder().getChildFile (getJuceSourceHFilename()); }
+    File getBinaryDataCppFile() const                   { return getGeneratedCodeFolder().getChildFile ("BinaryData.cpp"); }
+    File getBinaryDataHeaderFile() const                { return getBinaryDataCppFile().withFileExtension (".h"); }
 
     //==============================================================================
     String getAmalgamatedHeaderFileName() const         { return "juce_amalgamated.h"; }
@@ -181,7 +186,7 @@ public:
 
         UndoManager* getUndoManager() const              { return project.getUndoManagerFor (state); }
 
-        const Drawable* getIcon() const;
+        Icon getIcon() const;
 
         Project& project;
         ValueTree state;
@@ -199,8 +204,7 @@ public:
     int getNumExporters();
     ProjectExporter* createExporter (int index);
     void addNewExporter (const String& exporterName);
-    void deleteExporter (int index);
-    void createDefaultExporters();
+    void createExporterForCurrentPlatform();
 
     struct ExporterIterator
     {
@@ -242,12 +246,17 @@ public:
     void removeModule (const String& moduleID);
     int getNumModules() const;
     String getModuleID (int index) const;
+
     void addDefaultModules (bool shouldCopyFilesLocally);
+    bool isAudioPluginModuleMissing() const;
 
     void createRequiredModules (const ModuleList& availableModules, OwnedArray<LibraryModule>& modules) const;
 
     //==============================================================================
     String getFileTemplate (const String& templateName);
+
+    //==============================================================================
+    PropertiesFile& getStoredProperties() const;
 
     //==============================================================================
     void valueTreePropertyChanged (ValueTree& tree, const Identifier& property);
@@ -265,8 +274,6 @@ public:
 private:
     friend class Item;
     ValueTree projectRoot;
-    static File lastDocumentOpened;
-    DrawableImage mainProjectIcon;
 
     void updateProjectSettings();
     void sanitiseConfigFlags();

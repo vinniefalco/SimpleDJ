@@ -43,7 +43,7 @@
     @see SelectableObject
 */
 template <class SelectableItemType>
-class JUCE_API  SelectedItemSet   : public ChangeBroadcaster
+class SelectedItemSet   : public ChangeBroadcaster
 {
 public:
     //==============================================================================
@@ -112,9 +112,7 @@ public:
     }
 
     /** Selects an item.
-
         If the item is already selected, no change notification will be sent out.
-
         @see selectOnly, addToSelectionBasedOnModifiers
     */
     void addToSelection (ParameterType item)
@@ -248,7 +246,6 @@ public:
 
     //==============================================================================
     /** Returns the number of currently selected items.
-
         @see getSelectedItem
     */
     int getNumSelected() const noexcept
@@ -257,9 +254,7 @@ public:
     }
 
     /** Returns one of the currently selected items.
-
         Returns 0 if the index is out-of-range.
-
         @see getNumSelected
     */
     SelectableItemType getSelectedItem (const int index) const noexcept
@@ -274,6 +269,9 @@ public:
     }
 
     const Array <SelectableItemType>& getItemArray() const noexcept         { return selectedItems; }
+
+    SelectableItemType* begin() const noexcept                              { return selectedItems.begin(); }
+    SelectableItemType* end() const noexcept                                { return selectedItems.end(); }
 
     //==============================================================================
     /** Can be overridden to do special handling when an item is selected.
@@ -290,8 +288,7 @@ public:
     */
     virtual void itemDeselected (SelectableItemType item)                   { (void) item; }
 
-    /** Used internally, but can be called to force a change message to be sent to the ChangeListeners.
-    */
+    /** Used internally, but can be called to force a change message to be sent to the ChangeListeners. */
     void changed (const bool synchronous = false)
     {
         if (synchronous)
@@ -306,9 +303,6 @@ private:
 
     JUCE_LEAK_DETECTOR (SelectedItemSet <SelectableItemType>);
 };
-
-
-
 
 
 #endif   // __JUCE_SELECTEDITEMSET_JUCEHEADER__

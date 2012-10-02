@@ -3,7 +3,7 @@
 
   This is an automatically generated file created by the Jucer!
 
-  Creation date:  1 May 2011 12:08:14pm
+  Creation date:  21 Sep 2012 12:10:00pm
 
   Be careful when adding custom code to these files, as only the code within
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
@@ -23,6 +23,7 @@
 //[/Headers]
 
 #include "AudioDemoPlaybackPage.h"
+
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 class DemoThumbnailComp  : public Component,
@@ -71,17 +72,17 @@ public:
         }
     }
 
-    void mouseWheelMove (const MouseEvent&, float wheelIncrementX, float wheelIncrementY)
+    void mouseWheelMove (const MouseEvent&, const MouseWheelDetails& wheel)
     {
         if (thumbnail.getTotalLength() > 0)
         {
-            double newStart = startTime - wheelIncrementX * (endTime - startTime) / 10.0;
+            double newStart = startTime - wheel.deltaX * (endTime - startTime) / 10.0;
             newStart = jlimit (0.0, jmax (0.0, thumbnail.getTotalLength() - (endTime - startTime)), newStart);
             endTime = newStart + (endTime - startTime);
             startTime = newStart;
 
-            if (wheelIncrementY != 0)
-                zoomSlider.setValue (zoomSlider.getValue() - wheelIncrementY);
+            if (wheel.deltaY != 0)
+                zoomSlider.setValue (zoomSlider.getValue() - wheel.deltaY);
 
             repaint();
         }
@@ -94,14 +95,13 @@ public:
 
         if (thumbnail.getTotalLength() > 0)
         {
-            thumbnail.drawChannels (g, getLocalBounds().reduced (2, 2),
+            thumbnail.drawChannels (g, getLocalBounds().reduced (2),
                                     startTime, endTime, 1.0f);
         }
         else
         {
             g.setFont (14.0f);
-            g.drawFittedText ("(No audio file selected)", 0, 0, getWidth(), getHeight(),
-                              Justification::centred, 2);
+            g.drawFittedText ("(No audio file selected)", getLocalBounds(), Justification::centred, 2);
         }
     }
 
@@ -177,14 +177,14 @@ AudioDemoPlaybackPage::AudioDemoPlaybackPage (AudioDeviceManager& deviceManager_
       thread ("audio file preview"),
       directoryList (0, thread),
       zoomLabel (0),
+      explanation (0),
+      zoomSlider (0),
       thumbnail (0),
       startStopButton (0),
-      fileTreeComp (0),
-      explanation (0),
-      zoomSlider (0)
+      fileTreeComp (0)
 {
     addAndMakeVisible (zoomLabel = new Label (String::empty,
-                                              L"zoom:"));
+                                              "zoom:"));
     zoomLabel->setFont (Font (15.0000f, Font::plain));
     zoomLabel->setJustificationType (Justification::centredRight);
     zoomLabel->setEditable (false, false, false);
@@ -192,7 +192,7 @@ AudioDemoPlaybackPage::AudioDemoPlaybackPage (AudioDeviceManager& deviceManager_
     zoomLabel->setColour (TextEditor::backgroundColourId, Colour (0x0));
 
     addAndMakeVisible (explanation = new Label (String::empty,
-                                                L"Select an audio file in the treeview above, and this page will display its waveform, and let you play it.."));
+                                                "Select an audio file in the treeview above, and this page will display its waveform, and let you play it.."));
     explanation->setFont (Font (14.0000f, Font::plain));
     explanation->setJustificationType (Justification::bottomRight);
     explanation->setEditable (false, false, false);
@@ -209,11 +209,12 @@ AudioDemoPlaybackPage::AudioDemoPlaybackPage (AudioDeviceManager& deviceManager_
     addAndMakeVisible (thumbnail = new DemoThumbnailComp (formatManager, transportSource, *zoomSlider));
 
     addAndMakeVisible (startStopButton = new TextButton (String::empty));
-    startStopButton->setButtonText (L"Play/Stop");
+    startStopButton->setButtonText ("Play/Stop");
     startStopButton->addListener (this);
     startStopButton->setColour (TextButton::buttonColourId, Colour (0xff79ed7f));
 
     addAndMakeVisible (fileTreeComp = new FileTreeComponent (directoryList));
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -246,11 +247,11 @@ AudioDemoPlaybackPage::~AudioDemoPlaybackPage()
     //[/Destructor_pre]
 
     deleteAndZero (zoomLabel);
+    deleteAndZero (explanation);
+    deleteAndZero (zoomSlider);
     deleteAndZero (thumbnail);
     deleteAndZero (startStopButton);
     deleteAndZero (fileTreeComp);
-    deleteAndZero (explanation);
-    deleteAndZero (zoomSlider);
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -272,13 +273,29 @@ void AudioDemoPlaybackPage::paint (Graphics& g)
 void AudioDemoPlaybackPage::resized()
 {
     zoomLabel->setBounds (16, getHeight() - 90, 55, 24);
+    explanation->setBounds (256, getHeight() - 82, getWidth() - 275, 64);
+    zoomSlider->setBounds (72, getHeight() - 90, 200, 24);
     thumbnail->setBounds (16, getHeight() - 221, getWidth() - 32, 123);
     startStopButton->setBounds (16, getHeight() - 46, 150, 32);
     fileTreeComp->setBounds (16, 8, getWidth() - 32, getHeight() - 245);
-    explanation->setBounds (256, getHeight() - 82, getWidth() - 275, 64);
-    zoomSlider->setBounds (72, getHeight() - 90, 200, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
+}
+
+void AudioDemoPlaybackPage::sliderValueChanged (Slider* sliderThatWasMoved)
+{
+    //[UsersliderValueChanged_Pre]
+    //[/UsersliderValueChanged_Pre]
+
+    if (sliderThatWasMoved == zoomSlider)
+    {
+        //[UserSliderCode_zoomSlider] -- add your slider handling code here..
+        thumbnail->setZoomFactor (zoomSlider->getValue());
+        //[/UserSliderCode_zoomSlider]
+    }
+
+    //[UsersliderValueChanged_Post]
+    //[/UsersliderValueChanged_Post]
 }
 
 void AudioDemoPlaybackPage::buttonClicked (Button* buttonThatWasClicked)
@@ -303,22 +320,6 @@ void AudioDemoPlaybackPage::buttonClicked (Button* buttonThatWasClicked)
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
-}
-
-void AudioDemoPlaybackPage::sliderValueChanged (Slider* sliderThatWasMoved)
-{
-    //[UsersliderValueChanged_Pre]
-    //[/UsersliderValueChanged_Pre]
-
-    if (sliderThatWasMoved == zoomSlider)
-    {
-        //[UserSliderCode_zoomSlider] -- add your slider handling code here..
-        thumbnail->setZoomFactor (zoomSlider->getValue());
-        //[/UserSliderCode_zoomSlider]
-    }
-
-    //[UsersliderValueChanged_Post]
-    //[/UsersliderValueChanged_Post]
 }
 
 

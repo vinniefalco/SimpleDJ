@@ -265,7 +265,7 @@ void RelativeCoordinatePositionerBase::componentChildrenChanged (Component& chan
 void RelativeCoordinatePositionerBase::componentBeingDeleted (Component& comp)
 {
     jassert (sourceComponents.contains (&comp));
-    sourceComponents.removeValue (&comp);
+    sourceComponents.removeFirstMatchingValue (&comp);
     registeredOk = false;
 }
 
@@ -277,7 +277,7 @@ void RelativeCoordinatePositionerBase::markersChanged (MarkerList*)
 void RelativeCoordinatePositionerBase::markerListBeingDeleted (MarkerList* markerList)
 {
     jassert (sourceMarkerLists.contains (markerList));
-    sourceMarkerLists.removeValue (markerList);
+    sourceMarkerLists.removeFirstMatchingValue (markerList);
 }
 
 void RelativeCoordinatePositionerBase::apply()
@@ -325,11 +325,10 @@ void RelativeCoordinatePositionerBase::registerMarkerListListener (MarkerList* c
 
 void RelativeCoordinatePositionerBase::unregisterListeners()
 {
-    int i;
-    for (i = sourceComponents.size(); --i >= 0;)
+    for (int i = sourceComponents.size(); --i >= 0;)
         sourceComponents.getUnchecked(i)->removeComponentListener (this);
 
-    for (i = sourceMarkerLists.size(); --i >= 0;)
+    for (int i = sourceMarkerLists.size(); --i >= 0;)
         sourceMarkerLists.getUnchecked(i)->removeListener (this);
 
     sourceComponents.clear();

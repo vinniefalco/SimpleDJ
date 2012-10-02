@@ -81,6 +81,11 @@
 
   #ifdef __MINGW32__
     #define JUCE_MINGW 1
+    #ifdef __MINGW64__
+      #define JUCE_64BIT 1
+    #else
+      #define JUCE_32BIT 1
+    #endif
   #endif
 
   /** If defined, this indicates that the processor is little-endian. */
@@ -185,5 +190,8 @@
   #error unknown compiler
 #endif
 
+#ifdef __clang__
+ #define JUCE_CLANG 1
+#endif
 
 #endif   // __JUCE_TARGETPLATFORM_JUCEHEADER__

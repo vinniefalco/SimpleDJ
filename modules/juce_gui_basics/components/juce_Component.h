@@ -46,7 +46,6 @@ class CachedComponentImage;
 //==============================================================================
 /**
     The base class for all JUCE user-interface objects.
-
 */
 class JUCE_API  Component  : public MouseListener
 {
@@ -82,13 +81,11 @@ public:
 
     //==============================================================================
     /** Creates a component, setting its name at the same time.
-
         @see getName, setName
     */
     explicit Component (const String& componentName);
 
     /** Returns the name of this component.
-
         @see setName
     */
     const String& getName() const noexcept                  { return componentName; }
@@ -140,7 +137,6 @@ public:
     bool isVisible() const noexcept                         { return flags.visibleFlag; }
 
     /** Called when this component's visiblility changes.
-
         @see setVisible, isVisible
     */
     virtual void visibilityChanged();
@@ -189,7 +185,6 @@ public:
     void removeFromDesktop();
 
     /** Returns true if this component is currently showing on the desktop.
-
         @see addToDesktop, removeFromDesktop
     */
     bool isOnDesktop() const noexcept;
@@ -216,9 +211,7 @@ public:
     virtual void userTriedToCloseWindow();
 
     /** Called for a desktop component which has just been minimised or un-minimised.
-
         This will only be called for components on the desktop.
-
         @see getPeer, ComponentPeer::setMinimised, ComponentPeer::isMinimised
     */
     virtual void minimisationStateChanged (bool isNowMinimised);
@@ -246,19 +239,16 @@ public:
     void toBack();
 
     /** Changes this component's z-order so that it's just behind another component.
-
         @see toFront, toBack
     */
     void toBehind (Component* other);
 
     /** Sets whether the component should always be kept at the front of its siblings.
-
         @see isAlwaysOnTop
     */
     void setAlwaysOnTop (bool shouldStayOnTop);
 
     /** Returns true if this component is set to always stay in front of its siblings.
-
         @see setAlwaysOnTop
     */
     bool isAlwaysOnTop() const noexcept;
@@ -271,7 +261,7 @@ public:
         bounds will no longer be a direct reflection of the position at which it appears within
         its parent, as the transform will be applied to its bounding box.
     */
-    inline int getX() const noexcept                        { return bounds.getX(); }
+    int getX() const noexcept                               { return bounds.getX(); }
 
     /** Returns the y coordinate of the top of this component.
         This is a distance in pixels from the top edge of the component's parent.
@@ -280,13 +270,13 @@ public:
         bounds will no longer be a direct reflection of the position at which it appears within
         its parent, as the transform will be applied to its bounding box.
     */
-    inline int getY() const noexcept                        { return bounds.getY(); }
+    int getY() const noexcept                               { return bounds.getY(); }
 
     /** Returns the component's width in pixels. */
-    inline int getWidth() const noexcept                    { return bounds.getWidth(); }
+    int getWidth() const noexcept                           { return bounds.getWidth(); }
 
     /** Returns the component's height in pixels. */
-    inline int getHeight() const noexcept                   { return bounds.getHeight(); }
+    int getHeight() const noexcept                          { return bounds.getHeight(); }
 
     /** Returns the x coordinate of the component's right-hand edge.
         This is a distance in pixels from the left edge of the component's parent.
@@ -638,13 +628,11 @@ public:
 
     //==============================================================================
     /** Returns a proportion of the component's width.
-
         This is a handy equivalent of (getWidth() * proportion).
     */
     int proportionOfWidth (float proportion) const noexcept;
 
     /** Returns a proportion of the component's height.
-
         This is a handy equivalent of (getHeight() * proportion).
     */
     int proportionOfHeight (float proportion) const noexcept;
@@ -762,13 +750,11 @@ public:
     Component* removeChildComponent (int childIndexToRemove);
 
     /** Removes all this component's children.
-
         Note that this won't delete them! To do that, use deleteAllChildren() instead.
     */
     void removeAllChildren();
 
     /** Removes all this component's children, and deletes them.
-
         @see removeAllChildren
     */
     void deleteAllChildren();
@@ -790,11 +776,8 @@ public:
     TargetClass* findParentComponentOfClass() const
     {
         for (Component* p = parentComponent; p != nullptr; p = p->parentComponent)
-        {
-            TargetClass* const target = dynamic_cast <TargetClass*> (p);
-            if (target != nullptr)
+            if (TargetClass* const target = dynamic_cast <TargetClass*> (p))
                 return target;
-        }
 
         return nullptr;
     }
@@ -828,7 +811,6 @@ public:
     virtual void parentHierarchyChanged();
 
     /** Subclasses can use this callback to be told when children are added or removed.
-
         @see parentHierarchyChanged
     */
     virtual void childrenChanged();
@@ -1087,7 +1069,6 @@ public:
     void setComponentEffect (ImageEffectFilter* newEffect);
 
     /** Returns the current component effect.
-
         @see setComponentEffect
     */
     ImageEffectFilter* getComponentEffect() const noexcept              { return effect; }
@@ -1179,7 +1160,6 @@ public:
     void setBroughtToFrontOnMouseClick (bool shouldBeBroughtToFront) noexcept;
 
     /** Indicates whether the component should be brought to the front when clicked-on.
-
         @see setBroughtToFrontOnMouseClick
     */
     bool isBroughtToFrontOnMouseClick() const noexcept;
@@ -1218,7 +1198,6 @@ public:
     void setMouseClickGrabsKeyboardFocus (bool shouldGrabFocus);
 
     /** Returns the last value set with setMouseClickGrabsKeyboardFocus().
-
         See setMouseClickGrabsKeyboardFocus() for more info.
     */
     bool getMouseClickGrabsKeyboardFocus() const noexcept;
@@ -1258,7 +1237,6 @@ public:
     bool hasKeyboardFocus (bool trueIfChildIsFocused) const;
 
     /** Returns the component that currently has the keyboard focus.
-
         @returns the focused component, or null if nothing is focused.
     */
     static Component* JUCE_CALLTYPE getCurrentlyFocusedComponent() noexcept;
@@ -1464,19 +1442,20 @@ public:
 
 
     //==============================================================================
-    /** Called when the mouse moves inside this component.
+    /** Called when the mouse moves inside a component.
 
         If the mouse button isn't pressed and the mouse moves over a component,
         this will be called to let the component react to this.
 
         A component will always get a mouseEnter callback before a mouseMove.
 
-        @param e    details about the position and status of the mouse event
+        @param event details about the position and status of the mouse event, including
+                     the source component in which it occurred
         @see mouseEnter, mouseExit, mouseDrag, contains
     */
-    virtual void mouseMove         (const MouseEvent& e);
+    virtual void mouseMove (const MouseEvent& event);
 
-    /** Called when the mouse first enters this component.
+    /** Called when the mouse first enters a component.
 
         If the mouse button isn't pressed and the mouse moves into a component,
         this will be called to let the component react to this.
@@ -1486,16 +1465,13 @@ public:
         mouseDrag messages are sent to the component that the mouse was originally
         clicked on, until the button is released.
 
-        If you're writing a component that needs to repaint itself when the mouse
-        enters and exits, it might be quicker to use the setRepaintsOnMouseActivity()
-        method.
-
-        @param e    details about the position and status of the mouse event
+        @param event details about the position and status of the mouse event, including
+                     the source component in which it occurred
         @see mouseExit, mouseDrag, mouseMove, contains
     */
-    virtual void mouseEnter        (const MouseEvent& e);
+    virtual void mouseEnter (const MouseEvent& event);
 
-    /** Called when the mouse moves out of this component.
+    /** Called when the mouse moves out of a component.
 
         This will be called when the mouse moves off the edge of this
         component.
@@ -1504,16 +1480,13 @@ public:
         edge of the component and released, then this callback will happen
         when the button is released, after the mouseUp callback.
 
-        If you're writing a component that needs to repaint itself when the mouse
-        enters and exits, it might be quicker to use the setRepaintsOnMouseActivity()
-        method.
-
-        @param e    details about the position and status of the mouse event
+        @param event  details about the position and status of the mouse event, including
+                      the source component in which it occurred
         @see mouseEnter, mouseDrag, mouseMove, contains
     */
-    virtual void mouseExit         (const MouseEvent& e);
+    virtual void mouseExit (const MouseEvent& event);
 
-    /** Called when a mouse button is pressed while it's over this component.
+    /** Called when a mouse button is pressed.
 
         The MouseEvent object passed in contains lots of methods for finding out
         which button was pressed, as well as which modifier keys (e.g. shift, ctrl)
@@ -1522,10 +1495,11 @@ public:
         Once a button is held down, the mouseDrag method will be called when the
         mouse moves, until the button is released.
 
-        @param e    details about the position and status of the mouse event
+        @param event  details about the position and status of the mouse event, including
+                      the source component in which it occurred
         @see mouseUp, mouseDrag, mouseDoubleClick, contains
     */
-    virtual void mouseDown         (const MouseEvent& e);
+    virtual void mouseDown (const MouseEvent& event);
 
     /** Called when the mouse is moved while a button is held down.
 
@@ -1533,14 +1507,11 @@ public:
         receives mouseDrag callbacks each time the mouse moves, even if the
         mouse strays outside the component's bounds.
 
-        If you want to be able to drag things off the edge of a component
-        and have the component scroll when you get to the edges, the
-        beginDragAutoRepeat() method might be useful.
-
-        @param e    details about the position and status of the mouse event
-        @see mouseDown, mouseUp, mouseMove, contains, beginDragAutoRepeat
+        @param event  details about the position and status of the mouse event, including
+                      the source component in which it occurred
+        @see mouseDown, mouseUp, mouseMove, contains, setDragRepeatInterval
     */
-    virtual void mouseDrag         (const MouseEvent& e);
+    virtual void mouseDrag (const MouseEvent& event);
 
     /** Called when a mouse button is released.
 
@@ -1551,46 +1522,38 @@ public:
         The MouseEvent object passed in contains lots of methods for finding out
         which buttons were down just before they were released.
 
-        @param e    details about the position and status of the mouse event
+        @param event  details about the position and status of the mouse event, including
+                      the source component in which it occurred
         @see mouseDown, mouseDrag, mouseDoubleClick, contains
     */
-    virtual void mouseUp           (const MouseEvent& e);
+    virtual void mouseUp (const MouseEvent& event);
 
-    /** Called when a mouse button has been double-clicked in this component.
+    /** Called when a mouse button has been double-clicked on a component.
 
         The MouseEvent object passed in contains lots of methods for finding out
         which button was pressed, as well as which modifier keys (e.g. shift, ctrl)
         were held down at the time.
 
-        For altering the time limit used to detect double-clicks,
-        see MouseEvent::setDoubleClickTimeout.
-
-        @param e    details about the position and status of the mouse event
-        @see mouseDown, mouseUp, MouseEvent::setDoubleClickTimeout,
-             MouseEvent::getDoubleClickTimeout
+        @param event  details about the position and status of the mouse event, including
+                      the source component in which it occurred
+        @see mouseDown, mouseUp
     */
-    virtual void mouseDoubleClick  (const MouseEvent& e);
+    virtual void mouseDoubleClick (const MouseEvent& event);
 
     /** Called when the mouse-wheel is moved.
 
         This callback is sent to the component that the mouse is over when the
         wheel is moved.
 
-        If not overridden, the component will forward this message to its parent, so
+        If not overridden, a component will forward this message to its parent, so
         that parent components can collect mouse-wheel messages that happen to
         child components which aren't interested in them.
 
-        @param e                details about the position and status of the mouse event
-        @param wheelIncrementX   the speed and direction of the horizontal scroll-wheel - a positive
-                                 value means the wheel has been pushed to the right, negative means it
-                                 was pushed to the left
-        @param wheelIncrementY   the speed and direction of the vertical scroll-wheel - a positive
-                                 value means the wheel has been pushed upwards, negative means it
-                                 was pushed downwards
+        @param event   details about the mouse event
+        @param wheel   details about the mouse wheel movement
     */
-    virtual void mouseWheelMove    (const MouseEvent& e,
-                                    float wheelIncrementX,
-                                    float wheelIncrementY);
+    virtual void mouseWheelMove (const MouseEvent& event,
+                                 const MouseWheelDetails& wheel);
 
     //==============================================================================
     /** Ensures that a non-stop stream of mouse-drag events will be sent during the
@@ -1662,7 +1625,6 @@ public:
     void addKeyListener (KeyListener* newListener);
 
     /** Removes a previously-registered key listener.
-
         @see addKeyListener
     */
     void removeKeyListener (KeyListener* listenerToRemove);
@@ -1734,13 +1696,11 @@ public:
     };
 
     /** Called to indicate that this component has just acquired the keyboard focus.
-
         @see focusLost, setWantsKeyboardFocus, getCurrentlyFocusedComponent, hasKeyboardFocus
     */
     virtual void focusGained (FocusChangeType cause);
 
     /** Called to indicate that this component has just lost the keyboard focus.
-
         @see focusGained, setWantsKeyboardFocus, getCurrentlyFocusedComponent, hasKeyboardFocus
     */
     virtual void focusLost (FocusChangeType cause);
@@ -1880,7 +1840,6 @@ public:
     void addComponentListener (ComponentListener* newListener);
 
     /** Removes a component listener.
-
         @see addComponentListener
     */
     void removeComponentListener (ComponentListener* listenerToRemove);
@@ -2070,7 +2029,6 @@ public:
     void setColour (int colourId, const Colour& colour);
 
     /** If a colour has been set with setColour(), this will remove it.
-
         This allows you to make a colour revert to its default state.
     */
     void removeColour (int colourId);
@@ -2086,7 +2044,6 @@ public:
     void copyAllExplicitColoursTo (Component& target) const;
 
     /** This method is called when a colour is changed by the setColour() method.
-
         @see setColour, findColour
     */
     virtual void colourChanged();
@@ -2318,7 +2275,7 @@ private:
     void internalMouseUp    (MouseInputSource&, const Point<int>&, const Time&, const ModifierKeys& oldModifiers);
     void internalMouseDrag  (MouseInputSource&, const Point<int>&, const Time&);
     void internalMouseMove  (MouseInputSource&, const Point<int>&, const Time&);
-    void internalMouseWheel (MouseInputSource&, const Point<int>&, const Time&, float amountX, float amountY);
+    void internalMouseWheel (MouseInputSource&, const Point<int>&, const Time&, const MouseWheelDetails&);
     void internalBroughtToFront();
     void internalFocusGain (const FocusChangeType, const WeakReference<Component>&);
     void internalFocusGain (const FocusChangeType);

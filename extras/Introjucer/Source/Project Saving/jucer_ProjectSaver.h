@@ -35,9 +35,9 @@
 class ProjectSaver
 {
 public:
-    ProjectSaver (Project& project_, const File& projectFile_)
-        : project (project_),
-          projectFile (projectFile_),
+    ProjectSaver (Project& p, const File& file)
+        : project (p),
+          projectFile (file),
           generatedCodeFolder (project.getGeneratedCodeFolder()),
           generatedFilesGroup (Project::Item::createGroup (project, getJuceCodeGroupName(), "__generatedcode__"))
     {
@@ -49,8 +49,9 @@ public:
     struct SaveThread  : public ThreadWithProgressWindow
     {
     public:
-        SaveThread (ProjectSaver& saver_)
-            : ThreadWithProgressWindow ("Saving...", true, false), saver (saver_)
+        SaveThread (ProjectSaver& ps)
+            : ThreadWithProgressWindow ("Saving...", true, false),
+              saver (ps), result (Result::ok())
         {}
 
         void run()
@@ -60,12 +61,12 @@ public:
         }
 
         ProjectSaver& saver;
-        String result;
+        Result result;
 
         JUCE_DECLARE_NON_COPYABLE (SaveThread);
     };
 
-    String save (bool showProgressBox)
+    Result save (bool showProgressBox)
     {
         if (showProgressBox)
         {
@@ -76,9 +77,6 @@ public:
 
         const String appConfigUserContent (loadUserContentFromAppConfig());
 
-        if (generatedCodeFolder.exists())
-            deleteNonHiddenFilesIn (generatedCodeFolder);
-
         const File oldFile (project.getFile());
         project.setFile (projectFile);
 
@@ -88,38 +86,43 @@ public:
 
         {
             ModuleList moduleList;
-            moduleList.rescan (ModuleList::getDefaultModulesFolder (&project));
+            Result scanResult (moduleList.rescan (ModuleList::getDefaultModulesFolder (&project)));
+
+            if (scanResult.failed())
+                return scanResult;
+
             project.createRequiredModules (moduleList, modules);
         }
 
-        if (errors.size() == 0)
-            writeAppConfigFile (modules, appConfigUserContent);
+        if (errors.size() == 0)  writeAppConfigFile (modules, appConfigUserContent);
+        if (errors.size() == 0)  writeBinaryDataFiles();
+        if (errors.size() == 0)  writeAppHeader (modules);
+        if (errors.size() == 0)  writeProjects (modules);
+        if (errors.size() == 0)  writeAppConfigFile (modules, appConfigUserContent); // (this is repeated in case the projects added anything to it)
 
-        if (errors.size() == 0)
-            writeBinaryDataFiles();
-
-        if (errors.size() == 0)
-            writeAppHeader (modules);
-
-        if (errors.size() == 0)
-            writeProjects (modules);
-
-        if (errors.size() == 0)
-            writeAppConfigFile (modules, appConfigUserContent); // (this is repeated in case the projects added anything to it)
-
-        if (generatedCodeFolder.exists() && errors.size() == 0)
+        if (errors.size() == 0 && generatedCodeFolder.exists())
             writeReadmeFile();
 
-        if (errors.size() > 0)
-            project.setFile (oldFile);
+        if (generatedCodeFolder.exists())
+            deleteUnwantedFilesIn (generatedCodeFolder);
 
-        return errors[0];
+        if (errors.size() > 0)
+        {
+            project.setFile (oldFile);
+            return Result::fail (errors[0]);
+        }
+
+        return Result::ok();
     }
 
-    String saveResourcesOnly()
+    Result saveResourcesOnly()
     {
         writeBinaryDataFiles();
-        return errors[0];
+
+        if (errors.size() > 0)
+            return Result::fail (errors[0]);
+
+        return Result::ok();
     }
 
     Project::Item saveGeneratedFile (const String& filePath, const MemoryOutputStream& newData)
@@ -167,10 +170,13 @@ public:
 
     static String getJuceCodeGroupName()                    { return "Juce Library Code"; }
 
-    File getGeneratedCodeFolder() const                     { return generatedCodeFolder; }
+    File getGeneratedCodeFolder() const                         { return generatedCodeFolder; }
+    File getLocalModuleFolder (const LibraryModule& m) const    { return generatedCodeFolder.getChildFile ("modules").getChildFile (m.getID()); }
 
     bool replaceFileIfDifferent (const File& f, const MemoryOutputStream& newData)
     {
+        filesCreated.add (f);
+
         if (! FileHelpers::overwriteFileWithNewDataIfDifferent (f, newData))
         {
             addError ("Can't write to file: " + f.getFullPathName());
@@ -178,6 +184,34 @@ public:
         }
 
         return true;
+    }
+
+    bool copyFolder (const File& source, const File& dest)
+    {
+        if (source.isDirectory() && dest.createDirectory())
+        {
+            Array<File> subFiles;
+            source.findChildFiles (subFiles, File::findFiles, false);
+
+            for (int i = 0; i < subFiles.size(); ++i)
+            {
+                const File target (dest.getChildFile (subFiles.getReference(i).getFileName()));
+                filesCreated.add (target);
+                if (! subFiles.getReference(i).copyFileTo (target))
+                    return false;
+            }
+
+            subFiles.clear();
+            source.findChildFiles (subFiles, File::findDirectories, false);
+
+            for (int i = 0; i < subFiles.size(); ++i)
+                if (! copyFolder (subFiles.getReference(i), dest.getChildFile (subFiles.getReference(i).getFileName())))
+                    return false;
+
+            return true;
+        }
+
+        return false;
     }
 
 private:
@@ -189,10 +223,11 @@ private:
     CriticalSection errorLock;
 
     File appConfigFile, binaryDataCpp;
+    SortedSet<File> filesCreated;
 
-    // Recursively clears out a folder's contents, but leaves behind any folders
-    // containing hidden files used by version-control systems.
-    static bool deleteNonHiddenFilesIn (const File& parent)
+    // Recursively clears out any files in a folder that we didn't create, but avoids
+    // any folders containing hidden files that might be used by version-control systems.
+    bool deleteUnwantedFilesIn (const File& parent)
     {
         bool folderIsNowEmpty = true;
         DirectoryIterator i (parent, false, "*", File::findFilesAndDirectories);
@@ -203,13 +238,13 @@ private:
         {
             const File f (i.getFile());
 
-            if (shouldFileBeKept (f.getFileName()))
+            if (filesCreated.contains (f) || shouldFileBeKept (f.getFileName()))
             {
                 folderIsNowEmpty = false;
             }
             else if (isFolder)
             {
-                if (deleteNonHiddenFilesIn (f))
+                if (deleteUnwantedFilesIn (f))
                     filesToDelete.add (f);
                 else
                     folderIsNowEmpty = false;
@@ -408,7 +443,7 @@ private:
             << newLine
             << "namespace ProjectInfo" << newLine
             << "{" << newLine
-            << "    const char* const  projectName    = " << CodeHelpers::addEscapeChars (project.getProjectName().toString()).quoted() << ";" << newLine
+            << "    const char* const  projectName    = " << CodeHelpers::addEscapeChars (project.getTitle()).quoted() << ";" << newLine
             << "    const char* const  versionString  = " << CodeHelpers::addEscapeChars (project.getVersionString()).quoted() << ";" << newLine
             << "    const int          versionNumber  = " << project.getVersionAsHex() << ";" << newLine
             << "}" << newLine
@@ -425,7 +460,8 @@ private:
 
     void writeBinaryDataFiles()
     {
-        binaryDataCpp = generatedCodeFolder.getChildFile ("BinaryData.cpp");
+        binaryDataCpp = project.getBinaryDataCppFile();
+        const File binaryDataH (binaryDataCpp.withFileExtension (".h"));
 
         ResourceFile resourceFile (project);
 
@@ -435,8 +471,11 @@ private:
 
             if (resourceFile.write (binaryDataCpp))
             {
+                filesCreated.add (binaryDataH);
+                filesCreated.add (binaryDataCpp);
+
                 generatedFilesGroup.addFile (binaryDataCpp, -1, true);
-                generatedFilesGroup.addFile (binaryDataCpp.withFileExtension (".h"), -1, false);
+                generatedFilesGroup.addFile (binaryDataH,   -1, false);
             }
             else
             {
@@ -446,7 +485,7 @@ private:
         else
         {
             binaryDataCpp.deleteFile();
-            binaryDataCpp.withFileExtension ("h").deleteFile();
+            binaryDataH.deleteFile();
         }
     }
 
@@ -494,6 +533,9 @@ private:
         {
             if (exporter->getTargetFolder().createDirectory())
             {
+                exporter->copyMainGroupFromProject();
+                exporter->settings = exporter->settings.createCopy();
+
                 exporter->addToExtraSearchPaths (RelativePath ("JuceLibraryCode", RelativePath::projectFolder));
 
                 generatedFilesGroup.state = originalGeneratedGroup.createCopy();
@@ -503,7 +545,7 @@ private:
                     modules.getUnchecked(j)->prepareExporter (*exporter, *this);
 
                 sortGroupRecursively (generatedFilesGroup);
-                exporter->groups.add (generatedFilesGroup);
+                exporter->getAllGroups().add (generatedFilesGroup);
 
                 threadPool.addJob (new ExporterJob (*this, exporter.exporter.release(), modules), true);
             }
@@ -520,10 +562,10 @@ private:
     class ExporterJob   : public ThreadPoolJob
     {
     public:
-        ExporterJob (ProjectSaver& owner_, ProjectExporter* exporter_,
-                     const OwnedArray<LibraryModule>& modules_)
+        ExporterJob (ProjectSaver& ps, ProjectExporter* pe,
+                     const OwnedArray<LibraryModule>& moduleList)
             : ThreadPoolJob ("export"),
-              owner (owner_), exporter (exporter_), modules (modules_)
+              owner (ps), exporter (pe), modules (moduleList)
         {
         }
 

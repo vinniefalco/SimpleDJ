@@ -46,11 +46,11 @@ public:
         isMoving = (finalBounds != component->getBounds());
         isChangingAlpha = (finalAlpha != component->getAlpha());
 
-        left = component->getX();
-        top = component->getY();
-        right = component->getRight();
-        bottom = component->getBottom();
-        alpha = component->getAlpha();
+        left    = component->getX();
+        top     = component->getY();
+        right   = component->getRight();
+        bottom  = component->getBottom();
+        alpha   = component->getAlpha();
 
         const double invTotalDistance = 4.0 / (startSpeed_ + endSpeed_ + 2.0);
         startSpeed = jmax (0.0, startSpeed_ * invTotalDistance);
@@ -138,25 +138,25 @@ public:
     class ProxyComponent  : public Component
     {
     public:
-        ProxyComponent (Component& component)
-            : image (component.createComponentSnapshot (component.getLocalBounds()))
+        ProxyComponent (Component& c)
+            : image (c.createComponentSnapshot (c.getLocalBounds()))
         {
-            setBounds (component.getBounds());
-            setTransform (component.getTransform());
-            setAlpha (component.getAlpha());
+            setBounds (c.getBounds());
+            setTransform (c.getTransform());
+            setAlpha (c.getAlpha());
             setInterceptsMouseClicks (false, false);
 
-            Component* const parent = component.getParentComponent();
+            Component* const parent = c.getParentComponent();
 
             if (parent != nullptr)
                 parent->addAndMakeVisible (this);
-            else if (component.isOnDesktop() && component.getPeer() != nullptr)
-                addToDesktop (component.getPeer()->getStyleFlags() | ComponentPeer::windowIgnoresKeyPresses);
+            else if (c.isOnDesktop() && c.getPeer() != nullptr)
+                addToDesktop (c.getPeer()->getStyleFlags() | ComponentPeer::windowIgnoresKeyPresses);
             else
                 jassertfalse; // seem to be trying to animate a component that's not visible..
 
             setVisible (true);
-            toBehind (&component);
+            toBehind (&c);
         }
 
         void paint (Graphics& g)
