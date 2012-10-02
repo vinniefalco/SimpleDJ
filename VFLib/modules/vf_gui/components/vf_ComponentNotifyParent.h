@@ -1,21 +1,32 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
@@ -24,65 +35,65 @@
 
 /*============================================================================*/
 /**
-    Notify some parent of a Component.
+  Notify some parent of a Component.
 
-    This class functor will ascend the chain of parent components and
-    call a member function on the first parent it finds that exposes a
-    defined interface. A Component exposes the interface by deriving from the
-    class containing the member function of interest. The implementation uses
-    dynamic_cast to determine if the Component is eligible, so the interface
-    must have a virtual table.
+  This class functor will ascend the chain of parent components and call a
+  member function on the first parent it finds that exposes a defined interface.
+  A Component exposes the interface by deriving from the class containing the
+  member function of interest. The implementation uses `dynamic_cast` to
+  determine if the Component is eligible, so the interface must have a virtual
+  table.
 
-    This provides robust assistance for enforcing separation of concerns, and
-    decentralizing program logic into only the areas that need it.
+  This provides robust assistance for enforcing separation of concerns, and
+  decentralizing program logic into only the areas that need it.
 
-    In this example we will implement a ToggleButton which switches a window
-    between basic and advanced modes:
+  In this example we will implement a ToggleButton which switches a window
+  between basic and advanced modes:
 
-    @code
+  @code
 
-    // Interface for a window that has basic and advanced modes:
+  // Interface for a window that has basic and advanced modes:
 
-    struct TwoModeWindow
+  struct TwoModeWindow
+  {
+    virtual void onModeChanged (bool isAdvanced) = 0;
+  };
+
+  // A ToggleButton that switches between basic and advanced modes
+
+  class AdvancedModeToggleButton : public ToggleButton
+  {
+  public:
+    AdvancedModeToggleButton (String buttonText) : ToggleButton (buttonText)
     {
-      virtual void onModeChanged (bool isAdvanced) = 0;
-    };
+      setClickingTogglesState (true);
+    }
 
-    // A ToggleButton that switches between basic and advanced modes
-
-    class AdvancedModeToggleButton : public ToggleButton
+    void clicked ()
     {
-    public:
-      AdvancedModeToggleButton (String buttonText) : ToggleButton (buttonText)
-      {
-        setClickingTogglesState (true);
-      }
+      // Inform a parent that the window mode was changed
 
-      void clicked ()
-      {
-        // Inform a parent that the window mode was changed
+      componentNotifyParent (this,
+                              &TwoModeWindow::onModeChanged,
+                              getToggleState ());
+    }
+  };
 
-        componentNotifyParent (this,
-                               &TwoModeWindow::onModeChanged,
-                               getToggleState ());
-      }
-    };
+  @endcode
 
-    @endcode
+  These are some of the benefits of using this system:
 
-    These are some of the benefits of using this system:
+  - A Component sending a notification doesn't need to know about
+    the recipient.
 
-    - A Component sending a notification doesn't need to know about
-      the recipient.
-
-    - A Component doesn't need to know where it is in the hierarchy
-      of components in the window. You can add, remove, or reparent
-      controls without breaking anything.
+  - A Component doesn't need to know where it is in the hierarchy
+    of components in the window. You can add, remove, or reparent
+    controls without breaking anything.
       
-    - Child and parent components support sending and receiving notifications
-      for multiple interfaces very easily.
+  - Child and parent components support sending and receiving notifications
+    for multiple interfaces very easily.
 
-    @ingroup vf_gui
+  @ingroup vf_gui
 */
 class componentNotifyParent
 {

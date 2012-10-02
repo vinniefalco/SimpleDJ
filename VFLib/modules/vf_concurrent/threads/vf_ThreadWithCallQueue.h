@@ -1,21 +1,32 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
@@ -24,21 +35,23 @@
 
 /*============================================================================*/
 /** 
-    An InterruptibleThread with a CallQueue.
+  An InterruptibleThread with a CallQueue.
 
-    This combines an InterruptibleThread with a CallQueue, allowing functors to
-    be queued for asynchronous execution on the thread.
+  This combines an InterruptibleThread with a CallQueue, allowing functors to
+  be queued for asynchronous execution on the thread.
 
-    The thread runs an optional user-defined idle function, which must regularly
-    check for an interruption using the InterruptibleThread interface. When an
-    interruption is signaled, the idle function returns and the CallQueue is
-    synchronized. Then, the idle function is resumed.
+  The thread runs an optional user-defined idle function, which must regularly
+  check for an interruption using the InterruptibleThread interface. When an
+  interruption is signaled, the idle function returns and the CallQueue is
+  synchronized. Then, the idle function is resumed.
 
-    When the ThreadWithCallQueue first starts up, an optional user-defined
-    initialization function is executed on the thread. When the thread exits,
-    a user-defined exit function may be executed on the thread.
+  When the ThreadWithCallQueue first starts up, an optional user-defined
+  initialization function is executed on the thread. When the thread exits,
+  a user-defined exit function may be executed on the thread.
 
-    @ingroup vf_concurrent
+  @see CallQueue
+
+  @ingroup vf_concurrent
 */
 class ThreadWithCallQueue : public CallQueue
 {
@@ -122,11 +135,11 @@ private:
   void run ();
 
 private:
+  InterruptibleThread m_thread;
   bool m_calledStart;
   bool m_calledStop;
   bool m_shouldStop;
   CriticalSection m_mutex;
-  InterruptibleThread m_thread;
   idle_t m_idle;
   init_t m_init;
   exit_t m_exit;

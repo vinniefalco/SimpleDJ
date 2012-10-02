@@ -1,21 +1,32 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
@@ -24,9 +35,7 @@
 
 /*============================================================================*/
 /**
-  @ingroup vf_concurrent
-
-  @brief A FIFO for calling functors asynchronously.
+  A FIFO for calling functors asynchronously.
 
   This object is an alternative to traditional locking techniques used to
   implement concurrent systems. Instead of acquiring a mutex to change shared
@@ -131,41 +140,58 @@
   producers and mostly wait-free for consumers. It also uses a lock-free
   and wait-free (in the fast path) custom memory allocator.
 
-  @see GuiCallQueue, ManualCallQueue, MessageThread
+  @see GuiCallQueue, ManualCallQueue, MessageThread, ThreadWithCallQueue
 
-  @todo Standardize terminology: "functor" to represent the stored item.
+  @ingroup vf_concurrent
 */
 class CallQueue
 {
 public:
   //============================================================================
 
+  /** Type of allocator to use.
+  
+      @internal
+  */
   typedef FifoFreeStoreType AllocatorType;
 
-  /** @internal
-      @ingroup vf_concurrent internal
+  /** Abstract nullary functor in a @ref CallQueue.
 
-      @brief Abstract nullary functor.
+      Custom implementations may derive from this object for efficiency instead
+      of using the automatic binding functions.
   */
-  class Call : public LockFreeQueue <Call>::Node,
+  class Work : public LockFreeQueue <Work>::Node,
                public AllocatedBy <AllocatorType>
   {
   public:
-    virtual ~Call () { }
+    virtual ~Work () { }
+
+    /** Calls the functor.
+
+        This executes during the queue's call to synchronize().
+    */
     virtual void operator() () = 0;
   };
 
   //============================================================================
 
-  /** @param  name  A string to identify the queue during debugging.
+  /** Create the CallQueue.
+  
+      The queue starts out open and empty.
+
+      @param name A string to identify the queue during debugging.
   */
   explicit CallQueue (String name);
 
-  /** @details
+  /** Destroy the CallQueue.
   
-      @invariant Destroying a queue that contains functors is undefined.
+      @invariant Destroying a queue that contains functors results in undefined
+                 behavior.
+
+      @note It is customary to call close() on the CallQueue early in the
+            shutdown process to catch functors going into the queue late.
   */
-  ~CallQueue ();
+  virtual ~CallQueue ();
 
   //============================================================================
 
@@ -184,176 +210,191 @@ public:
     callp (new (m_allocator) CallType <Functor> (f));
   }
 
-/**
-  Add a function call and possibly synchronize.
+  /** Add a function call and possibly synchronize.
 
-  Parameters are evaluated immediately and added to the queue as a packaged
-  functor. If the current thread of execution is the same as the thread
-  associated with the CallQueue, synchronize() is called automatically. This
-  behavior can be avoided by using queue() instead.
+      Parameters are evaluated immediately and added to the queue as a packaged
+      functor. If the current thread of execution is the same as the thread
+      associated with the CallQueue, synchronize() is called automatically. This
+      behavior can be avoided by using queue() instead.
 
-  @param f The function to call followed by up to eight parameters, evaluated
-            immediately. The parameter list must match the function signature.
-            For class member functions, the first argument must be a pointer
-            to the class object.
+      @param f The function to call followed by up to eight parameters,
+               evaluated immediately. The parameter list must match the function
+      signature. For class member functions, the first argument must be a
+      pointer to the class object.
 
-  @see queue
+      @see queue
 
-  @todo Provide an example of when synchronize() is needed in call().
-*/
+      @todo Provide an example of when synchronize() is needed in call().
+  */
+  /** @{ */
   template <class Fn>
   void call (Fn f)
-  { callf (vf::bind (f)); }
+  {
+    callf (vf::bind (f));
+  }
 
-  template <class Fn, typename  T1>
-  void call (Fn f,    const T1& t1)
-  { callf (vf::bind (f, t1)); }
+  template <class Fn, class T1>
+  void call (Fn f, T1 t1)
+  {
+    callf (vf::bind (f, t1));
+  }
 
-  template <class Fn, typename  T1, typename  T2>
-  void call (Fn f,    const T1& t1, const T2& t2)
-  { callf (vf::bind (f, t1, t2)); }
+  template <class Fn, class T1, class T2>
+  void call (Fn f, T1 t1, T2 t2)
+  {
+    callf (vf::bind (f, t1, t2));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3)
-  { callf (vf::bind (f, t1, t2, t3)); }
+  template <class Fn, class T1, class T2, class T3>
+  void call (Fn f, T1 t1, T2 t2, T3 t3)
+  {
+    callf (vf::bind (f, t1, t2, t3));
+  }
 
-  template <class Fn, typename  T1, typename  T2,
-                      typename  T3, typename  T4>
-  void call (Fn f,    const T1& t1, const T2& t2,
-                      const T3& t3, const T4& t4)
-  { callf (vf::bind (f, t1, t2, t3, t4)); }
+  template <class Fn, class T1, class T2, class T3, class T4>
+  void call (Fn f, T1 t1, T2 t2, T3 t3, T4 t4)
+  {
+    callf (vf::bind (f, t1, t2, t3, t4));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3,
-                      typename  T4, typename  T5>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3,
-                      const T4& t4, const T5& t5)
-  { callf (vf::bind (f, t1, t2, t3, t4, t5)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5>
+  void call (Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
+  {
+    callf (vf::bind (f, t1, t2, t3, t4, t5));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3,
-                      typename  T4, typename  T5, typename  T6>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3,
-                      const T4& t4, const T5& t5, const T6& t6)
-  { callf (vf::bind (f, t1, t2, t3, t4, t5, t6)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6>
+  void call (Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
+  {
+    callf (vf::bind (f, t1, t2, t3, t4, t5, t6));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3, typename  T4,
-                      typename  T5, typename  T6, typename  T7>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3, const T4& t4,
-                      const T5& t5, const T6& t6, const T7& t7)
-  { callf (vf::bind (f, t1, t2, t3, t4, t5, t6, t7)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
+  void call (Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
+  {
+    callf (vf::bind (f, t1, t2, t3, t4, t5, t6, t7));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3, typename  T4,
-                      typename  T5, typename  T6, typename  T7, typename  T8>
-  void call (Fn f,    const T1& t1, const T2& t2, const T3& t3, const T4& t4,
-                      const T5& t5, const T6& t6, const T7& t7, const T8& t8)
-  { callf (vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
+  void call (Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
+  {
+    callf (vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8));
+  }
+  /** @} */
 
-/**
-  Add a functor without synchronizing.
+  /** Add a functor without synchronizing.
 
-  Use this when you want to perform the bind yourself.
+      Use this when you want to perform the bind yourself.
 
-  @param f The functor to add, typically the return value of a call
-            to bind().
+      @param f The functor to add, typically the return value of a call
+                to bind().
 
-  @see queue
-*/
+      @see queue
+  */
   template <class Functor>
-  void queuef (Functor const& f)
+  void queuef (Functor f)
   {
     queuep (new (m_allocator) CallType <Functor> (f));
   }
 
-/**
-  Add a function call without synchronizing.
+  /** Add a function call without synchronizing.
 
-  Parameters are evaluated immediately, then the resulting functor is added
-  to the queue. This is used to postpone the call to synchronize() when
-  there would be adverse side effects to executing the function immediately.
-  In this example, we use queue() instead of call() to avoid a deadlock:
+      Parameters are evaluated immediately, then the resulting functor is added
+      to the queue. This is used to postpone the call to synchronize() when
+      there would be adverse side effects to executing the function immediately.
+      In this example, we use queue() instead of call() to avoid a deadlock:
 
-  @code
+      @code
 
-  struct SharedState;           // contains data shared between threads
+      struct SharedState;           // contains data shared between threads
 
-  ConcurrentState <SharedState> sharedState;
+      ConcurrentState <SharedState> sharedState;
 
-  void stateChanged ()
-  {
-    ConcurrentState <SharedState>::ReadAccess state (sharedState);
+      void stateChanged ()
+      {
+        ConcurrentState <SharedState>::ReadAccess state (sharedState);
 
-    // (read state)
-  }
+        // (read state)
+      }
 
-  CallQueue fifo;
+      CallQueue fifo;
 
-  void changeState ()
-  {
-    ConcurrentState <State>::WriteAccess state (sharedState);
+      void changeState ()
+      {
+        ConcurrentState <State>::WriteAccess state (sharedState);
 
-    // (read and write state)
+        // (read and write state)
 
-    fifo.call (&stateChanged);  // BUG: DEADLOCK because of the implicit synchronize().
+        fifo.call (&stateChanged);  // BUG: DEADLOCK because of the implicit synchronize().
 
-    fifo.queue (&stateChanged); // Okay, synchronize() will be called later,
-                                // after the write lock is released.
-  }
+        fifo.queue (&stateChanged); // Okay, synchronize() will be called later,
+                                    // after the write lock is released.
+      }
 
-  @endcode
+      @endcode
 
-  @param f The function to call followed by up to eight parameters,
-            evaluated immediately. The parameter list must match the
-            function signature. For non-static class member functions,
-            the first argument must be a pointer an instance of the class.
+      @param f The function to call followed by up to eight parameters,
+                evaluated immediately. The parameter list must match the
+                function signature. For non-static class member functions,
+                the first argument must be a pointer an instance of the class.
 
-  @see call
-*/
+      @see call
+  */
+  /** @{ */
   template <class Fn>
   void queue (Fn f)
   {
     queuef (vf::bind (f));
   }
 
-  template <class Fn, typename  T1>
-  void queue (Fn f,   const T1& t1)
-  { queuef (vf::bind (f, t1)); }
+  template <class Fn, class T1>
+  void queue (Fn f, T1 t1)
+  {
+    queuef (vf::bind (f, t1));
+  }
 
-  template <class Fn, typename  T1, typename  T2>
-  void queue (Fn f,   const T1& t1, const T2& t2)
-  { queuef (vf::bind (f, t1, t2)); }
+  template <class Fn, class T1, class T2>
+  void queue (Fn f, T1 t1, T2 t2)
+  {
+    queuef (vf::bind (f, t1, t2));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3>
-  void queue (Fn f,   const T1& t1, const T2& t2, const T3& t3)
-  { queuef (vf::bind (f, t1, t2, t3)); }
+  template <class Fn, class T1, class T2, class T3>
+  void queue (Fn f, T1 t1, T2 t2, T3 t3)
+  {
+    queuef (vf::bind (f, t1, t2, t3));
+  }
 
-  template <class Fn, typename  T1, typename  T2,
-                      typename  T3, typename  T4>
-  void queue (Fn f,   const T1& t1, const T2& t2,
-                      const T3& t3, const T4& t4)
-  { queuef (vf::bind (f, t1, t2, t3, t4)); }
+  template <class Fn, class T1, class T2, class T3, class T4>
+  void queue (Fn f, T1 t1, T2 t2, T3 t3, T4 t4)
+  {
+    queuef (vf::bind (f, t1, t2, t3, t4));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3,
-                      typename  T4, typename  T5>
-  void queue (Fn f,   const T1& t1, const T2& t2, const T3& t3,
-                      const T4& t4, const T5& t5)
-  { queuef (vf::bind (f, t1, t2, t3, t4, t5)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5>
+  void queue (Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
+  {
+    queuef (vf::bind (f, t1, t2, t3, t4, t5));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3,
-                      typename  T4, typename  T5, typename  T6>
-  void queue (Fn f,   const T1& t1, const T2& t2, const T3& t3,
-                      const T4& t4, const T5& t5, const T6& t6)
-  { queuef (vf::bind (f, t1, t2, t3, t4, t5, t6)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6>
+  void queue (Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
+  {
+    queuef (vf::bind (f, t1, t2, t3, t4, t5, t6));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3, typename  T4,
-                      typename  T5, typename  T6, typename  T7>
-  void queue (Fn f,   const T1& t1, const T2& t2, const T3& t3, const T4& t4,
-                      const T5& t5, const T6& t6, const T7& t7)
-  { queuef (vf::bind (f, t1, t2, t3, t4, t5, t6, t7)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
+  void queue (Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
+  {
+    queuef (vf::bind (f, t1, t2, t3, t4, t5, t6, t7));
+  }
 
-  template <class Fn, typename  T1, typename  T2, typename  T3, typename  T4,
-                      typename  T5, typename  T6, typename  T7, typename  T8>
-  void queue (Fn f,   const T1& t1, const T2& t2, const T3& t3, const T4& t4,
-                      const T5& t5, const T6& t6, const T7& t7, const T8& t8)
-  { queuef (vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8)); }
+  template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
+  void queue (Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
+  {
+    queuef (vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8));
+  }
+  /** @} */
 
 protected:
   //============================================================================
@@ -391,55 +432,64 @@ protected:
   */
   virtual void signal () = 0;
 
-  /** Called when the queue becomes non-signaled. */
+  /** Called when the queue is reset.
+
+      A queue is reset when it was previously signaled and then becomes empty
+      as a result of a call to synchronize.
+  */
   virtual void reset () = 0;
 
 public:
   //============================================================================
 
-  /** @internal
-  
-      @details Add a raw Call to the queue and synchronize if possible.
+  /** Add a raw call.
 
-      @param c The call to add.
-    */
-  void callp (Call* c);
+      @internal
 
-  /** @internal 
+      Custom implementations use this to control the allocation.
 
-      @details Add a raw Call to the queue without synchronizing.
-
-      @param c The call to add.
+      @param c The call to add. The memory must come from the allocator.
   */
-  void queuep (Call* c);
+  void callp (Work* c);
 
-  /** @internal
+  /** Queue a raw call.
   
-      @return The allocator to use when allocating a raw Call object.      
+      Custom implementations use this to control the allocation.
+
+      @param c The call to add. The memory must come from the allocator.
+  */
+  void queuep (Work* c);
+
+  /** Retrieve the allocator.
+
+      @return The allocator to use when allocating a raw Work object.      
    */
   inline AllocatorType& getAllocator ()
   {
     return m_allocator;
   }
 
-  /** @internal
-  
-      @return \c true if the calling thread of execution is associated with the
+  /** See if the caller is on the association thread.
+
+      @return `true` if the calling thread of execution is associated with the
               queue.
   */
   bool isAssociatedWithCurrentThread () const;
 
-  /** @internal
+  /** See if the queue is being synchronized.
+
+      This is used for diagnostics.
   
-      @details This function helps provide diagnostics.
-  
-      @return \c true if the call stack contains synchronize() for this queue.
+      @note This must be called from the associated thread or else the return
+            value is undefined.
+
+      @return `true` if the call stack contains synchronize() for this queue.
   */
   bool isBeingSynchronized () const { return m_isBeingSynchronized.isSignaled(); }
 
 private:
   template <class Functor>
-  class CallType : public Call
+  class CallType : public Work
   {
   public:
     explicit CallType (Functor const& f) : m_f (f) { }
@@ -454,7 +504,7 @@ private:
 private:
   String const m_name;
   Thread::ThreadID m_id;
-  LockFreeQueue <Call> m_queue;
+  LockFreeQueue <Work> m_queue;
   AtomicFlag m_closed;
   AtomicFlag m_isBeingSynchronized;
   AllocatorType m_allocator;

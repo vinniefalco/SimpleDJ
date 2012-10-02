@@ -1,21 +1,32 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
@@ -56,19 +67,22 @@ public:
   {
   }
 
-/**
-  @param numSamples      The number of samples in the resulting array. This
-                         may be less than or equal to the actual amount of
-                         space in the memory pointed to by arrayOfChannels.
+/** Create a buffer from existing memory.
 
-  @param arrayOfChannels The array of pointers to existing memory.
+    @param numSamples The number of samples in the resulting array. This
+                      may be less than or equal to the actual amount of
+    space in the memory pointed to by arrayOfChannels.
+
+    @param arrayOfChannels The array of pointers to existing memory.
 */
   AudioSampleBufferArray (int numSamples, Sample* const* arrayOfChannels)
   {
     setFrom (numSamples, arrayOfChannels);
   }
 
-  /** @param other The AudioSampleBufferArray to copy from.
+  /** Create a buffer from another buffer.
+
+      @param other The AudioSampleBufferArray to point to.
   */
   AudioSampleBufferArray (const AudioSampleBufferArray& other)
   {
@@ -217,16 +231,15 @@ public:
     return m_channels[index];
   }
 
-/**
-  Advance all channels by the specified number of samples.
+/** Advance all channels by the specified number of samples.
 
-  Advancing by more than the number of samples remaining is undefined.
-  After the pointers are moved forward, the number of samples remaining
-  is adjusted downwards.
+    Advancing by more than the number of samples remaining is undefined.
+    After the pointers are moved forward, the number of samples remaining
+    is adjusted downwards.
 
-  @param numSamples The number of samples to advance by.
+    @param numSamples The number of samples to advance by.
 
-  @return An array that points to the new range of samples.
+    @return An array that points to the new range of samples.
 */
   AudioSampleBufferArray operator+ (int numSamples)
   {
@@ -243,16 +256,15 @@ public:
     return *this;
   }
 
-/**
-  Rewind all channels by the specified number of samples.
+/** Rewind all channels by the specified number of samples.
 
-  Rewinding to before the start of the original memory pointers is
-  undefined. After the pointers are moved back, the number of samples
-  remaining is adjusted upwards.
+    Rewinding to before the start of the original memory pointers is
+    undefined. After the pointers are moved back, the number of samples
+    remaining is adjusted upwards.
 
-  @param numSamples The number of samples to rewind by.
+    @param numSamples The number of samples to rewind by.
 
-  @return An array representing the new range of samples.
+    @return An array representing the new range of samples.
 */
   AudioSampleBufferArray operator- (int numSamples)
   {

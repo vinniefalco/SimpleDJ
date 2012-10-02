@@ -1,29 +1,37 @@
 /*============================================================================*/
 /*
-  Copyright (C) 2008 by Vinnie Falco, this file is part of VFLib.
-  See the file GNU_GPL_v2.txt for full licensing terms.
+  VFLib: https://github.com/vinniefalco/VFLib
 
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU General Public License as published by the Free
-  Software Foundation; either version 2 of the License, or (at your option)
-  any later version.
+  Copyright (C) 2008 by Vinnie Falco <vinnie.falco@gmail.com>
 
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  details.
+  This library contains portions of other open source products covered by
+  separate licenses. Please see the corresponding source files for specific
+  terms.
+  
+  VFLib is provided under the terms of The MIT License (MIT):
 
-  You should have received a copy of the GNU General Public License along with
-  this program; if not, write to the Free Software Foundation, Inc., 51
-  Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
 */
 /*============================================================================*/
 
 #ifndef VF_LIST_VFHEADER
 #define VF_LIST_VFHEADER
-
-#include "../diagnostic/vf_Error.h"
-#include "../diagnostic/vf_Throw.h"
 
 struct ListDefaultTag;
 
@@ -37,7 +45,7 @@ struct ListDefaultTag;
   and exception safety guarantees than non-intrusive containers (like the
   STL containers). They are useful building blocks for high performance
   concurrent systems or other purposes where allocations are restricted
-  (such as the AudioDeviceIOCallback object), because intrusive list
+  (such as the AudioIODeviceCallback object), because intrusive list
   operations do not allocate or free memory.
 
   While intrusive containers were and are widely used in C, they became more
@@ -81,8 +89,8 @@ struct ListDefaultTag;
   @endcode
 
   Because intrusive containers allocate no memory, allowing objects to be
-  placed inside requires a modification to their cless declaration. Each
-  intrusive container declares a nested class Node which elements must be
+  placed inside requires a modification to their class declaration. Each
+  intrusive container declares a nested class `Node` which elements must be
   derived from, using the Curiously Recurring Template Pattern (CRTP). We  
   will continue to fully declare the Object type from the previous example
   to support emplacement into an intrusive container:
@@ -127,7 +135,7 @@ struct ListDefaultTag;
     list.push_back (*new Object);
 
   // Call a method on each list
-  for (ListType::iterator iter = list.begin(); iter != list.end; ++iter)
+  for (ListType::iterator iter = list.begin(); iter != list.end (); ++iter)
     iter->performAction ();
 
   @endcode
@@ -258,7 +266,7 @@ struct ListDefaultTag;
   @endcode
 
   Because List is mostly STL compliant, it can be passed into STL algorithms:
-  e.g. std::for_each() or std::find_first_of.
+  e.g. `std::for_each()` or `std::find_first_of()`.
 
   In general, objects placed into a List should be dynamically allocated
   although this cannot be enforced at compile time. Since the caller provides
@@ -306,7 +314,6 @@ struct ListDefaultTag;
 
   @ingroup vf_core intrusive
 */
-
 template <class Element, class Tag = ListDefaultTag>
 class List : Uncopyable
 {
@@ -430,13 +437,13 @@ private:
 
     void increment ()
     {
-      vfassert (m_node->m_next);
+      jassert (m_node->m_next);
       m_node = m_node->m_next;
     }
 
     void decrement ()
     {
-      vfassert (m_node->m_prev && m_node->m_prev->m_prev != 0);
+      jassert (m_node->m_prev && m_node->m_prev->m_prev != 0);
       m_node = m_node->m_prev;
     }
 
@@ -714,6 +721,8 @@ public:
   /** Insert another list at the beginning of this list.
 
       The other list is cleared.
+
+      @param list The other list to insert.
   */ 
   void prepend (List& list)
   {
@@ -723,6 +732,8 @@ public:
   /** Append another list at the end of this list.
 
       The other list is cleared.
+
+      @param list the other list to append.
   */ 
   void append (List& list)
   {
@@ -782,10 +793,10 @@ private:
   Node m_tail;
 };
 
-/*============================================================================*/
-/** Default tag for List
+/**
+  Default tag for List.
 
-    @ingroup vf_core intrusive
+  @ingroup vf_core intrusive
 */
 struct ListDefaultTag { };
 
