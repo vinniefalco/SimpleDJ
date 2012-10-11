@@ -56,14 +56,34 @@ protected:
     CounterBase ();
 
     virtual ~CounterBase () { }
-  
+
+    inline char const* getClassName ()
+    {
+      return m_className;
+    }
+
+    inline int increment ()
+    {
+      return ++m_count;
+    }
+
+    inline int decrement ()
+    {
+      return --m_count;
+    }
+
     static void detectAllLeaks ();
 
   private:
-    virtual void detectLeaks () = 0;
+    void detectLeaks ();
 
-  private:
+    virtual void checkPureVirtual () = 0;
+
+  protected:
     class Singleton;
+
+    char const* m_className;
+    Atomic <int> m_count;
   };
 };
 
@@ -104,44 +124,31 @@ private:
   class Counter : public CounterBase
   {
   public:
-    inline int increment ()
+    Counter () noexcept
     {
-      return ++m_count;
+      m_className = getLeakCheckedName ();
     }
 
-    inline int decrement ()
+    void checkPureVirtual ()
     {
-      return --m_count;
     }
-    
-    void detectLeaks ()
-    {
-      const int count = m_count.get ();
-
-      if (count > 0)
-      {
-        DBG ("[LEAK] " << count << " of " << getLeakCheckedName());
-      }
-    }
-
-  private:
-    Atomic <int> m_count;
   };
 
+private:
   static const char* getLeakCheckedName ()
   {
     return typeid (Object).name ();
   }
 
-  static Counter& getLeakCheckedCounter() noexcept
+  static Counter& getLeakCheckedCounter () noexcept
   {
     static Counter* volatile s_instance;
     static Static::Initializer s_initializer;
 
     if (s_initializer.begin ())
     {
-      static Counter s_object;
-      s_instance = &s_object;
+      static char s_storage [sizeof (Counter)];
+      s_instance = new (s_storage) Counter;
       s_initializer.end ();
     }
 

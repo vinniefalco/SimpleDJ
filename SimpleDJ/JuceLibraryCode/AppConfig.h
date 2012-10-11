@@ -101,6 +101,8 @@
  //#define JUCE_LOG_ASSERTIONS
 #endif
 
+#define VF_USE_LEAKCHECKED 1
+
 #ifndef    JUCE_CHECK_MEMORY_LEAKS
  #define   JUCE_CHECK_MEMORY_LEAKS 0
 #endif
