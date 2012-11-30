@@ -69,7 +69,6 @@ private:
 //------------------------------------------------------------------------------
 
 LeakCheckedBase::CounterBase::CounterBase ()
-  : m_className ("")
 {
   Singleton::getInstance().push_back (this);
 }
@@ -83,12 +82,14 @@ void LeakCheckedBase::CounterBase::detectLeaks ()
 {
   // If there's a runtime error from this line, it means there's
   // an order of destruction problem between different translation units!
+  //
   this->checkPureVirtual ();
 
   int const count = m_count.get ();
 
   if (count > 0)
   {
+    jassertfalse;
     DBG ("[LEAK] " << count << " of " << getClassName ());
   }
 }

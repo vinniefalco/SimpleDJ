@@ -57,11 +57,6 @@ protected:
 
     virtual ~CounterBase () { }
 
-    inline char const* getClassName ()
-    {
-      return m_className;
-    }
-
     inline int increment ()
     {
       return ++m_count;
@@ -72,23 +67,29 @@ protected:
       return --m_count;
     }
 
+    virtual char const* getClassName () const = 0;
+
     static void detectAllLeaks ();
 
   private:
     void detectLeaks ();
 
-    virtual void checkPureVirtual () = 0;
+    virtual void checkPureVirtual () const = 0;
 
   protected:
     class Singleton;
 
-    char const* m_className;
     Atomic <int> m_count;
   };
 };
 
 //------------------------------------------------------------------------------
 
+/** Detects leaks at program exit.
+
+    To use this, derive your class from this template using CRTP (curiously
+    recurring template pattern).
+*/
 template <class Object>
 class LeakChecked : private LeakCheckedBase
 {
@@ -126,15 +127,22 @@ private:
   public:
     Counter () noexcept
     {
-      m_className = getLeakCheckedName ();
+    }
+    
+    char const* getClassName () const
+    {
+      return getLeakCheckedName ();
     }
 
-    void checkPureVirtual ()
-    {
-    }
+    void checkPureVirtual () const { }
   };
 
 private:
+  /* Due to a bug in Visual Studio 10 and earlier, the string returned by
+     typeid().name() will appear to leak on exit. Therefore, we should
+     only call this function when there's an actual leak, or else there
+     will be spurious leak notices at exit.
+  */
   static const char* getLeakCheckedName ()
   {
     return typeid (Object).name ();
