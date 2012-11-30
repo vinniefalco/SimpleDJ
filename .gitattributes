@@ -1,11 +1,3 @@
 *         text=auto
 
-*.h       text diff=cpp
-*.cpp     text diff=cpp
-
-*.html    text diff=html
-*.md      text
-
 *.sln     text merge=union eol=crlf
-#*.vcxproj text eol=crlf
-
