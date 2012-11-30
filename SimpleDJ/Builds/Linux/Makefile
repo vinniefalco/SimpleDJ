@@ -17,12 +17,12 @@ ifeq ($(CONFIG),Debug)
   LIBDIR := build
   OBJDIR := build/intermediate/Debug
   OUTDIR := build
-  CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "DEBUG=1" -D "_DEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -I /usr/include -I /usr/include/freetype2 -I ../../JuceLibraryCode -I ../../../JUCE -I ../../../VFLib
+  CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "DEBUG=1" -D "_DEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -I /usr/include -I /usr/include/freetype2 -I ../../JuceLibraryCode -I ../../../JUCE -I ../../../Extern/VFLib
   CFLAGS += $(CPPFLAGS) $(TARGET_ARCH) -g -ggdb -O0
   CXXFLAGS += $(CFLAGS) 
-  LDFLAGS += -L$(BINDIR) -L$(LIBDIR) -L/usr/X11R6/lib/ -ldl -lfreetype -lpthread -lrt -lX11 -lGL -lGLU -lXinerama -lasound -lXext 
+  LDFLAGS += -L$(BINDIR) -L$(LIBDIR) -L/usr/X11R6/lib/ -lX11 -lXext -lXinerama -lasound -ldl -lfreetype -lpthread -lrt 
   LDDEPS :=
-  RESFLAGS :=  -D "LINUX=1" -D "DEBUG=1" -D "_DEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -I /usr/include -I /usr/include/freetype2 -I ../../JuceLibraryCode -I ../../../JUCE -I ../../../VFLib
+  RESFLAGS :=  -D "LINUX=1" -D "DEBUG=1" -D "_DEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -I /usr/include -I /usr/include/freetype2 -I ../../JuceLibraryCode -I ../../../JUCE -I ../../../Extern/VFLib
   TARGET := SimpleDJ
   BLDCMD = $(CXX) -o $(OUTDIR)/$(TARGET) $(OBJECTS) $(LDFLAGS) $(RESOURCES) $(TARGET_ARCH)
 endif
@@ -32,12 +32,12 @@ ifeq ($(CONFIG),Release)
   LIBDIR := build
   OBJDIR := build/intermediate/Release
   OUTDIR := build
-  CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "NDEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -I /usr/include -I /usr/include/freetype2 -I ../../JuceLibraryCode -I ../../../JUCE -I ../../../VFLib
+  CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "NDEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -I /usr/include -I /usr/include/freetype2 -I ../../JuceLibraryCode -I ../../../JUCE -I ../../../Extern/VFLib
   CFLAGS += $(CPPFLAGS) $(TARGET_ARCH) -Os
   CXXFLAGS += $(CFLAGS) 
-  LDFLAGS += -L$(BINDIR) -L$(LIBDIR) -L/usr/X11R6/lib/ -ldl -lfreetype -lpthread -lrt -lX11 -lGL -lGLU -lXinerama -lasound -lXext 
+  LDFLAGS += -L$(BINDIR) -L$(LIBDIR) -L/usr/X11R6/lib/ -lX11 -lXext -lXinerama -lasound -ldl -lfreetype -lpthread -lrt 
   LDDEPS :=
-  RESFLAGS :=  -D "LINUX=1" -D "NDEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -I /usr/include -I /usr/include/freetype2 -I ../../JuceLibraryCode -I ../../../JUCE -I ../../../VFLib
+  RESFLAGS :=  -D "LINUX=1" -D "NDEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -I /usr/include -I /usr/include/freetype2 -I ../../JuceLibraryCode -I ../../../JUCE -I ../../../Extern/VFLib
   TARGET := SimpleDJ
   BLDCMD = $(CXX) -o $(OUTDIR)/$(TARGET) $(OBJECTS) $(LDFLAGS) $(RESOURCES) $(TARGET_ARCH)
 endif
@@ -60,11 +60,11 @@ OBJECTS := \
   $(OBJDIR)/CMainWindow_74116e4a.o \
   $(OBJDIR)/CParamToggleButton_9950f37c.o \
   $(OBJDIR)/CSpeedControl_cfde1cd7.o \
-  $(OBJDIR)/vf_concurrent_f0aa3de1.o \
-  $(OBJDIR)/vf_core_36e63bf1.o \
-  $(OBJDIR)/vf_freetype_984062bf.o \
-  $(OBJDIR)/vf_gui_593c9393.o \
-  $(OBJDIR)/vf_taglib_d34f8849.o \
+  $(OBJDIR)/vf_core_a9705a20.o \
+  $(OBJDIR)/vf_concurrent_9058d90.o \
+  $(OBJDIR)/vf_freetype_2c80e1ae.o \
+  $(OBJDIR)/vf_gui_6c67182.o \
+  $(OBJDIR)/vf_taglib_9a30f6f8.o \
   $(OBJDIR)/juce_audio_basics_181b4cb.o \
   $(OBJDIR)/juce_audio_devices_2d9302c9.o \
   $(OBJDIR)/juce_audio_formats_5c144c69.o \
@@ -90,6 +90,10 @@ clean:
 	-@rm -f $(OUTDIR)/$(TARGET)
 	-@rm -rf $(OBJDIR)/*
 	-@rm -rf $(OBJDIR)
+
+strip:
+	@echo Stripping SimpleDJ
+	-@strip --strip-unneeded $(OUTDIR)/$(TARGET)
 
 $(OBJDIR)/Deck_686cfd35.o: ../../Sources/Deck.cpp
 	-@mkdir -p $(OBJDIR)
@@ -176,27 +180,27 @@ $(OBJDIR)/CSpeedControl_cfde1cd7.o: ../../Sources/CSpeedControl.cpp
 	@echo "Compiling CSpeedControl.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/vf_concurrent_f0aa3de1.o: ../../../VFLib/modules/vf_concurrent/vf_concurrent.cpp
-	-@mkdir -p $(OBJDIR)
-	@echo "Compiling vf_concurrent.cpp"
-	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-
-$(OBJDIR)/vf_core_36e63bf1.o: ../../../VFLib/modules/vf_core/vf_core.cpp
+$(OBJDIR)/vf_core_a9705a20.o: ../../../Extern/VFLib/modules/vf_core/vf_core.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling vf_core.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/vf_freetype_984062bf.o: ../../../VFLib/modules/vf_freetype/vf_freetype.c
+$(OBJDIR)/vf_concurrent_9058d90.o: ../../../Extern/VFLib/modules/vf_concurrent/vf_concurrent.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling vf_concurrent.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
+$(OBJDIR)/vf_freetype_2c80e1ae.o: ../../../Extern/VFLib/modules/vf_freetype/vf_freetype.c
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling vf_freetype.c"
 	@$(CC) $(CFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/vf_gui_593c9393.o: ../../../VFLib/modules/vf_gui/vf_gui.cpp
+$(OBJDIR)/vf_gui_6c67182.o: ../../../Extern/VFLib/modules/vf_gui/vf_gui.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling vf_gui.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/vf_taglib_d34f8849.o: ../../../VFLib/modules/vf_taglib/vf_taglib.cpp
+$(OBJDIR)/vf_taglib_9a30f6f8.o: ../../../Extern/VFLib/modules/vf_taglib/vf_taglib.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling vf_taglib.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"

@@ -52,14 +52,14 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\JUCE;..\..\..\VFLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;../../../JUCE;../../../Extern/VFLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2010_78A501D=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader />
-      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
-      <ObjectFileName>.\Debug\</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)\</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)\</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -68,17 +68,17 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>.\Debug\SimpleDJ.exe</OutputFile>
+      <OutputFile>$(OutDir)\SimpleDJ.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Debug\SimpleDJ.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\SimpleDJ.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug\SimpleDJ.bsc</OutputFile>
+      <OutputFile>$(IntDir)\SimpleDJ.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -90,16 +90,15 @@
       <HeaderFileName />
     </Midl>
     <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\JUCE;..\..\..\VFLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>MinSpace</Optimization>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;../../../JUCE;../../../Extern/VFLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2010_78A501D=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader />
-      <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
-      <ObjectFileName>.\Release\</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)\</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)\</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -108,17 +107,17 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>.\Release\SimpleDJ.exe</OutputFile>
+      <OutputFile>$(OutDir)\SimpleDJ.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Release\SimpleDJ.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\SimpleDJ.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release\SimpleDJ.bsc</OutputFile>
+      <OutputFile>$(IntDir)\SimpleDJ.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -139,11 +138,11 @@
     <ClCompile Include="..\..\Sources\CMainWindow.cpp" />
     <ClCompile Include="..\..\Sources\CParamToggleButton.cpp" />
     <ClCompile Include="..\..\Sources\CSpeedControl.cpp" />
-    <ClCompile Include="..\..\..\VFLib\modules\vf_concurrent\vf_concurrent.cpp" />
-    <ClCompile Include="..\..\..\VFLib\modules\vf_core\vf_core.cpp" />
-    <ClCompile Include="..\..\..\VFLib\modules\vf_freetype\vf_freetype.c" />
-    <ClCompile Include="..\..\..\VFLib\modules\vf_gui\vf_gui.cpp" />
-    <ClCompile Include="..\..\..\VFLib\modules\vf_taglib\vf_taglib.cpp" />
+    <ClCompile Include="..\..\..\Extern\VFLib\modules\vf_core\vf_core.cpp" />
+    <ClCompile Include="..\..\..\Extern\VFLib\modules\vf_concurrent\vf_concurrent.cpp" />
+    <ClCompile Include="..\..\..\Extern\VFLib\modules\vf_freetype\vf_freetype.c" />
+    <ClCompile Include="..\..\..\Extern\VFLib\modules\vf_gui\vf_gui.cpp" />
+    <ClCompile Include="..\..\..\Extern\VFLib\modules\vf_taglib\vf_taglib.cpp" />
     <ClCompile Include="..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -361,6 +360,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_core\text\juce_StringPool.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_core\text\juce_TextDiff.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_core\maths\juce_BigInteger.cpp">
@@ -846,6 +848,9 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_ComponentMovementWatcher.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_ConcertinaPanel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_GroupComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1226,6 +1231,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\text\juce_StringArray.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\text\juce_StringPairArray.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\text\juce_StringPool.h" />
+    <ClInclude Include="..\..\..\JUCE\modules\juce_core\text\juce_TextDiff.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\maths\juce_BigInteger.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\maths\juce_Expression.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\maths\juce_MathsFunctions.h" />
@@ -1312,7 +1318,6 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\misc\juce_WindowsRegistry.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\native\juce_android_JNIHelpers.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\native\juce_BasicNativeHeaders.h" />
-    <ClInclude Include="..\..\..\JUCE\modules\juce_core\native\juce_mac_ObjCSuffix.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\native\juce_osx_ObjCHelpers.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\native\juce_posix_SharedCode.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\native\juce_win32_ComSmartPtr.h" />
@@ -1330,6 +1335,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_events\messages\juce_Message.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_events\messages\juce_MessageListener.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_events\messages\juce_MessageManager.h" />
+    <ClInclude Include="..\..\..\JUCE\modules\juce_events\messages\juce_NotificationType.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_events\timers\juce_MultiTimer.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_events\timers\juce_Timer.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_events\broadcasters\juce_ActionBroadcaster.h" />
@@ -1397,6 +1403,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\mouse\juce_MouseInputSource.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\mouse\juce_MouseListener.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\mouse\juce_SelectedItemSet.h" />
+    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\mouse\juce_TextDragAndDropTarget.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\mouse\juce_TooltipClient.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\keyboard\juce_CaretComponent.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\keyboard\juce_KeyboardFocusTraverser.h" />
@@ -1437,6 +1444,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_ComponentBoundsConstrainer.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_ComponentBuilder.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_ComponentMovementWatcher.h" />
+    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_ConcertinaPanel.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_GroupComponent.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_MultiDocumentPanel.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_ResizableBorderComponent.h" />
@@ -1509,6 +1517,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\code_editor\juce_CodeEditorComponent.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\code_editor\juce_CodeTokeniser.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\code_editor\juce_CPlusPlusCodeTokeniser.h" />
+    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\code_editor\juce_CPlusPlusCodeTokeniserFunctions.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\documents\juce_FileBasedDocument.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\embedding\juce_ActiveXControlComponent.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\embedding\juce_NSViewComponent.h" />
@@ -1527,6 +1536,18 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\JUCE\modules\juce_audio_basics\juce_module_info" />
+    <None Include="..\..\..\JUCE\modules\juce_audio_devices\juce_module_info" />
+    <None Include="..\..\..\JUCE\modules\juce_audio_formats\juce_module_info" />
+    <None Include="..\..\..\JUCE\modules\juce_audio_processors\juce_module_info" />
+    <None Include="..\..\..\JUCE\modules\juce_core\juce_module_info" />
+    <None Include="..\..\..\JUCE\modules\juce_data_structures\juce_module_info" />
+    <None Include="..\..\..\JUCE\modules\juce_events\juce_module_info" />
+    <None Include="..\..\..\JUCE\modules\juce_graphics\juce_module_info" />
+    <None Include="..\..\..\JUCE\modules\juce_gui_basics\juce_module_info" />
+    <None Include="..\..\..\JUCE\modules\juce_gui_extra\juce_module_info" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc" />

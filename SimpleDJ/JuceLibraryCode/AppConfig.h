@@ -3,8 +3,9 @@
     IMPORTANT! This file is auto-generated each time you save your
     project - if you alter its contents, your changes may be overwritten!
 
-    If you want to change any of these values, use the Introjucer to do so,
-    rather than editing this file directly!
+    There's a section below where you can add your own custom code safely, and the
+    Introjucer will preserve the contents of that block, but the best way to change
+    any of these definitions is by using the Introjucer's project settings.
 
     Any commented-out settings will assume their default values.
 
@@ -12,6 +13,13 @@
 
 #ifndef __JUCE_APPCONFIG_DV4AAM__
 #define __JUCE_APPCONFIG_DV4AAM__
+
+//==============================================================================
+// [BEGIN_USER_CODE_SECTION]
+
+// (You can add your own code in this section, and the Introjucer will not overwrite it)
+
+// [END_USER_CODE_SECTION]
 
 //==============================================================================
 #define JUCE_MODULE_AVAILABLE_juce_audio_basics          1
@@ -100,8 +108,6 @@
 #ifndef    JUCE_LOG_ASSERTIONS
  //#define JUCE_LOG_ASSERTIONS
 #endif
-
-#define VF_USE_LEAKCHECKED 1
 
 #ifndef    JUCE_CHECK_MEMORY_LEAKS
  #define   JUCE_CHECK_MEMORY_LEAKS 0

@@ -6,27 +6,27 @@
     <VS2010 targetFolder="Builds/VisualStudio2010" libraryType="1" juceFolder="..\JUCE\modules">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="SimpleDJ" headerPath="..\..\..\JUCE;..\..\..\VFLib"/>
+                       isDebug="1" optimisation="1" targetName="SimpleDJ" headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="2" targetName="SimpleDJ" headerPath="..\..\..\JUCE;..\..\..\VFLib"/>
+                       isDebug="1" optimisation="2" targetName="SimpleDJ" headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
       </CONFIGURATIONS>
     </VS2010>
     <XCODE_MAC targetFolder="Builds/MacOSX" objCExtraSuffix="ll8YC7" juceFolder="..\JUCE\modules">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SimpleDJ"
                        osxSDK="default" osxCompatibility="default" osxArchitecture="default"
-                       headerPath="../../../JUCE;../../../VFLib"/>
+                       headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="SimpleDJ"
                        osxSDK="default" osxCompatibility="default" osxArchitecture="default"
-                       headerPath="../../../JUCE;../../../VFLib"/>
+                       headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
       </CONFIGURATIONS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="Builds/Linux" juceFolder="..\JUCE\modules">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
-                       targetName="SimpleDJ" headerPath="../../../JUCE;../../../VFLib"/>
+                       targetName="SimpleDJ" headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
         <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
-                       targetName="SimpleDJ" headerPath="../../../JUCE;../../../VFLib"/>
+                       targetName="SimpleDJ" headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
       </CONFIGURATIONS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
@@ -82,12 +82,12 @@
       <FILE id="GOoos7" name="CSpeedControl.h" compile="0" resource="0" file="Sources/CSpeedControl.h"/>
     </GROUP>
     <GROUP id="{D8C87514-5C0A-9A75-D062-EACA241DBAAA}" name="VFLib Modules">
-      <FILE id="Tcgqsz" name="vf_concurrent.cpp" compile="1" resource="0"
-            file="../VFLib/modules/vf_concurrent/vf_concurrent.cpp"/>
-      <FILE id="eU3QQ7" name="vf_core.cpp" compile="1" resource="0" file="../VFLib/modules/vf_core/vf_core.cpp"/>
-      <FILE id="fB3hA2" name="vf_freetype.c" compile="1" resource="0" file="../VFLib/modules/vf_freetype/vf_freetype.c"/>
-      <FILE id="b6Y4tR" name="vf_gui.cpp" compile="1" resource="0" file="../VFLib/modules/vf_gui/vf_gui.cpp"/>
-      <FILE id="b9Jile" name="vf_taglib.cpp" compile="1" resource="0" file="../VFLib/modules/vf_taglib/vf_taglib.cpp"/>
+      <FILE id="YprsYP" name="vf_core.cpp" compile="1" resource="0" file="../Extern/VFLib/modules/vf_core/vf_core.cpp"/>
+      <FILE id="kZjmt1" name="vf_concurrent.cpp" compile="1" resource="0"
+            file="../Extern/VFLib/modules/vf_concurrent/vf_concurrent.cpp"/>
+      <FILE id="DXNr1v" name="vf_freetype.c" compile="1" resource="0" file="../Extern/VFLib/modules/vf_freetype/vf_freetype.c"/>
+      <FILE id="PfLpxX" name="vf_gui.cpp" compile="1" resource="0" file="../Extern/VFLib/modules/vf_gui/vf_gui.cpp"/>
+      <FILE id="cJ5gnD" name="vf_taglib.cpp" compile="1" resource="0" file="../Extern/VFLib/modules/vf_taglib/vf_taglib.cpp"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>
