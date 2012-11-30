@@ -169,7 +169,8 @@ public:
     void addCustomItem (int itemResultID,
                         Component* customComponent,
                         int idealWidth, int idealHeight,
-                        bool triggerMenuItemAutomaticallyWhenClicked);
+                        bool triggerMenuItemAutomaticallyWhenClicked,
+                        const PopupMenu* optionalSubMenu = nullptr);
 
     /** Appends a sub-menu.
 
@@ -418,7 +419,8 @@ public:
         const PopupMenu& menu;
         int index;
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuItemIterator);
+        MenuItemIterator& operator= (const MenuItemIterator&);
+        JUCE_LEAK_DETECTOR (MenuItemIterator);
     };
 
     //==============================================================================

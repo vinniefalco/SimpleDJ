@@ -83,6 +83,9 @@ public:
     Value  getPostBuildScriptValue()        { return getSetting (Ids::postbuildCommand); }
     String getPostBuildScript() const       { return settings   [Ids::postbuildCommand]; }
 
+    Value  getPreBuildScriptValue()         { return getSetting (Ids::prebuildCommand); }
+    String getPreBuildScript() const        { return settings   [Ids::prebuildCommand]; }
+
     bool isAvailableOnCurrentOS()
     {
        #if JUCE_MAC
@@ -131,6 +134,9 @@ public:
                                                     StringArray (libTypes), Array<var> (libTypeValues)));
         }
 
+        props.add (new TextPropertyComponent (getPreBuildScriptValue(), "Pre-build shell script", 32768, true),
+                   "Some shell-script that will be run before a build starts.");
+
         props.add (new TextPropertyComponent (getPostBuildScriptValue(), "Post-build shell script", 32768, true),
                    "Some shell-script that will be run after a build completes.");
     }
@@ -148,6 +154,7 @@ public:
     void create (const OwnedArray<LibraryModule>&) const
     {
         infoPlistFile = getTargetFolder().getChildFile ("Info.plist");
+        menuNibFile = getTargetFolder().getChildFile ("RecentFilesMenuTemplate.nib");
 
         createIconFile();
 
@@ -269,7 +276,7 @@ private:
     mutable OwnedArray<ValueTree> pbxBuildFiles, pbxFileReferences, pbxGroups, misc, projectConfigs, targetConfigs;
     mutable StringArray buildPhaseIDs, resourceIDs, sourceIDs, frameworkIDs;
     mutable StringArray frameworkFileIDs, rezFileIDs, resourceFileRefs;
-    mutable File infoPlistFile, iconFile;
+    mutable File infoPlistFile, menuNibFile, iconFile;
     const bool iOS;
 
     static String sanitisePath (const String& path)
@@ -293,6 +300,18 @@ private:
             RelativePath plistPath (infoPlistFile, getTargetFolder(), RelativePath::buildTargetFolder);
             addFileReference (plistPath.toUnixStyle());
             resourceFileRefs.add (createFileRefID (plistPath));
+        }
+
+        if (! iOS)
+        {
+            MemoryOutputStream nib;
+            nib.write (BinaryData::RecentFilesMenuTemplate_nib, BinaryData::RecentFilesMenuTemplate_nibSize);
+            overwriteFileIfDifferentOrThrow (menuNibFile, nib);
+
+            RelativePath menuNibPath (menuNibFile, getTargetFolder(), RelativePath::buildTargetFolder);
+            addFileReference (menuNibPath.toUnixStyle());
+            resourceIDs.add (addBuildFile (menuNibPath, false, false));
+            resourceFileRefs.add (createFileRefID (menuNibPath));
         }
 
         if (iconFile.exists())
@@ -347,6 +366,8 @@ private:
         addConfigList (projectConfigs, createID ("__projList"));
         addConfigList (targetConfigs, createID ("__configList"));
 
+        addShellScriptBuildPhase ("Pre-build script", getPreBuildScript());
+
         if (! isStaticLibrary())
             addBuildPhase ("PBXResourcesBuildPhase", resourceIDs);
 
@@ -358,7 +379,7 @@ private:
         if (! isStaticLibrary())
             addBuildPhase ("PBXFrameworksBuildPhase", frameworkIDs);
 
-        addShellScriptPhase();
+        addShellScriptBuildPhase ("Post-build script", getPostBuildScript());
 
         addTargetObject();
         addProjectObject();
@@ -779,9 +800,9 @@ private:
                 String def (defines.getAllKeys()[i]);
                 const String value (defines.getAllValues()[i]);
                 if (value.isNotEmpty())
-                    def << "=" << value;
+                    def << "=" << value.replace ("\"", "\\\"");
 
-                defsList.add (def.quoted());
+                defsList.add ("\"" + def + "\"");
             }
 
             s.add ("GCC_PREPROCESSOR_DEFINITIONS = (" + indentList (defsList, ",") + ")");
@@ -841,7 +862,7 @@ private:
                 if (val.isEmpty() || (val.containsAnyOf (" \t;<>()=,&+-_@~\r\n")
                                         && ! (val.trimStart().startsWithChar ('(')
                                                 || val.trimStart().startsWithChar ('{'))))
-                    val = val.quoted();
+                    val = "\"" + val + "\"";
 
                 output << propertyName.toString() << " = " << val << "; ";
             }
@@ -971,7 +992,7 @@ private:
         return "file" + file.getFileExtension();
     }
 
-    String addFile (const RelativePath& path, bool shouldBeCompiled, bool inhibitWarnings) const
+    String addFile (const RelativePath& path, bool shouldBeCompiled, bool shouldBeAddedToBinaryResources, bool inhibitWarnings) const
     {
         const String pathAsString (path.toUnixStyle());
         const String refID (addFileReference (path.toUnixStyle()));
@@ -982,6 +1003,16 @@ private:
                 rezFileIDs.add (addBuildFile (pathAsString, refID, false, inhibitWarnings));
             else
                 addBuildFile (pathAsString, refID, true, inhibitWarnings);
+        }
+        else if (! shouldBeAddedToBinaryResources)
+        {
+            const String fileType (getFileType (path));
+
+            if (fileType.startsWith ("image.") || fileType.startsWith ("text.") || fileType.startsWith ("file."))
+            {
+                resourceIDs.add (addBuildFile (pathAsString, refID, false, false));
+                resourceFileRefs.add (refID);
+            }
         }
 
         return refID;
@@ -1006,19 +1037,17 @@ private:
         {
             if (projectItem.shouldBeAddedToTargetProject())
             {
-                String itemPath (projectItem.getFilePath());
-                bool inhibitWarnings = projectItem.shouldInhibitWarnings();
+                const String itemPath (projectItem.getFilePath());
+                RelativePath path;
 
                 if (itemPath.startsWith ("${"))
-                {
-                    const RelativePath path (itemPath, RelativePath::unknown);
-                    return addFile (path, projectItem.shouldBeCompiled(), inhibitWarnings);
-                }
+                    path = RelativePath (itemPath, RelativePath::unknown);
                 else
-                {
-                    const RelativePath path (projectItem.getFile(), getTargetFolder(), RelativePath::buildTargetFolder);
-                    return addFile (path, projectItem.shouldBeCompiled(), inhibitWarnings);
-                }
+                    path = RelativePath (projectItem.getFile(), getTargetFolder(), RelativePath::buildTargetFolder);
+
+                return addFile (path, projectItem.shouldBeCompiled(),
+                                projectItem.shouldBeAddedToBinaryResources(),
+                                projectItem.shouldInhibitWarnings());
             }
         }
 
@@ -1113,7 +1142,7 @@ private:
         misc.add (v);
     }
 
-    ValueTree* addBuildPhase (const String& phaseType, const StringArray& fileIds) const
+    ValueTree& addBuildPhase (const String& phaseType, const StringArray& fileIds) const
     {
         String phaseId (createID (phaseType + "resbuildphase"));
         buildPhaseIDs.add (phaseId);
@@ -1124,7 +1153,7 @@ private:
         v->setProperty ("files", "(" + indentList (fileIds, ",") + " )", nullptr);
         v->setProperty ("runOnlyForDeploymentPostprocessing", (int) 0, nullptr);
         misc.add (v);
-        return v;
+        return *v;
     }
 
     void addTargetObject() const
@@ -1163,17 +1192,17 @@ private:
         misc.add (v);
     }
 
-    void addShellScriptPhase() const
+    void addShellScriptBuildPhase (const String& name, const String& script) const
     {
-        if (getPostBuildScript().isNotEmpty())
+        if (script.trim().isNotEmpty())
         {
-            ValueTree* const v = addBuildPhase ("PBXShellScriptBuildPhase", StringArray());
-            v->setProperty (Ids::name, "Post-build script", nullptr);
-            v->setProperty ("shellPath", "/bin/sh", nullptr);
-            v->setProperty ("shellScript", getPostBuildScript().replace ("\\", "\\\\")
-                                                               .replace ("\"", "\\\"")
-                                                               .replace ("\r\n", "\\n")
-                                                               .replace ("\n", "\\n"), nullptr);
+            ValueTree& v = addBuildPhase ("PBXShellScriptBuildPhase", StringArray());
+            v.setProperty (Ids::name, name, nullptr);
+            v.setProperty ("shellPath", "/bin/sh", nullptr);
+            v.setProperty ("shellScript", script.replace ("\\", "\\\\")
+                                                .replace ("\"", "\\\"")
+                                                .replace ("\r\n", "\\n")
+                                                .replace ("\n", "\\n"), nullptr);
         }
     }
 

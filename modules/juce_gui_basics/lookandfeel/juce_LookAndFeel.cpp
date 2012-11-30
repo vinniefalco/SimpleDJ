@@ -1451,7 +1451,7 @@ void LookAndFeel::drawLinearSlider (Graphics& g,
 {
     g.fillAll (slider.findColour (Slider::backgroundColourId));
 
-    if (style == Slider::LinearBar)
+    if (style == Slider::LinearBar || style == Slider::LinearBarVertical)
     {
         const bool isMouseOver = slider.isMouseOverOrDragging() && slider.isEnabled();
 
@@ -1508,11 +1508,7 @@ void LookAndFeel::drawRotarySlider (Graphics& g,
 
         {
             Path filledArc;
-            filledArc.addPieSegment (rx, ry, rw, rw,
-                                    rotaryStartAngle,
-                                    angle,
-                                    thickness);
-
+            filledArc.addPieSegment (rx, ry, rw, rw, rotaryStartAngle, angle, thickness);
             g.fillPath (filledArc);
         }
 
@@ -1579,15 +1575,17 @@ Label* LookAndFeel::createSliderTextBox (Slider& slider)
     l->setColour (Label::textColourId, slider.findColour (Slider::textBoxTextColourId));
 
     l->setColour (Label::backgroundColourId,
-                  (slider.getSliderStyle() == Slider::LinearBar) ? Colours::transparentBlack
-                                                                 : slider.findColour (Slider::textBoxBackgroundColourId));
+                  (slider.getSliderStyle() == Slider::LinearBar || slider.getSliderStyle() == Slider::LinearBarVertical)
+                            ? Colours::transparentBlack
+                            : slider.findColour (Slider::textBoxBackgroundColourId));
     l->setColour (Label::outlineColourId, slider.findColour (Slider::textBoxOutlineColourId));
 
     l->setColour (TextEditor::textColourId, slider.findColour (Slider::textBoxTextColourId));
 
     l->setColour (TextEditor::backgroundColourId,
                   slider.findColour (Slider::textBoxBackgroundColourId)
-                        .withAlpha (slider.getSliderStyle() == Slider::LinearBar ? 0.7f : 1.0f));
+                        .withAlpha ((slider.getSliderStyle() == Slider::LinearBar || slider.getSliderStyle() == Slider::LinearBarVertical)
+                                        ? 0.7f : 1.0f));
 
     l->setColour (TextEditor::outlineColourId, slider.findColour (Slider::textBoxOutlineColourId));
 
@@ -1617,8 +1615,8 @@ void LookAndFeel::drawTooltip (Graphics& g, const String& text, int width, int h
     g.drawRect (0, 0, width, height, 1);
    #endif
 
-    const TextLayout tl (LookAndFeelHelpers::layoutTooltipText (text, findColour (TooltipWindow::textColourId)));
-    tl.draw (g, Rectangle<float> ((float) width, (float) height));
+    LookAndFeelHelpers::layoutTooltipText (text, findColour (TooltipWindow::textColourId))
+        .draw (g, Rectangle<float> ((float) width, (float) height));
 }
 
 //==============================================================================
@@ -1633,9 +1631,7 @@ void LookAndFeel::layoutFilenameComponent (FilenameComponent& filenameComp,
 {
     browseButton->setSize (80, filenameComp.getHeight());
 
-    TextButton* const tb = dynamic_cast <TextButton*> (browseButton);
-
-    if (tb != nullptr)
+    if (TextButton* const tb = dynamic_cast <TextButton*> (browseButton))
         tb->changeWidthToFitText();
 
     browseButton->setTopRightPosition (filenameComp.getWidth(), 0);
@@ -1789,7 +1785,7 @@ void LookAndFeel::drawDocumentWindowTitleBar (DocumentWindow& window,
     }
 
     if (window.isColourSpecified (DocumentWindow::textColourId) || isColourSpecified (DocumentWindow::textColourId))
-        g.setColour (findColour (DocumentWindow::textColourId));
+        g.setColour (window.findColour (DocumentWindow::textColourId));
     else
         g.setColour (window.getBackgroundColour().contrasting (isActive ? 0.7f : 0.4f));
 

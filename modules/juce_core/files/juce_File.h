@@ -605,8 +605,8 @@ public:
 
         Attempts to load the entire file as a zero-terminated string.
 
-        This makes use of InputStream::readEntireStreamAsString, which should
-        automatically cope with unicode/acsii file formats.
+        This makes use of InputStream::readEntireStreamAsString, which can
+        read either UTF-16 or UTF-8 file formats.
     */
     String loadFileAsString() const;
 
@@ -834,6 +834,9 @@ public:
 
         /** The most likely place where a user might store their movie files. */
         userMoviesDirectory,
+
+        /** The most likely place where a user might store their picture files. */
+        userPicturesDirectory
     };
 
     /** Finds the location of a special type of file or directory, such as a home folder or
@@ -929,6 +932,11 @@ public:
     void addToDock() const;
    #endif
 
+   #if JUCE_WINDOWS
+    /** Windows ONLY - Creates a win32 .LNK shortcut file that links to this file. */
+    bool createLink (const String& description, const File& linkFileToCreate) const;
+   #endif
+
 private:
     //==============================================================================
     String fullPath;
@@ -939,9 +947,9 @@ private:
     Result createDirectoryInternal (const String&) const;
     bool copyInternal (const File&) const;
     bool moveInternal (const File&) const;
-    bool setFileTimesInternal (int64 modificationTime, int64 accessTime, int64 creationTime) const;
-    void getFileTimesInternal (int64& modificationTime, int64& accessTime, int64& creationTime) const;
-    bool setFileReadOnlyInternal (bool shouldBeReadOnly) const;
+    bool setFileTimesInternal (int64 m, int64 a, int64 c) const;
+    void getFileTimesInternal (int64& m, int64& a, int64& c) const;
+    bool setFileReadOnlyInternal (bool) const;
 
     JUCE_LEAK_DETECTOR (File);
 };
