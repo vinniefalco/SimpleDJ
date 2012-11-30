@@ -6,27 +6,27 @@
     <VS2010 targetFolder="Builds/VisualStudio2010" libraryType="1" juceFolder="..\JUCE\modules">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="SimpleDJ" headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
+                       isDebug="1" optimisation="1" targetName="SimpleDJ" headerPath="../../../Extern/JUCE&#10;../../../Extern/VFLib"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="2" targetName="SimpleDJ" headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
+                       isDebug="1" optimisation="2" targetName="SimpleDJ" headerPath="../../../Extern/JUCE&#10;../../../Extern/VFLib"/>
       </CONFIGURATIONS>
     </VS2010>
     <XCODE_MAC targetFolder="Builds/MacOSX" objCExtraSuffix="ll8YC7" juceFolder="..\JUCE\modules">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SimpleDJ"
                        osxSDK="default" osxCompatibility="default" osxArchitecture="default"
-                       headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
+                       headerPath="../../../Extern/JUCE&#10;../../../Extern/VFLib"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="SimpleDJ"
                        osxSDK="default" osxCompatibility="default" osxArchitecture="default"
-                       headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
+                       headerPath="../../../Extern/JUCE&#10;../../../Extern/VFLib"/>
       </CONFIGURATIONS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="Builds/Linux" juceFolder="..\JUCE\modules">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
-                       targetName="SimpleDJ" headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
+                       targetName="SimpleDJ" headerPath="../../../Extern/JUCE&#10;../../../Extern/VFLib"/>
         <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
-                       targetName="SimpleDJ" headerPath="../../../JUCE&#10;../../../Extern/VFLib"/>
+                       targetName="SimpleDJ" headerPath="../../../Extern/JUCE&#10;../../../Extern/VFLib"/>
       </CONFIGURATIONS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
@@ -93,15 +93,6 @@
   <MODULES>
     <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_CHECK_MEMORY_LEAKS="disabled"/>
 </JUCERPROJECT>
