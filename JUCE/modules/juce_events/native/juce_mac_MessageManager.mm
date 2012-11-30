@@ -29,8 +29,8 @@ AppFocusChangeCallback appFocusChangeCallback = nullptr;
 typedef bool (*CheckEventBlockedByModalComps) (NSEvent*);
 CheckEventBlockedByModalComps isEventBlockedByModalComps = nullptr;
 
-typedef void (*MenuTrackingBeganCallback)();
-MenuTrackingBeganCallback menuTrackingBeganCallback = nullptr;
+typedef void (*MenuTrackingChangedCallback)(bool);
+MenuTrackingChangedCallback menuTrackingChangedCallback = nullptr;
 
 //==============================================================================
 struct AppDelegate
@@ -45,6 +45,8 @@ public:
 
         [center addObserver: delegate selector: @selector (mainMenuTrackingBegan:)
                        name: NSMenuDidBeginTrackingNotification object: nil];
+        [center addObserver: delegate selector: @selector (mainMenuTrackingEnded:)
+                       name: NSMenuDidEndTrackingNotification object: nil];
 
         if (JUCEApplicationBase::isStandaloneApp())
         {
@@ -111,6 +113,7 @@ private:
             addMethod (@selector (applicationWillUnhide:),        applicationWillUnhide,      "v@:@");
             addMethod (@selector (broadcastMessageCallback:),     broadcastMessageCallback,   "v@:@");
             addMethod (@selector (mainMenuTrackingBegan:),        mainMenuTrackingBegan,      "v@:@");
+            addMethod (@selector (mainMenuTrackingEnded:),        mainMenuTrackingEnded,      "v@:@");
             addMethod (@selector (dummyMethod),                   dummyMethod,                "v@:");
 
             registerClass();
@@ -119,9 +122,7 @@ private:
     private:
         static NSApplicationTerminateReply applicationShouldTerminate (id /*self*/, SEL, NSApplication*)
         {
-            JUCEApplicationBase* const app = JUCEApplicationBase::getInstance();
-
-            if (app != nullptr)
+            if (JUCEApplicationBase* const app = JUCEApplicationBase::getInstance())
             {
                 app->systemRequestedQuit();
 
@@ -139,9 +140,7 @@ private:
 
         static BOOL application_openFile (id /*self*/, SEL, NSApplication*, NSString* filename)
         {
-            JUCEApplicationBase* const app = JUCEApplicationBase::getInstance();
-
-            if (app != nullptr)
+            if (JUCEApplicationBase* const app = JUCEApplicationBase::getInstance())
             {
                 app->anotherInstanceStarted (quotedIfContainsSpaces (filename));
                 return YES;
@@ -152,9 +151,7 @@ private:
 
         static void application_openFiles (id /*self*/, SEL, NSApplication*, NSArray* filenames)
         {
-            JUCEApplicationBase* const app = JUCEApplicationBase::getInstance();
-
-            if (app != nullptr)
+            if (JUCEApplicationBase* const app = JUCEApplicationBase::getInstance())
             {
                 StringArray files;
                 for (unsigned int i = 0; i < [filenames count]; ++i)
@@ -178,8 +175,14 @@ private:
 
         static void mainMenuTrackingBegan (id /*self*/, SEL, NSNotification*)
         {
-            if (menuTrackingBeganCallback != nullptr)
-                (*menuTrackingBeganCallback)();
+            if (menuTrackingChangedCallback != nullptr)
+                (*menuTrackingChangedCallback) (true);
+        }
+
+        static void mainMenuTrackingEnded (id /*self*/, SEL, NSNotification*)
+        {
+            if (menuTrackingChangedCallback != nullptr)
+                (*menuTrackingChangedCallback) (false);
         }
 
         static void dummyMethod (id /*self*/, SEL) {}   // (used as a way of running a dummy thread)

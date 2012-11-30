@@ -52,6 +52,7 @@ namespace
     Value getPluginAUMainType (Project& project)                  { return project.getProjectValue ("pluginAUMainType"); }
     Value getPluginRTASCategory (Project& project)                { return project.getProjectValue ("pluginRTASCategory"); }
     Value getPluginRTASBypassDisabled (Project& project)          { return project.getProjectValue ("pluginRTASDisableBypass"); }
+    Value getPluginRTASMultiMonoDisabled (Project& project)       { return project.getProjectValue ("pluginRTASDisableMultiMono"); }
     Value getPluginAAXCategory (Project& project)                 { return project.getProjectValue ("pluginAAXCategory"); }
     Value getPluginAAXBypassDisabled (Project& project)           { return project.getProjectValue ("pluginAAXDisableBypass"); }
 
@@ -137,6 +138,7 @@ namespace
         flags.set ("JucePlugin_RTASManufacturerCode",        "JucePlugin_ManufacturerCode");
         flags.set ("JucePlugin_RTASProductId",               "JucePlugin_PluginCode");
         flags.set ("JucePlugin_RTASDisableBypass",           valueToBool (getPluginRTASBypassDisabled (project)));
+        flags.set ("JucePlugin_RTASDisableMultiMono",        valueToBool (getPluginRTASMultiMonoDisabled (project)));
         flags.set ("JucePlugin_AAXIdentifier",               project.getAAXIdentifier().toString());
         flags.set ("JucePlugin_AAXManufacturerCode",         "JucePlugin_ManufacturerCode");
         flags.set ("JucePlugin_AAXProductId",                "JucePlugin_PluginCode");
@@ -302,6 +304,7 @@ namespace RTASHelpers
         else if (exporter.isXcode())
         {
             exporter.extraSearchPaths.add ("$(DEVELOPER_DIR)/Headers/FlatCarbon");
+            exporter.extraSearchPaths.add ("$(SDKROOT)/Developer/Headers/FlatCarbon");
 
             const char* p[] = { "AlturaPorts/TDMPlugIns/PlugInLibrary/Controls",
                                 "AlturaPorts/TDMPlugIns/PlugInLibrary/CoreClasses",
@@ -347,7 +350,6 @@ namespace RTASHelpers
             if (exporter.isVisualStudio())
             {
                 exporter.msvcTargetSuffix = ".dpm";
-                exporter.msvcNeedsDLLRuntimeLib = true;
 
                 String winbag (getRTASFolderRelativePath (exporter).getChildFile ("WinBag").toWindowsStyle());
 
@@ -357,9 +359,12 @@ namespace RTASHelpers
 
                 exporter.msvcExtraPreprocessorDefs.set ("JucePlugin_WinBag_path", winbag);
 
-                String msvcPathToRTASFolder (exporter.getJucePathFromTargetFolder()
-                                                     .getChildFile ("juce_audio_plugin_client/RTAS")
-                                                     .toWindowsStyle() + "\\");
+                RelativePath juceFolder (exporter.getJucePathFromTargetFolder());
+                if (juceFolder.getFileName() != "modules")
+                    juceFolder = juceFolder.getChildFile ("modules");
+
+                String msvcPathToRTASFolder (juceFolder.getChildFile ("juce_audio_plugin_client/RTAS")
+                                                       .toWindowsStyle() + "\\");
 
                 exporter.msvcDelayLoadedDLLs = "DAE.dll; DigiExt.dll; DSI.dll; PluginLib.dll; DSPManager.dll";
 
@@ -369,6 +374,7 @@ namespace RTASHelpers
                 for (ProjectExporter::ConfigIterator config (exporter); config.next();)
                 {
                     config->getValue (Ids::msvcModuleDefinitionFile) = msvcPathToRTASFolder + "juce_RTAS_WinExports.def";
+                    config->getValue (Ids::useRuntimeLibDLL) = true;
 
                     if (config->getValue (Ids::postbuildCommand).toString().isEmpty())
                         config->getValue (Ids::postbuildCommand) = "copy /Y \"" + msvcPathToRTASFolder + "juce_RTAS_WinResources.rsr"
@@ -413,6 +419,7 @@ namespace AUHelpers
         {
             exporter.extraSearchPaths.add ("$(DEVELOPER_DIR)/Extras/CoreAudio/PublicUtility");
             exporter.extraSearchPaths.add ("$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/Utility");
+            exporter.extraSearchPaths.add ("$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase");
 
             exporter.xcodeFrameworks.addTokens ("AudioUnit CoreAudioKit", false);
             exporter.xcodeExcludedFiles64Bit = "\"*Carbon*.cpp\"";
@@ -473,7 +480,7 @@ namespace AUHelpers
                                                 JUCE_AU_PUBLIC "Utility/AUSilentTimeout.h",
                                                 JUCE_AU_PUBLIC "Utility/AUTimestampGenerator.h", 0 };
 
-                for (const char** f = appleAUFiles; *f != 0; ++f)
+                for (const char** f = appleAUFiles; *f != nullptr; ++f)
                 {
                     const RelativePath file (*f, RelativePath::projectFolder);
                     subGroup.addRelativeFile (file, -1, file.hasFileExtension ("cpp;mm"));
@@ -526,7 +533,9 @@ namespace AAXHelpers
             if (exporter.isVisualStudio())
             {
                 exporter.msvcTargetSuffix = ".aaxplugin";
-                exporter.msvcNeedsDLLRuntimeLib = true;
+
+                for (ProjectExporter::ConfigIterator config (exporter); config.next();)
+                    config->getValue (Ids::useRuntimeLibDLL) = true;
             }
             else
             {

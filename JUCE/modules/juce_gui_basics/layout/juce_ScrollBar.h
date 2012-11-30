@@ -50,7 +50,7 @@ class Viewport;
     @see ScrollBar::Listener
 */
 class JUCE_API  ScrollBar  : public Component,
-                             private AsyncUpdater,
+                             public AsyncUpdater,
                              private Timer
 {
 public:
@@ -99,7 +99,8 @@ public:
 
         @see setCurrentRange
     */
-    void setRangeLimits (const Range<double>& newRangeLimit);
+    void setRangeLimits (const Range<double>& newRangeLimit,
+                         NotificationType notification = sendNotificationAsync);
 
     /** Sets the minimum and maximum values that the bar will move between.
 
@@ -108,7 +109,8 @@ public:
 
         @see setCurrentRange
     */
-    void setRangeLimits (double minimum, double maximum);
+    void setRangeLimits (double minimum, double maximum,
+                         NotificationType notification = sendNotificationAsync);
 
     /** Returns the current limits on the thumb position.
         @see setRangeLimits
@@ -137,10 +139,14 @@ public:
         asynchronous call to ScrollBar::Listener::scrollBarMoved() for all the listeners that
         are registered.
 
+        The notification parameter can be used to optionally send or inhibit a callback to
+        any scrollbar listeners.
+
         @returns true if the range was changed, or false if nothing was changed.
         @see getCurrentRange. setCurrentRangeStart
     */
-    bool setCurrentRange (const Range<double>& newRange);
+    bool setCurrentRange (const Range<double>& newRange,
+                          NotificationType notification = sendNotificationAsync);
 
     /** Changes the position of the scrollbar's 'thumb'.
 
@@ -159,7 +165,8 @@ public:
                             size is beyond these limits, it will be clipped.
         @see setCurrentRangeStart, getCurrentRangeStart, getCurrentRangeSize
     */
-    void setCurrentRange (double newStart, double newSize);
+    void setCurrentRange (double newStart, double newSize,
+                          NotificationType notification = sendNotificationAsync);
 
     /** Moves the bar's thumb position.
 
@@ -172,7 +179,8 @@ public:
 
         @see setCurrentRange
     */
-    void setCurrentRangeStart (double newStart);
+    void setCurrentRangeStart (double newStart,
+                               NotificationType notification = sendNotificationAsync);
 
     /** Returns the current thumb range.
         @see getCurrentRange, setCurrentRange
@@ -206,7 +214,8 @@ public:
         value moves it up or to the left.
         @returns true if the scrollbar's position actually changed.
     */
-    bool moveScrollbarInSteps (int howManySteps);
+    bool moveScrollbarInSteps (int howManySteps,
+                               NotificationType notification = sendNotificationAsync);
 
     /** Moves the scroll bar up or down in pages.
 
@@ -217,19 +226,20 @@ public:
         value moves it up or to the left.
         @returns true if the scrollbar's position actually changed.
     */
-    bool moveScrollbarInPages (int howManyPages);
+    bool moveScrollbarInPages (int howManyPages,
+                               NotificationType notification = sendNotificationAsync);
 
     /** Scrolls to the top (or left).
         This is the same as calling setCurrentRangeStart (getMinimumRangeLimit());
         @returns true if the scrollbar's position actually changed.
     */
-    bool scrollToTop();
+    bool scrollToTop (NotificationType notification = sendNotificationAsync);
 
     /** Scrolls to the bottom (or right).
         This is the same as calling setCurrentRangeStart (getMaximumRangeLimit() - getCurrentRangeSize());
         @returns true if the scrollbar's position actually changed.
     */
-    bool scrollToBottom();
+    bool scrollToBottom (NotificationType notification = sendNotificationAsync);
 
     /** Changes the delay before the up and down buttons autorepeat when they are held
         down.
@@ -321,8 +331,6 @@ private:
     void handleAsyncUpdate();
     void updateThumbPosition();
     void timerCallback();
-
-    friend class Viewport;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScrollBar);
 };

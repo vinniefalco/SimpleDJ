@@ -24,7 +24,8 @@
 */
 
 AudioProcessor::AudioProcessor()
-    : playHead (nullptr),
+    : wrapperType (wrapperType_Undefined),
+      playHead (nullptr),
       sampleRate (0),
       blockSize (0),
       numInputChannels (0),
@@ -196,15 +197,9 @@ void AudioProcessor::updateHostDisplay()
     }
 }
 
-bool AudioProcessor::isParameterAutomatable (int /*parameterIndex*/) const
-{
-    return true;
-}
-
-bool AudioProcessor::isMetaParameter (int /*parameterIndex*/) const
-{
-    return false;
-}
+String AudioProcessor::getParameterLabel (int) const        { return String::empty; }
+bool AudioProcessor::isParameterAutomatable (int) const     { return true; }
+bool AudioProcessor::isMetaParameter (int) const            { return false; }
 
 void AudioProcessor::suspendProcessing (const bool shouldBeSuspended)
 {
@@ -212,9 +207,8 @@ void AudioProcessor::suspendProcessing (const bool shouldBeSuspended)
     suspended = shouldBeSuspended;
 }
 
-void AudioProcessor::reset()
-{
-}
+void AudioProcessor::reset() {}
+void AudioProcessor::processBlockBypassed (AudioSampleBuffer&, MidiBuffer&) {}
 
 //==============================================================================
 void AudioProcessor::editorBeingDeleted (AudioProcessorEditor* const editor) noexcept
@@ -307,7 +301,10 @@ bool AudioPlayHead::CurrentPositionInfo::operator== (const CurrentPositionInfo& 
         && isRecording == other.isRecording
         && bpm == other.bpm
         && timeSigNumerator == other.timeSigNumerator
-        && timeSigDenominator == other.timeSigDenominator;
+        && timeSigDenominator == other.timeSigDenominator
+        && ppqLoopStart == other.ppqLoopStart
+        && ppqLoopEnd == other.ppqLoopEnd
+        && isLooping == other.isLooping;
 }
 
 bool AudioPlayHead::CurrentPositionInfo::operator!= (const CurrentPositionInfo& other) const noexcept
