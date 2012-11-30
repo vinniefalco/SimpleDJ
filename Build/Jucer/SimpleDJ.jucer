@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="dV4aaM" name="SimpleDJ" projectType="guiapp" version="1.0.0"
+              bundleIdentifier="com.vinniefalco.SimpleDJ" jucerVersion="3.0.0">
+  <EXPORTFORMATS>
+    <VS2010 targetFolder="../VisualStudio2010" libraryType="1" juceFolder="../../Extern/JUCE/modules">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="SimpleDJ" headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="2" targetName="SimpleDJ" headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+      </CONFIGURATIONS>
+    </VS2010>
+    <XCODE_MAC targetFolder="../MacOSX" objCExtraSuffix="ll8YC7" juceFolder="../../Extern/JUCE/modules">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SimpleDJ"
+                       osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="SimpleDJ"
+                       osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+      </CONFIGURATIONS>
+    </XCODE_MAC>
+    <LINUX_MAKE targetFolder="../Linux" juceFolder="../../Extern/JUCE/modules">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
+                       targetName="SimpleDJ" headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+        <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
+                       targetName="SimpleDJ" headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+      </CONFIGURATIONS>
+    </LINUX_MAKE>
+  </EXPORTFORMATS>
+  <MAINGROUP id="Bp191K" name="SimpleDJ">
+    <GROUP id="{A643C8B7-28F8-DDF5-071F-5CBACFAB7259}" name="Core">
+      <FILE id="vInLsu" name="AutoLimiter.h" compile="0" resource="0" file="../../Source/core/AutoLimiter.h"/>
+      <FILE id="NU4Njz" name="Deck.cpp" compile="1" resource="0" file="../../Source/core/Deck.cpp"/>
+      <FILE id="uLqc6N" name="Deck.h" compile="0" resource="0" file="../../Source/core/Deck.h"/>
+      <FILE id="vlbqj2" name="FileManager.cpp" compile="1" resource="0" file="../../Source/core/FileManager.cpp"/>
+      <FILE id="gbhXvU" name="FileManager.h" compile="0" resource="0" file="../../Source/core/FileManager.h"/>
+      <FILE id="ytwU7Q" name="Mixer.cpp" compile="1" resource="0" file="../../Source/core/Mixer.cpp"/>
+      <FILE id="uR0Z5q" name="Mixer.h" compile="0" resource="0" file="../../Source/core/Mixer.h"/>
+      <FILE id="E43lbV" name="Param.cpp" compile="1" resource="0" file="../../Source/core/Param.cpp"/>
+      <FILE id="rqqJY4" name="Param.h" compile="0" resource="0" file="../../Source/core/Param.h"/>
+      <FILE id="e5M7Q2" name="ParamImp.cpp" compile="1" resource="0" file="../../Source/core/ParamImp.cpp"/>
+      <FILE id="KzHuDE" name="ParamImp.h" compile="0" resource="0" file="../../Source/core/ParamImp.h"/>
+      <FILE id="ub6bNt" name="Params.cpp" compile="1" resource="0" file="../../Source/core/Params.cpp"/>
+      <FILE id="pdddUE" name="Params.h" compile="0" resource="0" file="../../Source/core/Params.h"/>
+      <FILE id="DXrByP" name="PeakDetector.h" compile="0" resource="0" file="../../Source/core/PeakDetector.h"/>
+      <FILE id="GPO2UK" name="Playable.h" compile="0" resource="0" file="../../Source/core/Playable.h"/>
+      <FILE id="fpsdGZ" name="ReaderPlayable.cpp" compile="1" resource="0"
+            file="../../Source/core/ReaderPlayable.cpp"/>
+      <FILE id="thRawr" name="ReaderPlayable.h" compile="0" resource="0"
+            file="../../Source/core/ReaderPlayable.h"/>
+      <FILE id="jMyBKu" name="StandardIncludes.h" compile="0" resource="0"
+            file="../../Source/core/StandardIncludes.h"/>
+    </GROUP>
+    <GROUP id="{39393AB3-F8BC-4C3E-EE99-A7352D177923}" name="Gui">
+      <FILE id="HFlfTz" name="CApp.h" compile="0" resource="0" file="../../Source/gui/CApp.h"/>
+      <FILE id="MJeqPN" name="CDeck.cpp" compile="1" resource="0" file="../../Source/gui/CDeck.cpp"/>
+      <FILE id="KUgSMB" name="CDeck.h" compile="0" resource="0" file="../../Source/gui/CDeck.h"/>
+      <FILE id="Fjg63Z" name="CDeckFader.cpp" compile="1" resource="0" file="../../Source/gui/CDeckFader.cpp"/>
+      <FILE id="cFPCXK" name="CDeckFader.h" compile="0" resource="0" file="../../Source/gui/CDeckFader.h"/>
+      <FILE id="aHhtmc" name="CDeckLevelMeter.cpp" compile="1" resource="0"
+            file="../../Source/gui/CDeckLevelMeter.cpp"/>
+      <FILE id="BWShSq" name="CDeckLevelMeter.h" compile="0" resource="0"
+            file="../../Source/gui/CDeckLevelMeter.h"/>
+      <FILE id="h2WmFc" name="CDeckMixer.cpp" compile="1" resource="0" file="../../Source/gui/CDeckMixer.cpp"/>
+      <FILE id="BkcgP7" name="CDeckMixer.h" compile="0" resource="0" file="../../Source/gui/CDeckMixer.h"/>
+      <FILE id="IdSCZD" name="CLevelMeter.cpp" compile="1" resource="0" file="../../Source/gui/CLevelMeter.cpp"/>
+      <FILE id="niJQu8" name="CLevelMeter.h" compile="0" resource="0" file="../../Source/gui/CLevelMeter.h"/>
+      <FILE id="kq2y77" name="CMain.cpp" compile="1" resource="0" file="../../Source/gui/CMain.cpp"/>
+      <FILE id="xIlart" name="CMain.h" compile="0" resource="0" file="../../Source/gui/CMain.h"/>
+      <FILE id="eTD7yx" name="CMainWindow.cpp" compile="1" resource="0" file="../../Source/gui/CMainWindow.cpp"/>
+      <FILE id="Ewysu6" name="CMainWindow.h" compile="0" resource="0" file="../../Source/gui/CMainWindow.h"/>
+      <FILE id="tsBWhW" name="CParamToggleButton.cpp" compile="1" resource="0"
+            file="../../Source/gui/CParamToggleButton.cpp"/>
+      <FILE id="GHjjam" name="CParamToggleButton.h" compile="0" resource="0"
+            file="../../Source/gui/CParamToggleButton.h"/>
+      <FILE id="AeVlvR" name="CSpeedControl.cpp" compile="1" resource="0"
+            file="../../Source/gui/CSpeedControl.cpp"/>
+      <FILE id="l4n3eU" name="CSpeedControl.h" compile="0" resource="0" file="../../Source/gui/CSpeedControl.h"/>
+      <FILE id="HMKDMM" name="CApp.cpp" compile="1" resource="0" file="../../Source/gui/CApp.cpp"/>
+    </GROUP>
+    <GROUP id="{D8C87514-5C0A-9A75-D062-EACA241DBAAA}" name="VFLib Modules">
+      <FILE id="X6nX6J" name="vf_core.cpp" compile="1" resource="0" file="../../Extern/VFLib/modules/vf_core/vf_core.cpp"/>
+      <FILE id="iauqsS" name="vf_concurrent.cpp" compile="1" resource="0"
+            file="../../Extern/VFLib/modules/vf_concurrent/vf_concurrent.cpp"/>
+      <FILE id="OCnURi" name="vf_gui.cpp" compile="1" resource="0" file="../../Extern/VFLib/modules/vf_gui/vf_gui.cpp"/>
+      <FILE id="As5IjH" name="vf_freetype.c" compile="1" resource="0" file="../../Extern/VFLib/modules/vf_freetype/vf_freetype.c"/>
+      <FILE id="DUqasD" name="vf_taglib.cpp" compile="1" resource="0" file="../../Extern/VFLib/modules/vf_taglib/vf_taglib.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_core" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_events" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_data_structures" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_graphics" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="0" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_CHECK_MEMORY_LEAKS="disabled"/>
+</JUCERPROJECT>
