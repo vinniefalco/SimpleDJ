@@ -285,7 +285,7 @@ public:
     juce_DeclareSingleton_SingleThreaded_Minimal (DisplaySettingsChangeCallback);
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DisplaySettingsChangeCallback);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DisplaySettingsChangeCallback)
 };
 
 juce_ImplementSingleton_SingleThreaded (DisplaySettingsChangeCallback);
@@ -323,6 +323,24 @@ void Desktop::Displays::findDisplays()
 
         displays.add (d);
     }
+}
+
+//==============================================================================
+bool juce_areThereAnyAlwaysOnTopWindows()
+{
+    NSArray* windows = [NSApp windows];
+
+    for (unsigned int i = 0; i < [windows count]; ++i)
+    {
+        const NSInteger level = [((NSWindow*) [windows objectAtIndex: i]) level];
+
+        if (level == NSFloatingWindowLevel
+             || level == NSStatusWindowLevel
+             || level == NSModalPanelWindowLevel)
+            return true;
+    }
+
+    return false;
 }
 
 //==============================================================================
