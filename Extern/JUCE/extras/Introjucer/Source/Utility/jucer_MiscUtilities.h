@@ -58,7 +58,7 @@ struct Icon
     Icon (const Path& p, const Colour& c)  : path (&p), colour (c) {}
     Icon (const Path* p, const Colour& c)  : path (p),  colour (c) {}
 
-    void draw (Graphics& g, const Rectangle<float>& area) const
+    void draw (Graphics& g, const Rectangle<float>& area, bool isCrossedOut) const
     {
         if (path != nullptr)
         {
@@ -66,6 +66,13 @@ struct Icon
 
             const RectanglePlacement placement (RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize);
             g.fillPath (*path, placement.getTransformToFit (path->getBounds(), area));
+
+            if (isCrossedOut)
+            {
+                g.setColour (Colours::red.withAlpha (0.8f));
+                g.drawLine ((float) area.getX(), area.getY() + area.getHeight() * 0.2f,
+                            (float) area.getRight(), area.getY() + area.getHeight() * 0.8f, 3.0f);
+            }
         }
     }
 
@@ -128,7 +135,7 @@ public:
     Array <PropertyComponent*> components;
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PropertyListBuilder);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PropertyListBuilder)
 };
 
 //==============================================================================
@@ -166,7 +173,7 @@ public:
 protected:
     Value sourceValue;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueSourceFilter);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueSourceFilter)
 };
 
 //==============================================================================
@@ -214,7 +221,7 @@ private:
     String windowPosProperty;
     ScopedPointer<Component>& owner;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FloatingToolWindow);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FloatingToolWindow)
 };
 
 //==============================================================================
@@ -394,7 +401,7 @@ private:
     const Colour defaultColour;
     const bool canResetToDefault;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourEditorComponent);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourEditorComponent)
 };
 
 //==============================================================================

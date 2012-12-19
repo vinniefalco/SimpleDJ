@@ -35,22 +35,18 @@ void SettingsTreeViewItemBase::showSettingsPage (Component* content)
     content->setComponentID (getUniqueName());
 
     ScopedPointer<Component> comp (content);
-    ProjectContentComponent* pcc = getProjectContentComponent();
 
-    if (pcc != nullptr)
+    if (ProjectContentComponent* pcc = getProjectContentComponent())
         pcc->setEditorComponent (new PropertyPanelViewport (comp.release()), nullptr);
 }
 
 void SettingsTreeViewItemBase::closeSettingsPage()
 {
-    ProjectContentComponent* pcc = getProjectContentComponent();
-
-    if (pcc != nullptr)
+    if (ProjectContentComponent* pcc = getProjectContentComponent())
     {
-        PropertyPanelViewport* ppv = dynamic_cast<PropertyPanelViewport*> (pcc->getEditorComponent());
-
-        if (ppv != nullptr && ppv->viewport.getViewedComponent()->getComponentID() == getUniqueName())
-            pcc->hideEditor();
+        if (PropertyPanelViewport* ppv = dynamic_cast<PropertyPanelViewport*> (pcc->getEditorComponent()))
+            if (ppv->viewport.getViewedComponent()->getComponentID() == getUniqueName())
+                pcc->hideEditor();
     }
 }
 
@@ -150,10 +146,10 @@ namespace ProjectSettingsTreeClasses
         private:
             PropertyGroup group;
 
-            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsComp);
+            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsComp)
         };
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConfigItem);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConfigItem)
     };
 
     //==============================================================================
@@ -278,10 +274,10 @@ namespace ProjectSettingsTreeClasses
         private:
             PropertyGroup group;
 
-            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsComp);
+            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsComp)
         };
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExporterItem);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExporterItem)
     };
 
     //==============================================================================
@@ -329,10 +325,10 @@ namespace ProjectSettingsTreeClasses
             var lastProjectType;
             PropertyGroup group;
 
-            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsComp);
+            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsComp)
         };
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModulesItem);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModulesItem)
     };
 
     //==============================================================================
@@ -460,10 +456,10 @@ namespace ProjectSettingsTreeClasses
             var lastProjectType;
             PropertyGroup group;
 
-            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsComp);
+            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsComp)
         };
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RootItem);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RootItem)
     };
 }
 

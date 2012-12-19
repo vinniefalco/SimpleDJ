@@ -64,7 +64,7 @@ public:
     Array <KerningPair> kerningPairs;
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GlyphInfo);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GlyphInfo)
 };
 
 //==============================================================================
@@ -304,15 +304,9 @@ bool CustomTypeface::writeToStream (OutputStream& outputStream)
 }
 
 //==============================================================================
-float CustomTypeface::getAscent() const
-{
-    return ascent;
-}
-
-float CustomTypeface::getDescent() const
-{
-    return 1.0f - ascent;
-}
+float CustomTypeface::getAscent() const                 { return ascent; }
+float CustomTypeface::getDescent() const                { return 1.0f - ascent; }
+float CustomTypeface::getHeightToPointsFactor() const   { return ascent; }
 
 float CustomTypeface::getStringWidth (const String& text)
 {

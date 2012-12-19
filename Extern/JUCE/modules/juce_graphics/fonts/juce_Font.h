@@ -215,6 +215,9 @@ public:
     /** Returns a copy of this font with a new height. */
     Font withHeight (float height) const;
 
+    /** Returns a copy of this font with a new height, specified in points. */
+    Font withPointHeight (float heightInPoints) const;
+
     /** Changes the font's height.
         @see getHeight, withHeight, setHeightWithoutChangingWidth
     */
@@ -434,7 +437,7 @@ private:
     void dupeInternalIfShared();
     void checkTypefaceSuitability();
 
-    JUCE_LEAK_DETECTOR (Font);
+    JUCE_LEAK_DETECTOR (Font)
 };
 
 #endif   // __JUCE_FONT_JUCEHEADER__

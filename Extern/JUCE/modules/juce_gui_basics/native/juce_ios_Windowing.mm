@@ -157,7 +157,7 @@ private:
     ModalComponentManager::Callback* callback;
     const bool isYesNo, isAsync;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (iOSMessageBox);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (iOSMessageBox)
 };
 
 } // (juce namespace)
@@ -243,6 +243,12 @@ void Desktop::setScreenSaverEnabled (const bool isEnabled)
 bool Desktop::isScreenSaverEnabled()
 {
     return ! [[UIApplication sharedApplication] isIdleTimerDisabled];
+}
+
+//==============================================================================
+bool juce_areThereAnyAlwaysOnTopWindows()
+{
+    return false;
 }
 
 //==============================================================================

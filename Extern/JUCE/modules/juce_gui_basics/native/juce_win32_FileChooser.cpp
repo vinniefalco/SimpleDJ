@@ -23,21 +23,10 @@
   ==============================================================================
 */
 
+extern bool juce_areThereAnyAlwaysOnTopWindows();
+
 namespace FileChooserHelpers
 {
-    static bool areThereAnyAlwaysOnTopWindows()
-    {
-        for (int i = Desktop::getInstance().getNumComponents(); --i >= 0;)
-        {
-            Component* const c = Desktop::getInstance().getComponent (i);
-
-            if (c != nullptr && c->isAlwaysOnTop() && c->isShowing())
-                return true;
-        }
-
-        return false;
-    }
-
     struct FileChooserCallbackInfo
     {
         String initialPath;
@@ -129,7 +118,7 @@ namespace FileChooserHelpers
         }
 
     private:
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CustomComponentHolder);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CustomComponentHolder)
     };
 }
 
@@ -162,7 +151,7 @@ void FileChooser::showPlatformDialog (Array<File>& results, const String& title_
                             mainMon.getY() + mainMon.getHeight() / 4,
                             0, 0);
     parentWindow.setOpaque (true);
-    parentWindow.setAlwaysOnTop (areThereAnyAlwaysOnTopWindows());
+    parentWindow.setAlwaysOnTop (juce_areThereAnyAlwaysOnTopWindows());
     parentWindow.addToDesktop (0);
 
     if (extraInfoComponent == nullptr)

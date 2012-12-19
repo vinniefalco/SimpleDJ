@@ -115,7 +115,7 @@ private:
        #endif
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CoreGraphicsImage);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CoreGraphicsImage)
 };
 
 ImagePixelData::Ptr NativeImageType::create (Image::PixelFormat format, int width, int height, bool clearImage) const
@@ -561,7 +561,7 @@ void CoreGraphicsContext::setFont (const Font& newFont)
         {
             state->fontRef = osxTypeface->fontRef;
             CGContextSetFont (context, state->fontRef);
-            CGContextSetFontSize (context, state->font.getHeight() * osxTypeface->fontHeightToCGSizeFactor);
+            CGContextSetFontSize (context, state->font.getHeight() * osxTypeface->fontHeightToPointsFactor);
 
             state->fontTransform = osxTypeface->renderingTransform;
             state->fontTransform.a *= state->font.getHorizontalScale();

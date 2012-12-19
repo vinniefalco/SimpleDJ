@@ -270,25 +270,25 @@ void ProjectContentComponent::deleteProjectTabs()
 
 TreeView* ProjectContentComponent::getFilesTreeView() const
 {
-    FileTreeTab* ft = dynamic_cast<FileTreeTab*> (treeViewTabs.getTabContentComponent (0));
-    return ft != nullptr ? &(ft->tree) : nullptr;
+    if (FileTreeTab* ft = dynamic_cast<FileTreeTab*> (treeViewTabs.getTabContentComponent (0)))
+        return &(ft->tree);
+
+    return nullptr;
 }
 
 ProjectTreeViewBase* ProjectContentComponent::getFilesTreeRoot() const
 {
-    TreeView* tv = getFilesTreeView();
-    return tv != nullptr ? dynamic_cast <ProjectTreeViewBase*> (tv->getRootItem()) : nullptr;
+    if (TreeView* tv = getFilesTreeView())
+        return dynamic_cast <ProjectTreeViewBase*> (tv->getRootItem());
+
+    return nullptr;
 }
 
 void ProjectContentComponent::saveTreeViewState()
 {
     for (int i = treeViewTabs.getNumTabs(); --i >= 0;)
-    {
-        TreePanelBase* t = dynamic_cast<TreePanelBase*> (treeViewTabs.getTabContentComponent (i));
-
-        if (t != nullptr)
+        if (TreePanelBase* t = dynamic_cast<TreePanelBase*> (treeViewTabs.getTabContentComponent (i)))
             t->saveOpenness();
-    }
 }
 
 void ProjectContentComponent::saveOpenDocumentList()
@@ -328,9 +328,7 @@ void ProjectContentComponent::changeListenerCallback (ChangeBroadcaster*)
 
 void ProjectContentComponent::updateMissingFileStatuses()
 {
-    ProjectTreeViewBase* p = getFilesTreeRoot();
-
-    if (p != nullptr)
+    if (ProjectTreeViewBase* p = getFilesTreeRoot())
         p->checkFileStatus();
 }
 
@@ -386,9 +384,7 @@ void ProjectContentComponent::hideDocument (OpenDocumentManager::Document* doc)
 {
     if (doc == currentDocument)
     {
-        OpenDocumentManager::Document* replacement = recentDocumentList.getClosestPreviousDocOtherThan (doc);
-
-        if (replacement != nullptr)
+        if (OpenDocumentManager::Document* replacement = recentDocumentList.getClosestPreviousDocOtherThan (doc))
             showDocument (replacement, true);
         else
             hideEditor();
@@ -474,9 +470,7 @@ bool ProjectContentComponent::saveProject()
 
 void ProjectContentComponent::closeProject()
 {
-    MainWindow* const mw = findParentComponentOfClass<MainWindow>();
-
-    if (mw != nullptr)
+    if (MainWindow* const mw = findParentComponentOfClass<MainWindow>())
         mw->closeCurrentProject();
 }
 
@@ -492,17 +486,13 @@ void ProjectContentComponent::openInIDE()
 
 void ProjectContentComponent::deleteSelectedTreeItems()
 {
-    TreePanelBase* const tree = dynamic_cast<TreePanelBase*> (treeViewTabs.getCurrentContentComponent());
-
-    if (tree != nullptr)
+    if (TreePanelBase* const tree = dynamic_cast<TreePanelBase*> (treeViewTabs.getCurrentContentComponent()))
         tree->deleteSelectedItems();
 }
 
 void ProjectContentComponent::updateMainWindowTitle()
 {
-    MainWindow* mw = findParentComponentOfClass<MainWindow>();
-
-    if (mw != nullptr)
+    if (MainWindow* mw = findParentComponentOfClass<MainWindow>())
         mw->updateTitle (currentDocument != nullptr ? currentDocument->getName() : String::empty);
 }
 
@@ -546,6 +536,12 @@ void ProjectContentComponent::getCommandInfo (const CommandID commandID, Applica
     if (currentDocument != nullptr)
         documentName = " '" + currentDocument->getName().substring (0, 32) + "'";
 
+   #if JUCE_MAC
+    const ModifierKeys cmdCtrl (ModifierKeys::ctrlModifier | ModifierKeys::commandModifier);
+   #else
+    const ModifierKeys cmdCtrl (ModifierKeys::ctrlModifier | ModifierKeys::altModifier);
+   #endif
+
     switch (commandID)
     {
     case CommandIDs::saveProject:
@@ -575,41 +571,25 @@ void ProjectContentComponent::getCommandInfo (const CommandID commandID, Applica
                         "Closes the current document",
                         CommandCategories::general, 0);
         result.setActive (contentView != nullptr);
-       #if JUCE_MAC
-        result.defaultKeypresses.add (KeyPress ('w', ModifierKeys::commandModifier | ModifierKeys::ctrlModifier, 0));
-       #else
-        result.defaultKeypresses.add (KeyPress ('w', ModifierKeys::commandModifier | ModifierKeys::shiftModifier, 0));
-       #endif
+        result.defaultKeypresses.add (KeyPress ('w', cmdCtrl, 0));
         break;
 
     case CommandIDs::goToPreviousDoc:
         result.setInfo ("Previous Document", "Go to previous document", CommandCategories::general, 0);
         result.setActive (recentDocumentList.canGoToPrevious());
-       #if JUCE_MAC
-        result.defaultKeypresses.add (KeyPress (KeyPress::leftKey, ModifierKeys::commandModifier | ModifierKeys::ctrlModifier, 0));
-       #else
-        result.defaultKeypresses.add (KeyPress (KeyPress::leftKey, ModifierKeys::ctrlModifier | ModifierKeys::shiftModifier, 0));
-       #endif
+        result.defaultKeypresses.add (KeyPress (KeyPress::leftKey, cmdCtrl, 0));
         break;
 
     case CommandIDs::goToNextDoc:
         result.setInfo ("Next Document", "Go to next document", CommandCategories::general, 0);
         result.setActive (recentDocumentList.canGoToNext());
-       #if JUCE_MAC
-        result.defaultKeypresses.add (KeyPress (KeyPress::rightKey, ModifierKeys::commandModifier | ModifierKeys::ctrlModifier, 0));
-       #else
-        result.defaultKeypresses.add (KeyPress (KeyPress::rightKey, ModifierKeys::ctrlModifier | ModifierKeys::shiftModifier, 0));
-       #endif
+        result.defaultKeypresses.add (KeyPress (KeyPress::rightKey, cmdCtrl, 0));
         break;
 
     case CommandIDs::goToCounterpart:
         result.setInfo ("Open corresponding header or cpp file", "Open counterpart file", CommandCategories::general, 0);
         result.setActive (canGoToCounterpart());
-       #if JUCE_MAC
-        result.defaultKeypresses.add (KeyPress (KeyPress::upKey, ModifierKeys::commandModifier | ModifierKeys::ctrlModifier, 0));
-       #else
-        result.defaultKeypresses.add (KeyPress (KeyPress::upKey, ModifierKeys::ctrlModifier | ModifierKeys::shiftModifier, 0));
-       #endif
+        result.defaultKeypresses.add (KeyPress (KeyPress::upKey, cmdCtrl, 0));
         break;
 
     case CommandIDs::openInIDE:

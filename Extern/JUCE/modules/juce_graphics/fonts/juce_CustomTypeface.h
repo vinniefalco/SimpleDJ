@@ -120,6 +120,7 @@ public:
     // The following methods implement the basic Typeface behaviour.
     float getAscent() const;
     float getDescent() const;
+    float getHeightToPointsFactor() const;
     float getStringWidth (const String& text);
     void getGlyphPositions (const String& text, Array <int>& glyphs, Array<float>& xOffsets);
     bool getOutlineForGlyph (int glyphNumber, Path& path);
@@ -148,7 +149,7 @@ private:
 
     GlyphInfo* findGlyph (const juce_wchar character, bool loadIfNeeded) noexcept;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CustomTypeface);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CustomTypeface)
 };
 
 #endif   // __JUCE_CUSTOMTYPEFACE_JUCEHEADER__

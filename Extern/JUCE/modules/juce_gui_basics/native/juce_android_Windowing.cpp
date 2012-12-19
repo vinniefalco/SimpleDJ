@@ -550,10 +550,10 @@ private:
         HeapBlock<jint> allocatedData;
         bool hasAlpha;
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PreallocatedImage);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PreallocatedImage)
     };
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AndroidComponentPeer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AndroidComponentPeer)
 };
 
 ModifierKeys AndroidComponentPeer::currentModifiers = 0;
@@ -701,6 +701,12 @@ bool Desktop::isScreenSaverEnabled()
 void Desktop::setKioskComponent (Component* kioskModeComponent, bool enableOrDisable, bool allowMenusAndBars)
 {
     // TODO
+}
+
+//==============================================================================
+bool juce_areThereAnyAlwaysOnTopWindows()
+{
+    return false;
 }
 
 //==============================================================================

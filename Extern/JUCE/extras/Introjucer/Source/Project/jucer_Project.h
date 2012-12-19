@@ -187,6 +187,7 @@ public:
         UndoManager* getUndoManager() const              { return project.getUndoManagerFor (state); }
 
         Icon getIcon() const;
+        bool isIconCrossedOut() const;
 
         Project& project;
         ValueTree state;
@@ -221,7 +222,7 @@ public:
 
     private:
         Project& project;
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExporterIterator);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExporterIterator)
     };
 
     //==============================================================================
@@ -286,7 +287,7 @@ private:
     void moveOldPropertyFromProjectToAllExporters (Identifier name);
     void removeDefunctExporters();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Project);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Project)
 };
 
 
