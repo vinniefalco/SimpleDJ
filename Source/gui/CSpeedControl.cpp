@@ -52,5 +52,5 @@ void CSpeedControl::valueChanged ()
 
 void CSpeedControl::onParamChange (Param* param, double value)
 {
-  setValue (0 - value);
+  setValue (0 - value, dontSendNotification);
 }

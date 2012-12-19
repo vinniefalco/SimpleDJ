@@ -52,5 +52,5 @@ void CDeckFader::valueChanged ()
 
 void CDeckFader::onParamChange (Param* param, double value)
 {
-  setValue (0 - value);
+  setValue (0 - value, dontSendNotification);
 }
