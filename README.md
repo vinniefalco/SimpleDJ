@@ -3,8 +3,8 @@
 ## Important Fork Notes
 
 This should be considered a reference codebase for understanding the lengths
-mid-era C++ developers had to go through prior to the arrival of modern C++.
-(C++'11 and onward), in order to achieve stable concurrent applications. 
+mid-era C++ developers had to go through prior to the arrival of modern C++
+(C++'11 and onward), Boost.Beast, etc. in order to achieve robust concurrent applications.
 
 Read the following JUCE forum posts prior to using this
 codebase (i.e. VFLib usage) for study:
