@@ -43,6 +43,8 @@ public:
     String title;
   };
 
+  //TODO: Good discussion of why these might be hard to modernize to std::shared_ptr
+  //TODO: https://forum.juce.com/t/referencecountedobject-vs-std-shared-ptr/31185
   typedef ReferenceCountedObjectPtr <Playable> Ptr;
 
   virtual double getSampleRate () = 0;

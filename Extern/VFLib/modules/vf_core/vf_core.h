@@ -284,7 +284,7 @@
 // Usage: #pragma message(VF_LOC_"Advertise here!")
 #define VF_STR2_(x) #x
 #define VF_STR1_(x) VF_STR2_(x)
-#define VF_LOC_ __FILE__ "("VF_STR1_(__LINE__)") : WARNING: "
+#define VF_LOC_ __FILE__ "(" VF_STR1_(__LINE__)") : WARNING: "
 
 // Turns vflib specific debugging support on or off
 //
@@ -307,9 +307,9 @@
 #  include <tr1/functional>
 # endif
 #elif JUCE_MAC
-# include <tr1/functional>
+//# include <tr1/functional> //tr1 not part of std for some time now
 #elif JUCE_LINUX
-# include <tr1/functional>
+//# include <tr1/functional> //tr1 not part of std for some time now
 #else
 # error Unnkown platform!
 #endif

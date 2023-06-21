@@ -63,6 +63,13 @@ protected:
 
 private:
   class TimerSingleton;
+  //TODO: Determine why compiling this class causes error in juce_ReferenceCountedObject.h L.448:
+    /*    static void decIfNotNull (ReferencedType* o) noexcept
+     {
+         if (o != nullptr && o->decReferenceCountWithoutDeleting()) //<---here
+             ContainerDeletePolicy<ReferencedType>::destroy (o);
+     }*/
+  //TODO: No member named 'decReferenceCountWithoutDeleting' in 'vf::OncePerSecond::TimerSingleton'
   typedef ReferenceCountedObjectPtr <TimerSingleton> TimerPtr;
 
   struct Elem : List <Elem>::Node

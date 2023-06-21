@@ -441,7 +441,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../Jucer/JuceLibraryCode",
-					"$(HOME)/JUCE/modules",
+					"$(HOME)/repos/JUCE/modules",
 					"$(SRCROOT)/../../Extern/VFLib",
 					"$(SRCROOT)/../../Source/gui",
 					"$(SRCROOT)/../../Source/core",
@@ -452,7 +452,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../Jucer/JuceLibraryCode $(HOME)/JUCE/modules $(SRCROOT)/../../Extern/VFLib $(SRCROOT)/../../Source/gui $(SRCROOT)/../../Source/core";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../Jucer/JuceLibraryCode $(HOME)/repos/JUCE/modules $(SRCROOT)/../../Extern/VFLib $(SRCROOT)/../../Source/gui $(SRCROOT)/../../Source/core";
 				OTHER_LDFLAGS = "-weak_framework Metal -weak_framework MetalKit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vinniefalco.SimpleDJ;
 				PRODUCT_NAME = "SimpleDJ";
@@ -586,7 +586,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../Jucer/JuceLibraryCode",
-					"$(HOME)/JUCE/modules",
+					"$(HOME)/repos/JUCE/modules",
 					"$(SRCROOT)/../../Extern/VFLib",
 					"$(SRCROOT)/../../Source/gui",
 					"$(SRCROOT)/../../Source/core",
@@ -596,7 +596,7 @@
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../Jucer/JuceLibraryCode $(HOME)/JUCE/modules $(SRCROOT)/../../Extern/VFLib $(SRCROOT)/../../Source/gui $(SRCROOT)/../../Source/core";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../Jucer/JuceLibraryCode $(HOME)/repos/JUCE/modules $(SRCROOT)/../../Extern/VFLib $(SRCROOT)/../../Source/gui $(SRCROOT)/../../Source/core";
 				OTHER_LDFLAGS = "-weak_framework Metal -weak_framework MetalKit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vinniefalco.SimpleDJ;
 				PRODUCT_NAME = "SimpleDJ";

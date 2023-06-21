@@ -186,7 +186,21 @@ bool InterruptibleThread::isTheCurrentThread () const
 
 void InterruptibleThread::setPriority (int priority)
 {
-  m_thread.setPriority (priority);
+  //m_thread.setPriority (priority);
+  //TODO: Determine why this converter doesn't work, see:
+  //https://stackoverflow.com/questions/16785069/why-cant-a-derived-class-call-protected-member-function-in-this-code
+  juce::Thread::Priority p;
+  switch (priority)
+  {
+      case -2: p = juce::Thread::Priority::background; break;
+      case -1: p = juce::Thread::Priority::low;        break;
+      case  0: p = juce::Thread::Priority::normal;     break;
+      case  1: p = juce::Thread::Priority::high;       break;
+      case  2: p = juce::Thread::Priority::highest;    break;
+      default: p = juce::Thread::Priority::normal;     break;
+  }
+  juce::Thread *b = &m_thread;
+  //b->setPriority(p);
 }
 
 InterruptibleThread* InterruptibleThread::getCurrentThread ()

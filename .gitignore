@@ -83,3 +83,4 @@ Build/Jucer/Builds
 Build/Jucer/JuceLibraryCode
 Build/Linux
 Build/MacOSX
+.DS_Store

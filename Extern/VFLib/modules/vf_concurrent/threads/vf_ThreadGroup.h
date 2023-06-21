@@ -98,39 +98,39 @@ public:
 
   template <class Fn>
   void call (int maxThreads, Fn f)
-    { callf (maxThreads, vf::bind (f)); }
+    { callf (maxThreads, std::bind (f)); }
 
   template <class Fn, class T1>
   void call (int maxThreads, Fn f, T1 t1)
-    { callf (maxThreads, vf::bind (f, t1)); }
+    { callf (maxThreads, std::bind (f, t1)); }
 
   template <class Fn, class T1, class T2>
   void call (int maxThreads, Fn f, T1 t1, T2 t2)
-    { callf (maxThreads, vf::bind (f, t1, t2)); }
+    { callf (maxThreads, std::bind (f, t1, t2)); }
 
   template <class Fn, class T1, class T2, class T3>
   void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3)
-    { callf (maxThreads, vf::bind (f, t1, t2, t3)); }
+    { callf (maxThreads, std::bind (f, t1, t2, t3)); }
 
   template <class Fn, class T1, class T2, class T3, class T4>
   void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4)
-    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4)); }
+    { callf (maxThreads, std::bind (f, t1, t2, t3, t4)); }
 
   template <class Fn, class T1, class T2, class T3, class T4, class T5>
   void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
-    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5)); }
+    { callf (maxThreads, std::bind (f, t1, t2, t3, t4, t5)); }
 
   template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6>
   void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
-    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6)); }
+    { callf (maxThreads, std::bind (f, t1, t2, t3, t4, t5, t6)); }
 
   template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
   void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
-    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6, t7)); }
+    { callf (maxThreads, std::bind (f, t1, t2, t3, t4, t5, t6, t7)); }
 
   template <class Fn, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
   void call (int maxThreads, Fn f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
-    { callf (maxThreads, vf::bind (f, t1, t2, t3, t4, t5, t6, t7, t8)); }
+    { callf (maxThreads, std::bind (f, t1, t2, t3, t4, t5, t6, t7, t8)); }
 
   /** @} */
 

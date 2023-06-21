@@ -436,13 +436,15 @@ void ListenersBase::Proxy::add (Group* group, AllocatorType& allocator)
 // Removes the group from the Proxy.
 // Caller must have the proxies mutex.
 // Caller is responsible for making sure the group exists.
+//TODO: This should be modernized, L.446 causes ambiguity error
+//TODO: See https://www.informit.com/articles/article.aspx?p=31529&seqNum=8 for possible strategy
 void ListenersBase::Proxy::remove (Group* group)
 {
   for (Entries::iterator iter = m_entries.begin(); iter != m_entries.end();)
   {
     Entry* entry = &(*iter++);
-
-    if (entry->group == group)
+    //was if (entry->group == group) //TODO: This cast is probably wrong (see above)
+    if (entry->group == (Group::Ptr)group)
     {
       // remove from list and manual release
       m_entries.erase (m_entries.iterator_to (*entry));
@@ -630,7 +632,7 @@ void ListenersBase::remove_void (void* const listener)
 
         // Remove it from the list and manually release
         // the reference since the list uses raw pointers.
-        m_groups.erase (m_groups.iterator_to (*group.getObject ()));
+        m_groups.erase (m_groups.iterator_to (*group.get()));
         group->decReferenceCount();
 
         // It is still possible for the group to exist at this

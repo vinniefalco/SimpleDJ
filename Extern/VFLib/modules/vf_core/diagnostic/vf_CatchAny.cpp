@@ -190,8 +190,8 @@ bool CatchAny (Function <void (void)> f, bool returnFromException)
       else
       {
         std::cout << e.what ();
-        if (__cplusplus < 201703L)
-          std::unexpected ();
+        //if (__cplusplus < 201703L) //TODO: See why this check isn't working
+          //std::unexpected ();
       }
     }
   }
@@ -208,8 +208,8 @@ bool CatchAny (Function <void (void)> f, bool returnFromException)
       else
       {
         std::cout << e.what ();
-        if (__cplusplus < 201703L)
-          std::unexpected ();
+        //if (__cplusplus < 201703L) //TODO: See why this check isn't working
+          //std::unexpected ();
       }
     }
   }
@@ -225,8 +225,8 @@ bool CatchAny (Function <void (void)> f, bool returnFromException)
       }
       else
       {
-        if (__cplusplus < 201703L)
-          std::unexpected ();
+        //if (__cplusplus < 201703L) //TODO: See why this check isn't working
+          //std::unexpected ();
       }
     }
   }

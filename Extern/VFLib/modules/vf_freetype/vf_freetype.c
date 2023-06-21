@@ -38,7 +38,8 @@
 
 #include "AppConfig.h"
 
-#include "modules/juce_core/system/juce_TargetPlatform.h"
+//TODO: See what warning VS was emitting here for a better solution than
+//TODO: including a JUCE header in C code
 
 #if JUCE_MSVC
 #pragma warning (push)

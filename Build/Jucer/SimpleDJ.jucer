@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="dV4aaM" name="SimpleDJ" projectType="guiapp" version="1.0.0"
-              bundleIdentifier="com.vinniefalco.SimpleDJ" jucerFormatVersion="1">
+              bundleIdentifier="com.vinniefalco.SimpleDJ" jucerFormatVersion="1"
+              cppLanguageStandard="17">
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="../MacOSX" objCExtraSuffix="ll8YC7">
       <CONFIGURATIONS>

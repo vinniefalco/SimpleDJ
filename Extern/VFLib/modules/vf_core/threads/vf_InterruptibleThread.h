@@ -134,7 +134,7 @@ public:
   static InterruptibleThread* getCurrentThread ();
 
 private:
-  class ThreadHelper : public Thread
+  class ThreadHelper : public juce::Thread
   {
   public:
     ThreadHelper (String name, InterruptibleThread* owner);

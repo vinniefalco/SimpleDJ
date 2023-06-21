@@ -119,7 +119,7 @@ private:
     // the error message goes away. This might cause
     // changes throughout the application with other
     // template classes that depend on the size.
-    static_jassert (sizeof (StoredCall <Functor>) <= Bytes);
+    jassert (sizeof (StoredCall <Functor>) <= Bytes);
     new (m_storage) StoredCall <Functor> (f);
   }
 
@@ -228,7 +228,7 @@ private:
     // the error message goes away. This might cause
     // changes throughout the application with other
     // template classes that depend on the size.
-    static_jassert (sizeof (StoredCall <Functor>) <= Bytes);
+    jassert (sizeof (StoredCall <Functor>) <= Bytes);
     new (m_storage) StoredCall <Functor> (f);
   }
 

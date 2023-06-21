@@ -200,7 +200,7 @@ bool PropertyMap::operator!=(const PropertyMap &other) const
   return !(*this == other);
 }
 
-String PropertyMap::toString() const
+TagLib::String PropertyMap::toString() const
 {
   String ret = "";
   for(ConstIterator it = begin(); it != end(); ++it)
@@ -230,7 +230,7 @@ const StringList &PropertyMap::unsupportedData() const
   return unsupported;
 }
 
-String PropertyMap::prepareKey(const String &proposed) {
+TagLib::String PropertyMap::prepareKey(const String &proposed) {
   if(proposed.isEmpty())
 	return String::null;
   for (String::ConstIterator it = proposed.begin(); it != proposed.end(); it++)
@@ -520,7 +520,7 @@ namespace TagLib {
 
 using namespace TagLib;
 
-class String::StringPrivate : public RefCounter
+class TagLib::String::StringPrivate : public RefCounter
 {
 public:
   StringPrivate(const wstring &s) :
@@ -545,21 +545,21 @@ public:
   char *CString;
 };
 
-String String::null;
+TagLib::String TagLib::String::null;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-String::String()
+TagLib::String::String()
 {
   d = new StringPrivate;
 }
 
-String::String(const String &s) : d(s.d)
+TagLib::String::String(const String &s) : d(s.d)
 {
   d->ref();
 }
 
-String::String(const std::string &s, Type t)
+TagLib::String::String(const std::string &s, Type t)
 {
   d = new StringPrivate;
 
@@ -580,19 +580,19 @@ String::String(const std::string &s, Type t)
   prepare(t);
 }
 
-String::String(const wstring &s, Type t)
+TagLib::String::String(const wstring &s, Type t)
 {
   d = new StringPrivate(s);
   prepare(t);
 }
 
-String::String(const wchar_t *s, Type t)
+TagLib::String::String(const wchar_t *s, Type t)
 {
   d = new StringPrivate(s);
   prepare(t);
 }
 
-String::String(const char *s, Type t)
+TagLib::String::String(const char *s, Type t)
 {
   d = new StringPrivate;
 
@@ -614,14 +614,14 @@ String::String(const char *s, Type t)
   prepare(t);
 }
 
-String::String(wchar_t c, Type t)
+TagLib::String::String(wchar_t c, Type t)
 {
   d = new StringPrivate;
   d->data += c;
   prepare(t);
 }
 
-String::String(char c, Type t)
+TagLib::String::String(char c, Type t)
 {
   d = new StringPrivate;
 
@@ -634,7 +634,7 @@ String::String(char c, Type t)
   prepare(t);
 }
 
-String::String(const ByteVector &v, Type t)
+TagLib::String::String(const ByteVector &v, Type t)
 {
   d = new StringPrivate;
 
@@ -670,13 +670,13 @@ String::String(const ByteVector &v, Type t)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-String::~String()
+TagLib::String::~String()
 {
   if(d->deref())
 	delete d;
 }
 
-std::string String::to8Bit(bool unicode) const
+std::string TagLib::String::to8Bit(bool unicode) const
 {
   std::string s;
   s.resize(d->data.size());
@@ -721,12 +721,12 @@ std::string String::to8Bit(bool unicode) const
   return s;
 }
 
-TagLib::wstring String::toWString() const
+TagLib::wstring TagLib::String::toWString() const
 {
   return d->data;
 }
 
-const char *String::toCString(bool unicode) const
+const char* TagLib::String::toCString(bool unicode) const
 {
   delete [] d->CString;
 
@@ -737,27 +737,27 @@ const char *String::toCString(bool unicode) const
   return d->CString;
 }
 
-String::Iterator String::begin()
+TagLib::String::Iterator TagLib::String::begin()
 {
   return d->data.begin();
 }
 
-String::ConstIterator String::begin() const
+TagLib::String::ConstIterator TagLib::String::begin() const
 {
   return d->data.begin();
 }
 
-String::Iterator String::end()
+TagLib::String::Iterator TagLib::String::end()
 {
   return d->data.end();
 }
 
-String::ConstIterator String::end() const
+TagLib::String::ConstIterator TagLib::String::end() const
 {
   return d->data.end();
 }
 
-int String::find(const String &s, int offset) const
+int TagLib::String::find(const TagLib::String &s, int offset) const
 {
   wstring::size_type position = d->data.find(s.d->data, offset);
 
@@ -767,7 +767,7 @@ int String::find(const String &s, int offset) const
 	return -1;
 }
 
-int String::rfind(const String &s, int offset) const
+int TagLib::String::rfind(const TagLib::String &s, int offset) const
 {
   wstring::size_type position =
 	d->data.rfind(s.d->data, offset == -1 ? wstring::npos : offset);
@@ -778,7 +778,7 @@ int String::rfind(const String &s, int offset) const
 	return -1;
 }
 
-StringList String::split(const String &separator) const
+StringList TagLib::String::split(const TagLib::String &separator) const
 {
   StringList list;
   for(int index = 0;;)
@@ -798,7 +798,7 @@ StringList String::split(const String &separator) const
   return list;
 }
 
-bool String::startsWith(const String &s) const
+bool TagLib::String::startsWith(const TagLib::String &s) const
 {
   if(s.length() > length())
 	return false;
@@ -806,7 +806,7 @@ bool String::startsWith(const String &s) const
   return substr(0, s.length()) == s;
 }
 
-String String::substr(uint position, uint n) const
+TagLib::String TagLib::String::substr(uint position, uint n) const
 {
   if(n > position + d->data.size())
 	n = d->data.size() - position;
@@ -816,14 +816,14 @@ String String::substr(uint position, uint n) const
   return s;
 }
 
-String &String::append(const String &s)
+TagLib::String &TagLib::String::append(const String &s)
 {
   detach();
   d->data += s.d->data;
   return *this;
 }
 
-String String::upper() const
+TagLib::String TagLib::String::upper() const
 {
   String s;
 
@@ -839,27 +839,27 @@ String String::upper() const
   return s;
 }
 
-TagLib::uint String::size() const
+TagLib::uint TagLib::String::size() const
 {
   return d->data.size();
 }
 
-TagLib::uint String::length() const
+TagLib::uint TagLib::String::length() const
 {
   return size();
 }
 
-bool String::isEmpty() const
+bool TagLib::String::isEmpty() const
 {
   return d->data.size() == 0;
 }
 
-bool String::isNull() const
+bool TagLib::String::isNull() const
 {
   return d == null.d;
 }
 
-ByteVector String::data(Type t) const
+ByteVector TagLib::String::data(Type t) const
 {
   ByteVector v;
 
@@ -924,12 +924,12 @@ ByteVector String::data(Type t) const
   return v;
 }
 
-int String::toInt() const
+int TagLib::String::toInt() const
 {
   return toInt(0);
 }
 
-int String::toInt(bool *ok) const
+int TagLib::String::toInt(bool *ok) const
 {
   int value = 0;
 
@@ -950,7 +950,7 @@ int String::toInt(bool *ok) const
   return value;
 }
 
-String String::stripWhiteSpace() const
+TagLib::String TagLib::String::stripWhiteSpace() const
 {
   wstring::const_iterator begin = d->data.begin();
   wstring::const_iterator end = d->data.end();
@@ -976,7 +976,7 @@ String String::stripWhiteSpace() const
   return String(wstring(begin, end + 1));
 }
 
-bool String::isLatin1() const
+bool TagLib::String::isLatin1() const
 {
   for(wstring::const_iterator it = d->data.begin(); it != d->data.end(); it++) {
 	if(*it >= 256)
@@ -985,7 +985,7 @@ bool String::isLatin1() const
   return true;
 }
 
-bool String::isAscii() const
+bool TagLib::String::isAscii() const
 {
   for(wstring::const_iterator it = d->data.begin(); it != d->data.end(); it++) {
 	if(*it >= 128)
@@ -994,7 +994,7 @@ bool String::isAscii() const
   return true;
 }
 
-String String::number(int n) // static
+TagLib::String TagLib::String::number(int n) // static
 {
   if(n == 0)
 	return String("0");
@@ -1023,29 +1023,29 @@ String String::number(int n) // static
   return s;
 }
 
-TagLib::wchar &String::operator[](int i)
+TagLib::wchar &TagLib::String::operator[](int i)
 {
   detach();
 
   return d->data[i];
 }
 
-const TagLib::wchar &String::operator[](int i) const
+const TagLib::wchar &TagLib::String::operator[](int i) const
 {
   return d->data[i];
 }
 
-bool String::operator==(const String &s) const
+bool TagLib::String::operator==(const TagLib::String &s) const
 {
   return d == s.d || d->data == s.d->data;
 }
 
-bool String::operator!=(const String &s) const
+bool TagLib::String::operator!=(const TagLib::String &s) const
 {
   return !operator==(s);
 }
 
-String &String::operator+=(const String &s)
+TagLib::String &TagLib::String::operator+=(const String &s)
 {
   detach();
 
@@ -1053,7 +1053,7 @@ String &String::operator+=(const String &s)
   return *this;
 }
 
-String &String::operator+=(const wchar_t *s)
+TagLib::String &TagLib::String::operator+=(const wchar_t *s)
 {
   detach();
 
@@ -1061,7 +1061,7 @@ String &String::operator+=(const wchar_t *s)
   return *this;
 }
 
-String &String::operator+=(const char *s)
+TagLib::String &TagLib::String::operator+=(const char *s)
 {
   detach();
 
@@ -1070,7 +1070,7 @@ String &String::operator+=(const char *s)
   return *this;
 }
 
-String &String::operator+=(wchar_t c)
+TagLib::String &TagLib::String::operator+=(wchar_t c)
 {
   detach();
 
@@ -1078,7 +1078,7 @@ String &String::operator+=(wchar_t c)
   return *this;
 }
 
-String &String::operator+=(char c)
+TagLib::String &TagLib::String::operator+=(char c)
 {
   detach();
 
@@ -1086,7 +1086,7 @@ String &String::operator+=(char c)
   return *this;
 }
 
-String &String::operator=(const String &s)
+TagLib::String &TagLib::String::operator=(const String &s)
 {
   if(&s == this)
 	return *this;
@@ -1098,7 +1098,7 @@ String &String::operator=(const String &s)
   return *this;
 }
 
-String &String::operator=(const std::string &s)
+TagLib::String &TagLib::String::operator=(const std::string &s)
 {
   if(d->deref())
 	delete d;
@@ -1116,7 +1116,7 @@ String &String::operator=(const std::string &s)
   return *this;
 }
 
-String &String::operator=(const wstring &s)
+TagLib::String &TagLib::String::operator=(const wstring &s)
 {
   if(d->deref())
 	delete d;
@@ -1124,7 +1124,7 @@ String &String::operator=(const wstring &s)
   return *this;
 }
 
-String &String::operator=(const wchar_t *s)
+TagLib::String &TagLib::String::operator=(const wchar_t *s)
 {
   if(d->deref())
 	delete d;
@@ -1132,7 +1132,7 @@ String &String::operator=(const wchar_t *s)
   return *this;
 }
 
-String &String::operator=(char c)
+TagLib::String &TagLib::String::operator=(char c)
 {
   if(d->deref())
 	delete d;
@@ -1141,7 +1141,7 @@ String &String::operator=(char c)
   return *this;
 }
 
-String &String::operator=(wchar_t c)
+TagLib::String &TagLib::String::operator=(wchar_t c)
 {
   if(d->deref())
 	delete d;
@@ -1150,7 +1150,7 @@ String &String::operator=(wchar_t c)
   return *this;
 }
 
-String &String::operator=(const char *s)
+TagLib::String &TagLib::String::operator=(const char *s)
 {
   if(d->deref())
 	delete d;
@@ -1169,7 +1169,7 @@ String &String::operator=(const char *s)
   return *this;
 }
 
-String &String::operator=(const ByteVector &v)
+TagLib::String &TagLib::String::operator=(const ByteVector &v)
 {
   if(d->deref())
 	delete d;
@@ -1193,7 +1193,7 @@ String &String::operator=(const ByteVector &v)
   return *this;
 }
 
-bool String::operator<(const String &s) const
+bool TagLib::String::operator<(const String &s) const
 {
   return d->data < s.d->data;
 }
@@ -1202,7 +1202,7 @@ bool String::operator<(const String &s) const
 // protected members
 ////////////////////////////////////////////////////////////////////////////////
 
-void String::detach()
+void TagLib::String::detach()
 {
   if(d->count() > 1) {
 	d->deref();
@@ -1214,7 +1214,7 @@ void String::detach()
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
-void String::prepare(Type t)
+void TagLib::String::prepare(Type t)
 {
   switch(t) {
   case UTF16:
@@ -1283,26 +1283,26 @@ void String::prepare(Type t)
 
 const TagLib::String operator+(const TagLib::String &s1, const TagLib::String &s2)
 {
-  String s(s1);
+  TagLib::String s(s1);
   s.append(s2);
   return s;
 }
 
 const TagLib::String operator+(const char *s1, const TagLib::String &s2)
 {
-  String s(s1);
+  TagLib::String s(s1);
   s.append(s2);
   return s;
 }
 
 const TagLib::String operator+(const TagLib::String &s1, const char *s2)
 {
-  String s(s1);
+  TagLib::String s(s1);
   s.append(s2);
   return s;
 }
 
-std::ostream &operator<<(std::ostream &s, const String &str)
+std::ostream &operator<<(std::ostream &s, const TagLib::String &str)
 {
   s << str.to8Bit();
   return s;
@@ -1354,9 +1354,9 @@ std::ostream &operator<<(std::ostream &s, const String &str)
 # define W_OK 2
 #endif
 
-using namespace TagLib;
+using namespace TagLib; //This is apparently not good enough
 
-class File::FilePrivate
+class TagLib::File::FilePrivate
 {
 public:
   FilePrivate(IOStream *stream);
@@ -1366,7 +1366,7 @@ public:
   static const uint bufferSize = 1024;
 };
 
-File::FilePrivate::FilePrivate(IOStream *stream) :
+TagLib::File::FilePrivate::FilePrivate(IOStream *stream) :
   stream(stream),
   valid(true)
 {
@@ -1376,30 +1376,30 @@ File::FilePrivate::FilePrivate(IOStream *stream) :
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-File::File(FileName fileName)
+TagLib::File::File(FileName fileName)
 {
   IOStream *stream = new FileStream(fileName);
   d = new FilePrivate(stream);
 }
 
-File::File(IOStream *stream)
+TagLib::File::File(IOStream *stream)
 {
   d = new FilePrivate(stream);
 }
 
-File::~File()
+TagLib::File::~File()
 {
   if(d->stream)
 	delete d->stream;
   delete d;
 }
 
-FileName File::name() const
+FileName TagLib::File::name() const
 {
   return d->stream->name();
 }
 
-PropertyMap File::properties() const
+PropertyMap TagLib::File::properties() const
 {
   // ugly workaround until this method is virtual
   if(dynamic_cast<const APE::File* >(this))
@@ -1441,7 +1441,7 @@ PropertyMap File::properties() const
   return tag()->properties();
 }
 
-void File::removeUnsupportedProperties(const StringList &properties)
+void TagLib::File::removeUnsupportedProperties(const StringList &properties)
 {
   // here we only consider those formats that could possibly contain
   // unsupported properties
@@ -1475,7 +1475,7 @@ void File::removeUnsupportedProperties(const StringList &properties)
 	tag()->removeUnsupportedProperties(properties);
 }
 
-PropertyMap File::setProperties(const PropertyMap &properties)
+PropertyMap TagLib::File::setProperties(const PropertyMap &properties)
 {
   if(dynamic_cast<APE::File* >(this))
 	return dynamic_cast<APE::File* >(this)->setProperties(properties);
@@ -1511,17 +1511,17 @@ PropertyMap File::setProperties(const PropertyMap &properties)
 	return tag()->setProperties(properties);
 }
 
-ByteVector File::readBlock(ulong length)
+ByteVector TagLib::File::readBlock(ulong length)
 {
   return d->stream->readBlock(length);
 }
 
-void File::writeBlock(const ByteVector &data)
+void TagLib::File::writeBlock(const ByteVector &data)
 {
   d->stream->writeBlock(data);
 }
 
-long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &before)
+long TagLib::File::find(const ByteVector &pattern, long fromOffset, const ByteVector &before)
 {
   if(!d->stream || pattern.size() > d->bufferSize)
 	  return -1;
@@ -1616,7 +1616,7 @@ long File::find(const ByteVector &pattern, long fromOffset, const ByteVector &be
   return -1;
 }
 
-long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &before)
+long TagLib::File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &before)
 {
   if(!d->stream || pattern.size() > d->bufferSize)
 	  return -1;
@@ -1684,52 +1684,52 @@ long File::rfind(const ByteVector &pattern, long fromOffset, const ByteVector &b
   return -1;
 }
 
-void File::insert(const ByteVector &data, ulong start, ulong replace)
+void TagLib::File::insert(const ByteVector &data, ulong start, ulong replace)
 {
   d->stream->insert(data, start, replace);
 }
 
-void File::removeBlock(ulong start, ulong length)
+void TagLib::File::removeBlock(ulong start, ulong length)
 {
   d->stream->removeBlock(start, length);
 }
 
-bool File::readOnly() const
+bool TagLib::File::readOnly() const
 {
   return d->stream->readOnly();
 }
 
-bool File::isOpen() const
+bool TagLib::File::isOpen() const
 {
   return d->stream->isOpen();
 }
 
-bool File::isValid() const
+bool TagLib::File::isValid() const
 {
   return isOpen() && d->valid;
 }
 
-void File::seek(long offset, Position p)
+void TagLib::File::seek(long offset, Position p)
 {
   d->stream->seek(offset, IOStream::Position(p));
 }
 
-void File::truncate(long length)
+void TagLib::File::truncate(long length)
 {
   d->stream->truncate(length);
 }
 
-void File::clear()
+void TagLib::File::clear()
 {
   d->stream->clear();
 }
 
-long File::tell() const
+long TagLib::File::tell() const
 {
   return d->stream->tell();
 }
 
-long File::length()
+long TagLib::File::length()
 {
   return d->stream->length();
 }
@@ -1739,12 +1739,12 @@ long File::length()
 #pragma warning (disable: 4996) // Deprecated POSIX name
 #endif
 
-bool File::isReadable(const char *file)
+bool TagLib::File::isReadable(const char *file)
 {
   return access(file, R_OK) == 0;
 }
 
-bool File::isWritable(const char *file)
+bool TagLib::File::isWritable(const char *file)
 {
   return access(file, W_OK) == 0;
 }
@@ -1757,12 +1757,12 @@ bool File::isWritable(const char *file)
 // protected members
 ////////////////////////////////////////////////////////////////////////////////
 
-TagLib::uint File::bufferSize()
+TagLib::uint TagLib::File::bufferSize()
 {
   return FilePrivate::bufferSize;
 }
 
-void File::setValid(bool valid)
+void TagLib::File::setValid(bool valid)
 {
   d->valid = valid;
 }
@@ -2136,27 +2136,27 @@ void TagUnion::set(int index, Tag *tag)
   d->tags[index] = tag;
 }
 
-String TagUnion::title() const
+TagLib::String TagUnion::title() const
 {
   stringUnion(title);
 }
 
-String TagUnion::artist() const
+TagLib::String TagUnion::artist() const
 {
   stringUnion(artist);
 }
 
-String TagUnion::album() const
+TagLib::String TagUnion::album() const
 {
   stringUnion(album);
 }
 
-String TagUnion::comment() const
+TagLib::String TagUnion::comment() const
 {
   stringUnion(comment);
 }
 
-String TagUnion::genre() const
+TagLib::String TagUnion::genre() const
 {
   stringUnion(genre);
 }
@@ -2311,7 +2311,7 @@ AudioProperties *FileRef::audioProperties() const
   return d->file->audioProperties();
 }
 
-File *FileRef::file() const
+TagLib::File *FileRef::file() const
 {
   return d->file;
 }
@@ -2395,7 +2395,7 @@ bool FileRef::operator!=(const FileRef &ref) const
   return ref.d->file != d->file;
 }
 
-File *FileRef::create(FileName fileName, bool readAudioProperties,
+TagLib::File *FileRef::create(FileName fileName, bool readAudioProperties,
 					  AudioProperties::ReadStyle audioPropertiesStyle) // static
 {
 
@@ -3833,9 +3833,9 @@ StringHandler::StringHandler()
 {
 }
 
-String ID3v1::StringHandler::parse(const ByteVector &data) const
+TagLib::String ID3v1::StringHandler::parse(const ByteVector &data) const
 {
-  return String(data, String::Latin1).stripWhiteSpace();
+  return TagLib::String(data, TagLib::String::Latin1).stripWhiteSpace();
 }
 
 ByteVector ID3v1::StringHandler::render(const String &s) const
@@ -3893,27 +3893,27 @@ ByteVector ID3v1::Tag::fileIdentifier()
   return ByteVector::fromCString("TAG");
 }
 
-String ID3v1::Tag::title() const
+TagLib::String ID3v1::Tag::title() const
 {
   return d->title;
 }
 
-String ID3v1::Tag::artist() const
+TagLib::String ID3v1::Tag::artist() const
 {
   return d->artist;
 }
 
-String ID3v1::Tag::album() const
+TagLib::String ID3v1::Tag::album() const
 {
   return d->album;
 }
 
-String ID3v1::Tag::comment() const
+TagLib::String ID3v1::Tag::comment() const
 {
   return d->comment;
 }
 
-String ID3v1::Tag::genre() const
+TagLib::String ID3v1::Tag::genre() const
 {
   return ID3v1::genre(d->genre);
 }
@@ -4228,7 +4228,7 @@ ID3v1::GenreMap ID3v1::genreMap()
   return m;
 }
 
-String ID3v1::genre(int i)
+TagLib::String ID3v1::genre(int i)
 {
   if(i >= 0 && i < genresSize)
 	return genres[i] + String::null; // always make a copy
@@ -4467,7 +4467,7 @@ Frame *FrameFactory::createFrame(const ByteVector &origData, Header *tagHeader) 
   return new UnknownFrame(data, header);
 }
 
-String::Type FrameFactory::defaultTextEncoding() const
+TagLib::String::Type FrameFactory::defaultTextEncoding() const
 {
   return d->defaultEncoding;
 }
@@ -4818,28 +4818,28 @@ ID3v2::Tag::~Tag()
   delete d;
 }
 
-String ID3v2::Tag::title() const
+TagLib::String ID3v2::Tag::title() const
 {
   if(!d->frameListMap["TIT2"].isEmpty())
 	return d->frameListMap["TIT2"].front()->toString();
   return String::null;
 }
 
-String ID3v2::Tag::artist() const
+TagLib::String ID3v2::Tag::artist() const
 {
   if(!d->frameListMap["TPE1"].isEmpty())
 	return d->frameListMap["TPE1"].front()->toString();
   return String::null;
 }
 
-String ID3v2::Tag::album() const
+TagLib::String ID3v2::Tag::album() const
 {
   if(!d->frameListMap["TALB"].isEmpty())
 	return d->frameListMap["TALB"].front()->toString();
   return String::null;
 }
 
-String ID3v2::Tag::comment() const
+TagLib::String ID3v2::Tag::comment() const
 {
   const FrameList &comments = d->frameListMap["COMM"];
 
@@ -4857,7 +4857,7 @@ String ID3v2::Tag::comment() const
   return comments.front()->toString();
 }
 
-String ID3v2::Tag::genre() const
+TagLib::String ID3v2::Tag::genre() const
 {
   // TODO: In the next major version (TagLib 2.0) a list of multiple genres
   // should be separated by " / " instead of " ".  For the moment to keep
@@ -5729,10 +5729,10 @@ ByteVector Frame::textDelimiter(String::Type t)
   return d;
 }
 
-const String Frame::instrumentPrefix("PERFORMER:");
-const String Frame::commentPrefix("COMMENT:");
-const String Frame::lyricsPrefix("LYRICS:");
-const String Frame::urlPrefix("URL:");
+const TagLib::String Frame::instrumentPrefix("PERFORMER:");
+const TagLib::String Frame::commentPrefix("COMMENT:");
+const TagLib::String Frame::lyricsPrefix("LYRICS:");
+const TagLib::String Frame::urlPrefix("URL:");
 
 ////////////////////////////////////////////////////////////////////////////////
 // public members
@@ -5887,7 +5887,7 @@ ByteVector Frame::fieldData(const ByteVector &frameData) const
 	return frameData.mid(frameDataOffset, frameDataLength);
 }
 
-String Frame::readStringField(const ByteVector &data, String::Type encoding, int *position)
+TagLib::String Frame::readStringField(const ByteVector &data, String::Type encoding, int *position)
 {
   int start = 0;
 
@@ -5899,21 +5899,21 @@ String Frame::readStringField(const ByteVector &data, String::Type encoding, int
   int end = data.find(delimiter, *position, delimiter.size());
 
   if(end < *position)
-	return String::null;
+	return TagLib::String::null;
 
-  String str = String(data.mid(*position, end - *position), encoding);
+  TagLib::String str = TagLib::String(data.mid(*position, end - *position), encoding);
 
   *position = end + delimiter.size();
 
   return str;
 }
 
-String::Type Frame::checkEncoding(const StringList &fields, String::Type encoding) // static
+TagLib::String::Type Frame::checkEncoding(const StringList &fields, String::Type encoding) // static
 {
   return checkEncoding(fields, encoding, 4);
 }
 
-String::Type Frame::checkEncoding(const StringList &fields, String::Type encoding, uint version) // static
+TagLib::String::Type Frame::checkEncoding(const StringList &fields, String::Type encoding, uint version) // static
 {
   if((encoding == String::UTF8 || encoding == String::UTF16BE) && version != 4)
 	return String::UTF16;
@@ -5937,7 +5937,7 @@ String::Type Frame::checkEncoding(const StringList &fields, String::Type encodin
   return String::Latin1;
 }
 
-String::Type Frame::checkTextEncoding(const StringList &fields, String::Type encoding) const
+TagLib::String::Type Frame::checkTextEncoding(const StringList &fields, String::Type encoding) const
 {
   return checkEncoding(fields, encoding, header()->version());
 }
@@ -6008,9 +6008,9 @@ static const char *frameTranslation[][2] = {
   //{ "USLT", "LYRICS" }, handled specially
 };
 
-Map<ByteVector, String> &idMap()
+Map<ByteVector, TagLib::String> &idMap()
 {
-  static Map<ByteVector, String> m;
+  static Map<ByteVector, TagLib::String> m;
   if(m.isEmpty())
 	for(size_t i = 0; i < frameTranslationSize; ++i)
 	  m[frameTranslation[i][0]] = frameTranslation[i][1];
@@ -6035,14 +6035,14 @@ Map<ByteVector,ByteVector> &deprecationMap()
   return depMap;
 }
 
-String Frame::frameIDToKey(const ByteVector &id)
+TagLib::String Frame::frameIDToKey(const ByteVector &id)
 {
   Map<ByteVector, String> &m = idMap();
   if(m.contains(id))
 	return m[id];
   if(deprecationMap().contains(id))
 	return m[deprecationMap()[id]];
-  return String::null;
+  return TagLib::String::null;
 }
 
 ByteVector Frame::keyToFrameID(const String &s)
@@ -6598,13 +6598,13 @@ AttachedPictureFrame::~AttachedPictureFrame()
   delete d;
 }
 
-String AttachedPictureFrame::toString() const
+TagLib::String AttachedPictureFrame::toString() const
 {
   String s = "[" + d->mimeType + "]";
   return d->description.isEmpty() ? s : d->description + " " + s;
 }
 
-String::Type AttachedPictureFrame::textEncoding() const
+TagLib::String::Type AttachedPictureFrame::textEncoding() const
 {
   return d->textEncoding;
 }
@@ -6614,7 +6614,7 @@ void AttachedPictureFrame::setTextEncoding(String::Type t)
   d->textEncoding = t;
 }
 
-String AttachedPictureFrame::mimeType() const
+TagLib::String AttachedPictureFrame::mimeType() const
 {
   return d->mimeType;
 }
@@ -6634,7 +6634,7 @@ void AttachedPictureFrame::setType(Type t)
   d->type = t;
 }
 
-String AttachedPictureFrame::description() const
+TagLib::String AttachedPictureFrame::description() const
 {
   return d->description;
 }
@@ -6813,7 +6813,7 @@ CommentsFrame::~CommentsFrame()
   delete d;
 }
 
-String CommentsFrame::toString() const
+TagLib::String CommentsFrame::toString() const
 {
   return d->text;
 }
@@ -6823,12 +6823,12 @@ ByteVector CommentsFrame::language() const
   return d->language;
 }
 
-String CommentsFrame::description() const
+TagLib::String CommentsFrame::description() const
 {
   return d->description;
 }
 
-String CommentsFrame::text() const
+TagLib::String CommentsFrame::text() const
 {
   return d->text;
 }
@@ -6848,7 +6848,7 @@ void CommentsFrame::setText(const String &s)
   d->text = s;
 }
 
-String::Type CommentsFrame::textEncoding() const
+TagLib::String::Type CommentsFrame::textEncoding() const
 {
   return d->textEncoding;
 }
@@ -6998,9 +6998,9 @@ GeneralEncapsulatedObjectFrame::~GeneralEncapsulatedObjectFrame()
   delete d;
 }
 
-String GeneralEncapsulatedObjectFrame::toString() const
+TagLib::String GeneralEncapsulatedObjectFrame::toString() const
 {
-  String text = "[" + d->mimeType + "]";
+  TagLib::String text = "[" + d->mimeType + "]";
 
   if(!d->fileName.isEmpty())
 	text += " " + d->fileName;
@@ -7011,7 +7011,7 @@ String GeneralEncapsulatedObjectFrame::toString() const
   return text;
 }
 
-String::Type GeneralEncapsulatedObjectFrame::textEncoding() const
+TagLib::String::Type GeneralEncapsulatedObjectFrame::textEncoding() const
 {
   return d->textEncoding;
 }
@@ -7021,7 +7021,7 @@ void GeneralEncapsulatedObjectFrame::setTextEncoding(String::Type encoding)
   d->textEncoding = encoding;
 }
 
-String GeneralEncapsulatedObjectFrame::mimeType() const
+TagLib::String GeneralEncapsulatedObjectFrame::mimeType() const
 {
   return d->mimeType;
 }
@@ -7031,7 +7031,7 @@ void GeneralEncapsulatedObjectFrame::setMimeType(const String &type)
   d->mimeType = type;
 }
 
-String GeneralEncapsulatedObjectFrame::fileName() const
+TagLib::String GeneralEncapsulatedObjectFrame::fileName() const
 {
   return d->fileName;
 }
@@ -7041,7 +7041,7 @@ void GeneralEncapsulatedObjectFrame::setFileName(const String &name)
   d->fileName = name;
 }
 
-String GeneralEncapsulatedObjectFrame::description() const
+TagLib::String GeneralEncapsulatedObjectFrame::description() const
 {
   return d->description;
 }
@@ -7165,12 +7165,12 @@ PopularimeterFrame::~PopularimeterFrame()
   delete d;
 }
 
-String PopularimeterFrame::toString() const
+TagLib::String PopularimeterFrame::toString() const
 {
   return d->email + " rating=" + String::number(d->rating) + " counter=" + String::number(d->counter);
 }
 
-String PopularimeterFrame::email() const
+TagLib::String PopularimeterFrame::email() const
 {
   return d->email;
 }
@@ -7296,12 +7296,12 @@ PrivateFrame::~PrivateFrame()
   delete d;
 }
 
-String PrivateFrame::toString() const
+TagLib::String PrivateFrame::toString() const
 {
   return d->owner;
 }
 
-String PrivateFrame::owner() const
+TagLib::String PrivateFrame::owner() const
 {
   return d->owner;
 }
@@ -7430,7 +7430,7 @@ RelativeVolumeFrame::~RelativeVolumeFrame()
   delete d;
 }
 
-String RelativeVolumeFrame::toString() const
+TagLib::String RelativeVolumeFrame::toString() const
 {
   return d->identification;
 }
@@ -7520,7 +7520,7 @@ void RelativeVolumeFrame::setPeakVolume(const PeakVolume &peak)
   setPeakVolume(peak, MasterVolume);
 }
 
-String RelativeVolumeFrame::identification() const
+TagLib::String RelativeVolumeFrame::identification() const
 {
   return d->identification;
 }
@@ -7686,7 +7686,7 @@ void TextIdentificationFrame::setText(const String &s)
   d->fieldList = s;
 }
 
-String TextIdentificationFrame::toString() const
+TagLib::String TextIdentificationFrame::toString() const
 {
   return d->fieldList.toString();
 }
@@ -7696,7 +7696,7 @@ StringList TextIdentificationFrame::fieldList() const
   return d->fieldList;
 }
 
-String::Type TextIdentificationFrame::textEncoding() const
+TagLib::String::Type TextIdentificationFrame::textEncoding() const
 {
   return d->textEncoding;
 }
@@ -7916,12 +7916,12 @@ UserTextIdentificationFrame::UserTextIdentificationFrame(const String &descripti
   setText(values);
 }
 
-String UserTextIdentificationFrame::toString() const
+TagLib::String UserTextIdentificationFrame::toString() const
 {
   return "[" + description() + "] " + fieldList().toString();
 }
 
-String UserTextIdentificationFrame::description() const
+TagLib::String UserTextIdentificationFrame::description() const
 {
   return !TextIdentificationFrame::fieldList().isEmpty()
 	? TextIdentificationFrame::fieldList().front()
@@ -8070,7 +8070,7 @@ UniqueFileIdentifierFrame::~UniqueFileIdentifierFrame()
   delete d;
 }
 
-String UniqueFileIdentifierFrame::owner() const
+TagLib::String UniqueFileIdentifierFrame::owner() const
 {
 	return d->owner;
 }
@@ -8090,9 +8090,9 @@ void UniqueFileIdentifierFrame::setIdentifier(const ByteVector &v)
   d->identifier = v;
 }
 
-String UniqueFileIdentifierFrame::toString() const
+TagLib::String UniqueFileIdentifierFrame::toString() const
 {
-  return String::null;
+  return TagLib::String::null;
 }
 
 void UniqueFileIdentifierFrame::parseFields(const ByteVector &data)
@@ -8173,9 +8173,9 @@ UnknownFrame::~UnknownFrame()
   delete d;
 }
 
-String UnknownFrame::toString() const
+TagLib::String UnknownFrame::toString() const
 {
-  return String::null;
+  return TagLib::String::null;
 }
 
 ByteVector UnknownFrame::data() const
@@ -8267,7 +8267,7 @@ UnsynchronizedLyricsFrame::~UnsynchronizedLyricsFrame()
   delete d;
 }
 
-String UnsynchronizedLyricsFrame::toString() const
+TagLib::String UnsynchronizedLyricsFrame::toString() const
 {
   return d->text;
 }
@@ -8277,12 +8277,12 @@ ByteVector UnsynchronizedLyricsFrame::language() const
   return d->language;
 }
 
-String UnsynchronizedLyricsFrame::description() const
+TagLib::String UnsynchronizedLyricsFrame::description() const
 {
   return d->description;
 }
 
-String UnsynchronizedLyricsFrame::text() const
+TagLib::String UnsynchronizedLyricsFrame::text() const
 {
   return d->text;
 }
@@ -8302,7 +8302,7 @@ void UnsynchronizedLyricsFrame::setText(const String &s)
   d->text = s;
 }
 
-String::Type UnsynchronizedLyricsFrame::textEncoding() const
+TagLib::String::Type UnsynchronizedLyricsFrame::textEncoding() const
 {
   return d->textEncoding;
 }
@@ -8444,7 +8444,7 @@ void UrlLinkFrame::setUrl(const String &s)
   d->url = s;
 }
 
-String UrlLinkFrame::url() const
+TagLib::String UrlLinkFrame::url() const
 {
   return d->url;
 }
@@ -8454,7 +8454,7 @@ void UrlLinkFrame::setText(const String &s)
   setUrl(s);
 }
 
-String UrlLinkFrame::toString() const
+TagLib::String UrlLinkFrame::toString() const
 {
   return url();
 }
@@ -8506,12 +8506,12 @@ UserUrlLinkFrame::~UserUrlLinkFrame()
   delete d;
 }
 
-String UserUrlLinkFrame::toString() const
+TagLib::String UserUrlLinkFrame::toString() const
 {
   return "[" + description() + "] " + url();
 }
 
-String::Type UserUrlLinkFrame::textEncoding() const
+TagLib::String::Type UserUrlLinkFrame::textEncoding() const
 {
   return d->textEncoding;
 }
@@ -8521,7 +8521,7 @@ void UserUrlLinkFrame::setTextEncoding(String::Type encoding)
   d->textEncoding = encoding;
 }
 
-String UserUrlLinkFrame::description() const
+TagLib::String UserUrlLinkFrame::description() const
 {
   return d->description;
 }
@@ -9731,28 +9731,28 @@ Ogg::XiphComment::~XiphComment()
   delete d;
 }
 
-String Ogg::XiphComment::title() const
+TagLib::String Ogg::XiphComment::title() const
 {
   if(d->fieldListMap["TITLE"].isEmpty())
 	return String::null;
   return d->fieldListMap["TITLE"].front();
 }
 
-String Ogg::XiphComment::artist() const
+TagLib::String Ogg::XiphComment::artist() const
 {
   if(d->fieldListMap["ARTIST"].isEmpty())
 	return String::null;
   return d->fieldListMap["ARTIST"].front();
 }
 
-String Ogg::XiphComment::album() const
+TagLib::String Ogg::XiphComment::album() const
 {
   if(d->fieldListMap["ALBUM"].isEmpty())
 	return String::null;
   return d->fieldListMap["ALBUM"].front();
 }
 
-String Ogg::XiphComment::comment() const
+TagLib::String Ogg::XiphComment::comment() const
 {
   if(!d->fieldListMap["DESCRIPTION"].isEmpty()) {
 	d->commentField = "DESCRIPTION";
@@ -9767,7 +9767,7 @@ String Ogg::XiphComment::comment() const
   return String::null;
 }
 
-String Ogg::XiphComment::genre() const
+TagLib::String Ogg::XiphComment::genre() const
 {
   if(d->fieldListMap["GENRE"].isEmpty())
 	return String::null;
@@ -9899,7 +9899,7 @@ PropertyMap Ogg::XiphComment::setProperties(const PropertyMap &properties)
   return PropertyMap();
 }
 
-String Ogg::XiphComment::vendorID() const
+TagLib::String Ogg::XiphComment::vendorID() const
 {
   return d->vendorID;
 }
@@ -11102,7 +11102,7 @@ void FLAC::Picture::setType(FLAC::Picture::Type type)
   d->type = type;
 }
 
-String FLAC::Picture::mimeType() const
+TagLib::String FLAC::Picture::mimeType() const
 {
   return d->mimeType;
 }
@@ -11112,7 +11112,7 @@ void FLAC::Picture::setMimeType(const String &mimeType)
   d->mimeType = mimeType;
 }
 
-String FLAC::Picture::description() const
+TagLib::String FLAC::Picture::description() const
 {
   return d->description;
 }
@@ -13209,7 +13209,7 @@ MP4::Tag::saveExisting(ByteVector &data, AtomList &path)
   }
 }
 
-String
+TagLib::String
 MP4::Tag::title() const
 {
   if(d->items.contains("\251nam"))
@@ -13217,7 +13217,7 @@ MP4::Tag::title() const
   return String::null;
 }
 
-String
+TagLib::String
 MP4::Tag::artist() const
 {
   if(d->items.contains("\251ART"))
@@ -13225,7 +13225,7 @@ MP4::Tag::artist() const
   return String::null;
 }
 
-String
+TagLib::String
 MP4::Tag::album() const
 {
   if(d->items.contains("\251alb"))
@@ -13233,7 +13233,7 @@ MP4::Tag::album() const
   return String::null;
 }
 
-String
+TagLib::String
 MP4::Tag::comment() const
 {
   if(d->items.contains("\251cmt"))
@@ -13241,7 +13241,7 @@ MP4::Tag::comment() const
   return String::null;
 }
 
-String
+TagLib::String
 MP4::Tag::genre() const
 {
   if(d->items.contains("\251gen"))
@@ -13863,35 +13863,35 @@ ByteVector APE::Tag::fileIdentifier()
   return ByteVector::fromCString("APETAGEX");
 }
 
-String APE::Tag::title() const
+TagLib::String APE::Tag::title() const
 {
   if(d->itemListMap["TITLE"].isEmpty())
 	return String::null;
   return d->itemListMap["TITLE"].toString();
 }
 
-String APE::Tag::artist() const
+TagLib::String APE::Tag::artist() const
 {
   if(d->itemListMap["ARTIST"].isEmpty())
 	return String::null;
   return d->itemListMap["ARTIST"].toString();
 }
 
-String APE::Tag::album() const
+TagLib::String APE::Tag::album() const
 {
   if(d->itemListMap["ALBUM"].isEmpty())
 	return String::null;
   return d->itemListMap["ALBUM"].toString();
 }
 
-String APE::Tag::comment() const
+TagLib::String APE::Tag::comment() const
 {
   if(d->itemListMap["COMMENT"].isEmpty())
 	return String::null;
   return d->itemListMap["COMMENT"].toString();
 }
 
-String APE::Tag::genre() const
+TagLib::String APE::Tag::genre() const
 {
   if(d->itemListMap["GENRE"].isEmpty())
 	return String::null;
@@ -14480,7 +14480,7 @@ APE::Item::ItemTypes APE::Item::type() const
   return d->type;
 }
 
-String APE::Item::key() const
+TagLib::String APE::Item::key() const
 {
   return d->key;
 }
@@ -14567,7 +14567,7 @@ StringList APE::Item::values() const
   return d->text;
 }
 
-String APE::Item::toString() const
+TagLib::String APE::Item::toString() const
 {
   return isEmpty() ? String::null : d->text.front();
 }
@@ -16375,34 +16375,34 @@ ASF::Tag::~Tag()
 	delete d;
 }
 
-String ASF::Tag::title() const
+TagLib::String ASF::Tag::title() const
 {
   return d->title;
 }
 
-String ASF::Tag::artist() const
+TagLib::String ASF::Tag::artist() const
 {
   return d->artist;
 }
 
-String ASF::Tag::album() const
+TagLib::String ASF::Tag::album() const
 {
   if(d->attributeListMap.contains("WM/AlbumTitle"))
 	return d->attributeListMap["WM/AlbumTitle"][0].toString();
   return String::null;
 }
 
-String ASF::Tag::copyright() const
+TagLib::String ASF::Tag::copyright() const
 {
   return d->copyright;
 }
 
-String ASF::Tag::comment() const
+TagLib::String ASF::Tag::comment() const
 {
   return d->comment;
 }
 
-String ASF::Tag::rating() const
+TagLib::String ASF::Tag::rating() const
 {
   return d->rating;
 }
@@ -16428,7 +16428,7 @@ unsigned int ASF::Tag::track() const
   return 0;
 }
 
-String ASF::Tag::genre() const
+TagLib::String ASF::Tag::genre() const
 {
   if(d->attributeListMap.contains("WM/Genre"))
 	return d->attributeListMap["WM/Genre"][0].toString();
@@ -17099,7 +17099,7 @@ long long ASF::File::readQWORD(bool *ok)
   return v.toLongLong(false);
 }
 
-String ASF::File::readString(int length)
+TagLib::String ASF::File::readString(int length)
 {
   ByteVector data = readBlock(length);
   unsigned int size = data.size();
@@ -17370,7 +17370,7 @@ ASF::Attribute::AttributeTypes ASF::Attribute::type() const
   return d->type;
 }
 
-String ASF::Attribute::toString() const
+TagLib::String ASF::Attribute::toString() const
 {
   return d->stringValue;
 }
@@ -17407,7 +17407,7 @@ ASF::Picture ASF::Attribute::toPicture() const
   return d->pictureValue;
 }
 
-String ASF::Attribute::parse(ASF::File &f, int kind)
+TagLib::String ASF::Attribute::parse(ASF::File &f, int kind)
 {
   uint size, nameLength;
   String name;
@@ -17648,7 +17648,7 @@ bool ASF::Picture::isValid() const
   return d->valid;
 }
 
-String ASF::Picture::mimeType() const
+TagLib::String ASF::Picture::mimeType() const
 {
   return d->mimeType;
 }
@@ -17668,7 +17668,7 @@ void ASF::Picture::setType(const ASF::Picture::Type& t)
   d->type = t;
 }
 
-String ASF::Picture::description() const
+TagLib::String ASF::Picture::description() const
 {
   return d->description;
 }
@@ -18988,27 +18988,27 @@ Mod::Tag::~Tag()
   delete d;
 }
 
-String Mod::Tag::title() const
+TagLib::String Mod::Tag::title() const
 {
   return d->title;
 }
 
-String Mod::Tag::artist() const
+TagLib::String Mod::Tag::artist() const
 {
   return String::null;
 }
 
-String Mod::Tag::album() const
+TagLib::String Mod::Tag::album() const
 {
   return String::null;
 }
 
-String Mod::Tag::comment() const
+TagLib::String Mod::Tag::comment() const
 {
   return d->comment;
 }
 
-String Mod::Tag::genre() const
+TagLib::String Mod::Tag::genre() const
 {
   return String::null;
 }
@@ -19023,7 +19023,7 @@ TagLib::uint Mod::Tag::track() const
   return 0;
 }
 
-String Mod::Tag::trackerName() const
+TagLib::String Mod::Tag::trackerName() const
 {
   return d->trackerName;
 }
@@ -20316,11 +20316,11 @@ protected:
   T &value;
 };
 
-class StringReader : public ValueReader<String>
+class StringReader : public ValueReader<TagLib::String>
 {
 public:
-  StringReader(String &string, uint size) :
-	ValueReader<String>(string), m_size(size)
+  StringReader(TagLib::String &string, uint size) :
+	ValueReader<TagLib::String>(string), m_size(size)
   {
   }
 
@@ -20448,7 +20448,7 @@ public:
   /*!
    * Read a string of \a size characters (bytes) into \a string.
    */
-  StructReader &string(String &string, uint size)
+  StructReader &string(TagLib::String &string, uint size)
   {
 	m_readers.append(new StringReader(string, size));
 	return *this;
@@ -21106,7 +21106,7 @@ StringList::~StringList()
 
 }
 
-String StringList::toString(const String &separator) const
+TagLib::String StringList::toString(const String &separator) const
 {
   String s;
 
