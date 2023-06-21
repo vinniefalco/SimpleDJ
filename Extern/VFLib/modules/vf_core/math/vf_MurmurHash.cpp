@@ -32,7 +32,7 @@
 
 // http://code.google.com/p/smhasher/
 
-#include "modules/juce_core/system/juce_TargetPlatform.h"
+#include <JuceHeader.h>
 
 namespace Murmur {
 

@@ -38,7 +38,7 @@
 
 #include "AppConfig.h"
 
-#include "modules/juce_core/system/juce_TargetPlatform.h"
+#include <JuceHeader.h>
 
 #if JUCE_MSVC
 #pragma warning (push)

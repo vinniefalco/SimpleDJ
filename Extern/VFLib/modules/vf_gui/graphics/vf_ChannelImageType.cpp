@@ -48,17 +48,17 @@ ChannelImageType::ChannelPixelData::~ChannelPixelData ()
 {
 }
 
-LowLevelGraphicsContext* ChannelImageType::ChannelPixelData::createLowLevelContext ()
+std::unique_ptr<LowLevelGraphicsContext> ChannelImageType::ChannelPixelData::createLowLevelContext ()
 {
-  return new LowLevelGraphicsSoftwareRenderer (Image (this));
+  return std::make_unique<LowLevelGraphicsSoftwareRenderer> (Image (this));
 }
 
-ImagePixelData* ChannelImageType::ChannelPixelData::clone ()
+ImagePixelData::Ptr ChannelImageType::ChannelPixelData::clone ()
 {
   return this;
 }
 
-ImageType* ChannelImageType::ChannelPixelData::createType() const
+std::unique_ptr<ImageType> ChannelImageType::ChannelPixelData::createType() const
 {
   jassertfalse;
   return nullptr;

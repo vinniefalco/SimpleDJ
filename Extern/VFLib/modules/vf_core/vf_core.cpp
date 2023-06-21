@@ -40,7 +40,7 @@
 
 #include "vf_core.h"
 
-#include "modules/juce_gui_basics/juce_gui_basics.h"
+#include <JuceHeader.h>
 
 #if JUCE_MSVC && _DEBUG
 #include <crtdbg.h>

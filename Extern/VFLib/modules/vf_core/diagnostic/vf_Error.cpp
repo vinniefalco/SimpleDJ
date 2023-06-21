@@ -62,7 +62,7 @@ Error& Error::operator= (const Error& other)
   m_sourceFileName = other.m_sourceFileName;
   m_lineNumber = other.m_lineNumber;
   m_needsToBeChecked = true;
-  m_what = String::empty;
+  m_what = String();
   m_szWhat = 0;
 
   other.m_needsToBeChecked = false;
@@ -131,11 +131,11 @@ Error& Error::fail (const char* sourceFileName,
 void Error::reset ()
 {
   m_code = success;
-  m_reasonText = String::empty;
-  m_sourceFileName = String::empty;
+  m_reasonText = String();
+  m_sourceFileName = String();
   m_lineNumber = 0;
   m_needsToBeChecked = true;
-  m_what = String::empty;
+  m_what = String();
   m_szWhat = 0;
 }
 

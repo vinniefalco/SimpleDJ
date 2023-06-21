@@ -74,7 +74,7 @@ CDeck::CDeck (int deckNumber, Deck::Ptr deck)
   // Deck label
 
   {
-    Label* c = new Label (String::empty, String::charToString ('A' + deckNumber));
+    Label* c = new Label (String(), String::charToString('A' + deckNumber));
     c->setFont (18);
     c->setColour (Label::textColourId, Colours::black);
     c->setColour (Label::backgroundColourId, Colours::yellow.darker ());
@@ -92,7 +92,7 @@ CDeck::CDeck (int deckNumber, Deck::Ptr deck)
   addAndMakeVisible (m_speedControl);
 
   {
-    Label* c = new Label (String::empty, "Drop a music file.");
+    Label* c = new Label (String(), "Drop a music file.");
     c->setFont (24);
     c->setColour (Label::textColourId, Colours::white);
     c->setJustificationType (Justification::centred);
@@ -188,7 +188,7 @@ void CDeck::filesDropped (const StringArray& files, int x, int y)
       {
         m_deck->selectPlayable (playable);
 
-        m_text->setText (String::empty, false);
+        m_text->setText (String(), juce::dontSendNotification);
       }
       else
       {
@@ -205,14 +205,14 @@ void CDeck::onDeckSelect (Deck* deck, Playable::Ptr playable)
 {
   if (playable != nullptr)
   {
-    m_title->setText  (playable->getMetadata().title, true);
-    m_artist->setText (playable->getMetadata().artist, true);
-    m_album->setText  (playable->getMetadata().album, true);
+    m_title->setText  (playable->getMetadata().title, juce::sendNotification);
+    m_artist->setText (playable->getMetadata().artist, juce::sendNotification);
+    m_album->setText  (playable->getMetadata().album, juce::sendNotification);
   }
   else
   {
-    m_title->setText  (String::empty, true);
-    m_artist->setText (String::empty, true);
-    m_album->setText  (String::empty, true);
+    m_title->setText  (String(), juce::sendNotification);
+    m_artist->setText (String(), juce::sendNotification);
+    m_album->setText  (String(), juce::sendNotification);
   }
 }

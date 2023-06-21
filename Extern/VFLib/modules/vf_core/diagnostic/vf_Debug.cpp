@@ -51,7 +51,7 @@ void breakPoint ()
 #else
 void breakPoint ()
 {
-  jassertfalse
+  jassertfalse;
 }
 
 #endif

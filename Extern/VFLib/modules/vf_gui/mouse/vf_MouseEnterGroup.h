@@ -136,7 +136,7 @@ private:
 private:
   struct SavedMouseEvent
   {
-    SavedMouseEvent (MouseEvent const& e)
+    SavedMouseEvent (MouseEvent& e)
     {
       source = &e.source;
       position = Point <int> (e.x, e.y);

@@ -205,7 +205,7 @@ public:
   void processSource (int sourceIndex)
   {
     AudioSampleBuffer sourceBuffer (
-      m_sourceBuffer.getArrayOfChannels () + 2 * sourceIndex,
+      m_sourceBuffer.getArrayOfWritePointers () + 2 * sourceIndex,
       2, m_sourceBuffer.getNumSamples ());
 
     m_sources [sourceIndex]->getNextAudioBlock (AudioSourceChannelInfo (sourceBuffer));
@@ -236,12 +236,12 @@ public:
       // Add Sources to output.
       if (m_sources.size () > 0)
       {
-        outputBuffer.copyFrom (0, 0, m_sourceBuffer.getArrayOfChannels ()[0], numSamples);
-        outputBuffer.copyFrom (1, 0, m_sourceBuffer.getArrayOfChannels ()[1], numSamples);
+        outputBuffer.copyFrom (0, 0, m_sourceBuffer.getArrayOfReadPointers()[0], numSamples);
+        outputBuffer.copyFrom (1, 0, m_sourceBuffer.getArrayOfReadPointers()[1], numSamples);
         for (int i = 1; i < m_sources.size (); ++i)
         {
-          outputBuffer.addFrom (0, 0, m_sourceBuffer.getArrayOfChannels ()[2 * i], numSamples);
-          outputBuffer.addFrom (1, 0, m_sourceBuffer.getArrayOfChannels ()[2 * i + 1], numSamples);
+          outputBuffer.addFrom (0, 0, m_sourceBuffer.getArrayOfReadPointers()[2 * i], numSamples);
+          outputBuffer.addFrom (1, 0, m_sourceBuffer.getArrayOfReadPointers()[2 * i + 1], numSamples);
         }
       }
     }

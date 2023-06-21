@@ -250,7 +250,7 @@ public:
     Levels newLevels;
 
     m_peakDetector->process (bufferToFill.numSamples,
-      bufferToFill.buffer->getArrayOfChannels ());
+      bufferToFill.buffer->getArrayOfWritePointers());
 
     newLevels.left.peak = (*m_peakDetector)[0];
     newLevels.left.clip = false;
