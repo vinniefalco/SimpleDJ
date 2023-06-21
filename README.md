@@ -6,6 +6,7 @@ This should be considered a reference codebase for understanding the lengths
 mid-era C++ developers had to go through prior to the arrival of modern C++.
 (C++'11 and onward). Read the following JUCE forum posts before using this
 codebase (i.e. VFLib usage) for study:
+
 http://www.juce.com/forum/topic/vflib-significant-defects-found
 https://forum.juce.com/t/vflib-vs-beast/11428
 
