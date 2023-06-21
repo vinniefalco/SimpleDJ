@@ -114,7 +114,7 @@ CDeck::CDeck (int deckNumber, Deck::Ptr deck)
         if (m_deck->getIsLoaded())
         {
             //Deck should message Mixer to addSource()
-            m_deck->param["play"].setValue(1.0f);
+            m_deck->param["play"].setValue(1.0f); //This is probably not the intended mechanism
         }
     };
     addToLayout (c, anchorBottomLeft);
