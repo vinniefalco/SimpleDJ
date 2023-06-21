@@ -1,3 +1,5 @@
+//TODO: This should be substituted for https://github.com/taglib/taglib
+
 /*
   ==============================================================================
 
@@ -1793,22 +1795,22 @@ void TagLib::File::setValid(bool valid)
 
 using namespace TagLib;
 
-class Tag::TagPrivate
+class TagLib::Tag::TagPrivate
 {
 
 };
 
-Tag::Tag()
+TagLib::Tag::Tag()
 {
 
 }
 
-Tag::~Tag()
+TagLib::Tag::~Tag()
 {
 
 }
 
-bool Tag::isEmpty() const
+bool TagLib::Tag::isEmpty() const
 {
   return (title().isEmpty() &&
 		  artist().isEmpty() &&
@@ -1819,7 +1821,7 @@ bool Tag::isEmpty() const
 		  track() == 0);
 }
 
-PropertyMap Tag::properties() const
+PropertyMap TagLib::Tag::properties() const
 {
   PropertyMap map;
   if(!(title().isNull()))
@@ -1839,11 +1841,11 @@ PropertyMap Tag::properties() const
   return map;
 }
 
-void Tag::removeUnsupportedProperties(const StringList&)
+void TagLib::Tag::removeUnsupportedProperties(const StringList&)
 {
 }
 
-PropertyMap Tag::setProperties(const PropertyMap &origProps)
+PropertyMap TagLib::Tag::setProperties(const PropertyMap &origProps)
 {
   PropertyMap properties(origProps);
   properties.removeEmpty();
@@ -1914,7 +1916,7 @@ PropertyMap Tag::setProperties(const PropertyMap &origProps)
   return properties;
 }
 
-void Tag::duplicate(const Tag *source, Tag *target, bool overwrite) // static
+void TagLib::Tag::duplicate(const Tag *source, Tag *target, bool overwrite) // static
 {
   if(overwrite) {
 	target->setTitle(source->title());
@@ -2120,12 +2122,12 @@ TagUnion::~TagUnion()
   delete d;
 }
 
-Tag *TagUnion::operator[](int index) const
+TagLib::Tag *TagUnion::operator[](int index) const
 {
   return tag(index);
 }
 
-Tag *TagUnion::tag(int index) const
+TagLib::Tag *TagUnion::tag(int index) const
 {
   return d->tags[index];
 }
@@ -2293,7 +2295,7 @@ FileRef::~FileRef()
 	delete d;
 }
 
-Tag *FileRef::tag() const
+TagLib::Tag *FileRef::tag() const
 {
   if(isNull()) {
 	debug("FileRef::tag() - Called without a valid file.");
@@ -5004,7 +5006,7 @@ ExtendedHeader *ID3v2::Tag::extendedHeader() const
   return d->extendedHeader;
 }
 
-Footer *ID3v2::Tag::footer() const
+TagLib::ID3v2::Footer *ID3v2::Tag::footer() const
 {
   return d->footer;
 }
@@ -6436,32 +6438,32 @@ bool Frame::Header::frameAlterPreservation() const
  *   License Version 1.1.  You may obtain a copy of the License at         *
  *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
-
+//TODO: Determine why these calls to 'using namespace' worked in older C++ but not C++ '17
 using namespace TagLib;
 using namespace ID3v2;
 
-class Footer::FooterPrivate
+class TagLib::ID3v2::Footer::FooterPrivate
 {
 public:
   static const uint size = 10;
 };
 
-Footer::Footer()
+TagLib::ID3v2::Footer::Footer()
 {
 
 }
 
-Footer::~Footer()
+TagLib::ID3v2::Footer::~Footer()
 {
 
 }
 
-TagLib::uint Footer::size()
+TagLib::uint TagLib::ID3v2::Footer::size()
 {
   return FooterPrivate::size;
 }
 
-ByteVector Footer::render(const Header *header) const
+ByteVector TagLib::ID3v2::Footer::render(const Header *header) const
 {
 	ByteVector headerData = header->render();
 	headerData[0] = '3';
@@ -10067,7 +10069,7 @@ void Ogg::XiphComment::parse(const ByteVector &data)
 
 using namespace TagLib;
 
-class Vorbis::File::FilePrivate
+class TagLib::Vorbis::File::FilePrivate
 {
 public:
   FilePrivate() :
@@ -10096,46 +10098,46 @@ namespace TagLib {
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-Vorbis::File::File(FileName file, bool readProperties,
+TagLib::Vorbis::File::File(FileName file, bool readProperties,
 				   Properties::ReadStyle propertiesStyle) : Ogg::File(file)
 {
   d = new FilePrivate;
   read(readProperties, propertiesStyle);
 }
 
-Vorbis::File::File(IOStream *stream, bool readProperties,
+TagLib::Vorbis::File::File(IOStream *stream, bool readProperties,
 				   Properties::ReadStyle propertiesStyle) : Ogg::File(stream)
 {
   d = new FilePrivate;
   read(readProperties, propertiesStyle);
 }
 
-Vorbis::File::~File()
+TagLib::Vorbis::File::~File()
 {
   delete d;
 }
 
-Ogg::XiphComment *Vorbis::File::tag() const
+Ogg::XiphComment * TagLib::Vorbis::File::tag() const
 {
   return d->comment;
 }
 
-PropertyMap Vorbis::File::properties() const
+PropertyMap TagLib::Vorbis::File::properties() const
 {
   return d->comment->properties();
 }
 
-PropertyMap Vorbis::File::setProperties(const PropertyMap &properties)
+PropertyMap TagLib::Vorbis::File::setProperties(const PropertyMap &properties)
 {
   return d->comment->setProperties(properties);
 }
 
-Vorbis::Properties *Vorbis::File::audioProperties() const
+TagLib::Vorbis::Properties * TagLib::Vorbis::File::audioProperties() const
 {
   return d->properties;
 }
 
-bool Vorbis::File::save()
+bool TagLib::Vorbis::File::save()
 {
   ByteVector v(vorbisCommentHeaderID);
 
@@ -10152,7 +10154,7 @@ bool Vorbis::File::save()
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
-void Vorbis::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
+void TagLib::Vorbis::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
 {
   ByteVector commentHeaderData = packet(1);
 
@@ -10194,7 +10196,7 @@ void Vorbis::File::read(bool readProperties, Properties::ReadStyle propertiesSty
 
 using namespace TagLib;
 
-class Vorbis::Properties::PropertiesPrivate
+class TagLib::Vorbis::Properties::PropertiesPrivate
 {
 public:
   PropertiesPrivate(File *f, ReadStyle s) :
@@ -10233,53 +10235,53 @@ namespace TagLib {
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-Vorbis::Properties::Properties(File *file, ReadStyle style) : AudioProperties(style)
+TagLib::Vorbis::Properties::Properties(File *file, ReadStyle style) : AudioProperties(style)
 {
   d = new PropertiesPrivate(file, style);
   read();
 }
 
-Vorbis::Properties::~Properties()
+TagLib::Vorbis::Properties::~Properties()
 {
   delete d;
 }
 
-int Vorbis::Properties::length() const
+int TagLib::Vorbis::Properties::length() const
 {
   return d->length;
 }
 
-int Vorbis::Properties::bitrate() const
+int TagLib::Vorbis::Properties::bitrate() const
 {
   return int(float(d->bitrate) / float(1000) + 0.5);
 }
 
-int Vorbis::Properties::sampleRate() const
+int TagLib::Vorbis::Properties::sampleRate() const
 {
   return d->sampleRate;
 }
 
-int Vorbis::Properties::channels() const
+int TagLib::Vorbis::Properties::channels() const
 {
   return d->channels;
 }
 
-int Vorbis::Properties::vorbisVersion() const
+int TagLib::Vorbis::Properties::vorbisVersion() const
 {
   return d->vorbisVersion;
 }
 
-int Vorbis::Properties::bitrateMaximum() const
+int TagLib::Vorbis::Properties::bitrateMaximum() const
 {
   return d->bitrateMaximum;
 }
 
-int Vorbis::Properties::bitrateNominal() const
+int TagLib::Vorbis::Properties::bitrateNominal() const
 {
   return d->bitrateNominal;
 }
 
-int Vorbis::Properties::bitrateMinimum() const
+int TagLib::Vorbis::Properties::bitrateMinimum() const
 {
   return d->bitrateMinimum;
 }
@@ -10288,7 +10290,7 @@ int Vorbis::Properties::bitrateMinimum() const
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
-void Vorbis::Properties::read()
+void TagLib::Vorbis::Properties::read()
 {
   // Get the identification header from the Ogg implementation.
 
@@ -10452,7 +10454,7 @@ namespace
   enum { LastBlockFlag = 0x80 };
 }
 
-class FLAC::File::FilePrivate
+class TagLib::FLAC::File::FilePrivate
 {
 public:
   FilePrivate() :
@@ -10506,7 +10508,7 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-FLAC::File::File(FileName file, bool readProperties,
+TagLib::FLAC::File::File(FileName file, bool readProperties,
 				 Properties::ReadStyle propertiesStyle) :
   TagLib::File(file)
 {
@@ -10514,7 +10516,7 @@ FLAC::File::File(FileName file, bool readProperties,
   read(readProperties, propertiesStyle);
 }
 
-FLAC::File::File(FileName file, ID3v2::FrameFactory *frameFactory,
+TagLib::FLAC::File::File(FileName file, ID3v2::FrameFactory *frameFactory,
 				 bool readProperties, Properties::ReadStyle propertiesStyle) :
   TagLib::File(file)
 {
@@ -10523,7 +10525,7 @@ FLAC::File::File(FileName file, ID3v2::FrameFactory *frameFactory,
   read(readProperties, propertiesStyle);
 }
 
-FLAC::File::File(IOStream *stream, ID3v2::FrameFactory *frameFactory,
+TagLib::FLAC::File::File(IOStream *stream, ID3v2::FrameFactory *frameFactory,
 				 bool readProperties, Properties::ReadStyle propertiesStyle) :
   TagLib::File(stream)
 {
@@ -10532,17 +10534,17 @@ FLAC::File::File(IOStream *stream, ID3v2::FrameFactory *frameFactory,
   read(readProperties, propertiesStyle);
 }
 
-FLAC::File::~File()
+TagLib::FLAC::File::~File()
 {
   delete d;
 }
 
-TagLib::Tag *FLAC::File::tag() const
+TagLib::Tag * TagLib::FLAC::File::tag() const
 {
   return &d->tag;
 }
 
-PropertyMap FLAC::File::properties() const
+PropertyMap TagLib::FLAC::File::properties() const
 {
   // once Tag::properties() is virtual, this case distinction could actually be done
   // within TagUnion.
@@ -10555,7 +10557,7 @@ PropertyMap FLAC::File::properties() const
   return PropertyMap();
 }
 
-void FLAC::File::removeUnsupportedProperties(const StringList &unsupported)
+void TagLib::FLAC::File::removeUnsupportedProperties(const StringList &unsupported)
 {
   if(d->hasXiphComment)
 	d->tag.access<Ogg::XiphComment>(FlacXiphIndex, false)->removeUnsupportedProperties(unsupported);
@@ -10565,7 +10567,7 @@ void FLAC::File::removeUnsupportedProperties(const StringList &unsupported)
 	d->tag.access<ID3v1::Tag>(FlacID3v1Index, false)->removeUnsupportedProperties(unsupported);
 }
 
-PropertyMap FLAC::File::setProperties(const PropertyMap &properties)
+PropertyMap TagLib::FLAC::File::setProperties(const PropertyMap &properties)
 {
   if(d->hasXiphComment)
 	return d->tag.access<Ogg::XiphComment>(FlacXiphIndex, false)->setProperties(properties);
@@ -10577,12 +10579,12 @@ PropertyMap FLAC::File::setProperties(const PropertyMap &properties)
 	return d->tag.access<Ogg::XiphComment>(FlacXiphIndex, true)->setProperties(properties);
 }
 
-FLAC::Properties *FLAC::File::audioProperties() const
+TagLib::FLAC::Properties * TagLib::FLAC::File::audioProperties() const
 {
   return d->properties;
 }
 
-bool FLAC::File::save()
+bool TagLib::FLAC::File::save()
 {
   if(readOnly()) {
 	debug("FLAC::File::save() - Cannot save to a read only file.");
@@ -10675,7 +10677,7 @@ bool FLAC::File::save()
   return true;
 }
 
-ID3v2::Tag *FLAC::File::ID3v2Tag(bool create)
+ID3v2::Tag * TagLib::FLAC::File::ID3v2Tag(bool create)
 {
   if(!create || d->tag[FlacID3v2Index])
 	return static_cast<ID3v2::Tag *>(d->tag[FlacID3v2Index]);
@@ -10684,17 +10686,17 @@ ID3v2::Tag *FLAC::File::ID3v2Tag(bool create)
   return static_cast<ID3v2::Tag *>(d->tag[FlacID3v2Index]);
 }
 
-ID3v1::Tag *FLAC::File::ID3v1Tag(bool create)
+ID3v1::Tag * TagLib::FLAC::File::ID3v1Tag(bool create)
 {
   return d->tag.access<ID3v1::Tag>(FlacID3v1Index, create);
 }
 
-Ogg::XiphComment *FLAC::File::xiphComment(bool create)
+Ogg::XiphComment * TagLib::FLAC::File::xiphComment(bool create)
 {
   return d->tag.access<Ogg::XiphComment>(FlacXiphIndex, create);
 }
 
-void FLAC::File::setID3v2FrameFactory(const ID3v2::FrameFactory *factory)
+void TagLib::FLAC::File::setID3v2FrameFactory(const ID3v2::FrameFactory *factory)
 {
   d->ID3v2FrameFactory = factory;
 }
@@ -10703,7 +10705,7 @@ void FLAC::File::setID3v2FrameFactory(const ID3v2::FrameFactory *factory)
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
-void FLAC::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
+void TagLib::FLAC::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
 {
   // Look for an ID3v2 tag
 
@@ -10746,22 +10748,22 @@ void FLAC::File::read(bool readProperties, Properties::ReadStyle propertiesStyle
 	d->properties = new Properties(streamInfoData(), streamLength(), propertiesStyle);
 }
 
-ByteVector FLAC::File::streamInfoData()
+ByteVector TagLib::FLAC::File::streamInfoData()
 {
   return isValid() ? d->streamInfoData : ByteVector();
 }
 
-ByteVector FLAC::File::xiphCommentData() const
+ByteVector TagLib::FLAC::File::xiphCommentData() const
 {
   return (isValid() && d->hasXiphComment) ? d->xiphCommentData : ByteVector();
 }
 
-long FLAC::File::streamLength()
+long TagLib::FLAC::File::streamLength()
 {
   return d->streamLength;
 }
 
-void FLAC::File::scan()
+void TagLib::FLAC::File::scan()
 {
   // Scan the metadata pages
 
@@ -10886,7 +10888,7 @@ void FLAC::File::scan()
   d->scanned = true;
 }
 
-long FLAC::File::findID3v1()
+long TagLib::FLAC::File::findID3v1()
 {
   if(!isValid())
 	return -1;
@@ -10900,7 +10902,7 @@ long FLAC::File::findID3v1()
   return -1;
 }
 
-long FLAC::File::findID3v2()
+long TagLib::FLAC::File::findID3v2()
 {
   if(!isValid())
 	return -1;
@@ -10913,7 +10915,7 @@ long FLAC::File::findID3v2()
   return -1;
 }
 
-List<FLAC::Picture *> FLAC::File::pictureList()
+List<TagLib::FLAC::Picture *> TagLib::FLAC::File::pictureList()
 {
   List<Picture *> pictures;
   for(uint i = 0; i < d->blocks.size(); i++) {
@@ -10925,12 +10927,12 @@ List<FLAC::Picture *> FLAC::File::pictureList()
   return pictures;
 }
 
-void FLAC::File::addPicture(Picture *picture)
+void TagLib::FLAC::File::addPicture(Picture *picture)
 {
   d->blocks.append(picture);
 }
 
-void FLAC::File::removePicture(Picture *picture, bool del)
+void TagLib::FLAC::File::removePicture(Picture *picture, bool del)
 {
   MetadataBlock *block = picture;
   List<MetadataBlock *>::Iterator it = d->blocks.find(block);
@@ -10941,7 +10943,7 @@ void FLAC::File::removePicture(Picture *picture, bool del)
 	delete picture;
 }
 
-void FLAC::File::removePictures()
+void TagLib::FLAC::File::removePictures()
 {
   List<MetadataBlock *> newBlocks;
   for(uint i = 0; i < d->blocks.size(); i++) {
@@ -10986,7 +10988,7 @@ void FLAC::File::removePictures()
 
 using namespace TagLib;
 
-class FLAC::Picture::PicturePrivate
+class TagLib::FLAC::Picture::PicturePrivate
 {
 public:
   PicturePrivate() :
@@ -11007,28 +11009,28 @@ public:
   ByteVector data;
 };
 
-FLAC::Picture::Picture()
+TagLib::FLAC::Picture::Picture()
 {
   d = new PicturePrivate;
 }
 
-FLAC::Picture::Picture(const ByteVector &data)
+TagLib::FLAC::Picture::Picture(const ByteVector &data)
 {
   d = new PicturePrivate;
   parse(data);
 }
 
-FLAC::Picture::~Picture()
+TagLib::FLAC::Picture::~Picture()
 {
   delete d;
 }
 
-int FLAC::Picture::code() const
+int TagLib::FLAC::Picture::code() const
 {
   return FLAC::MetadataBlock::Picture;
 }
 
-bool FLAC::Picture::parse(const ByteVector &data)
+bool TagLib::FLAC::Picture::parse(const ByteVector &data)
 {
   if(data.size() < 32) {
 	debug("A picture block must contain at least 5 bytes.");
@@ -11073,7 +11075,7 @@ bool FLAC::Picture::parse(const ByteVector &data)
   return true;
 }
 
-ByteVector FLAC::Picture::render() const
+ByteVector TagLib::FLAC::Picture::render() const
 {
   ByteVector result;
   result.append(ByteVector::fromUInt(d->type));
@@ -11092,82 +11094,82 @@ ByteVector FLAC::Picture::render() const
   return result;
 }
 
-FLAC::Picture::Type FLAC::Picture::type() const
+TagLib::FLAC::Picture::Type TagLib::FLAC::Picture::type() const
 {
   return d->type;
 }
 
-void FLAC::Picture::setType(FLAC::Picture::Type type)
+void TagLib::FLAC::Picture::setType(TagLib::FLAC::Picture::Type type)
 {
   d->type = type;
 }
 
-TagLib::String FLAC::Picture::mimeType() const
+TagLib::String TagLib::FLAC::Picture::mimeType() const
 {
   return d->mimeType;
 }
 
-void FLAC::Picture::setMimeType(const String &mimeType)
+void TagLib::FLAC::Picture::setMimeType(const String &mimeType)
 {
   d->mimeType = mimeType;
 }
 
-TagLib::String FLAC::Picture::description() const
+TagLib::String TagLib::FLAC::Picture::description() const
 {
   return d->description;
 }
 
-void FLAC::Picture::setDescription(const String &description)
+void TagLib::FLAC::Picture::setDescription(const String &description)
 {
   d->description = description;
 }
 
-int FLAC::Picture::width() const
+int TagLib::FLAC::Picture::width() const
 {
   return d->width;
 }
 
-void FLAC::Picture::setWidth(int width)
+void TagLib::FLAC::Picture::setWidth(int width)
 {
   d->width = width;
 }
 
-int FLAC::Picture::height() const
+int TagLib::FLAC::Picture::height() const
 {
   return d->height;
 }
 
-void FLAC::Picture::setHeight(int height)
+void TagLib::FLAC::Picture::setHeight(int height)
 {
   d->height = height;
 }
 
-int FLAC::Picture::colorDepth() const
+int TagLib::FLAC::Picture::colorDepth() const
 {
   return d->colorDepth;
 }
 
-void FLAC::Picture::setColorDepth(int colorDepth)
+void TagLib::FLAC::Picture::setColorDepth(int colorDepth)
 {
   d->colorDepth = colorDepth;
 }
 
-int FLAC::Picture::numColors() const
+int TagLib::FLAC::Picture::numColors() const
 {
   return d->numColors;
 }
 
-void FLAC::Picture::setNumColors(int numColors)
+void TagLib::FLAC::Picture::setNumColors(int numColors)
 {
   d->numColors = numColors;
 }
 
-ByteVector FLAC::Picture::data() const
+ByteVector TagLib::FLAC::Picture::data() const
 {
   return d->data;
 }
 
-void FLAC::Picture::setData(const ByteVector &data)
+void TagLib::FLAC::Picture::setData(const ByteVector &data)
 {
   d->data = data;
 }
@@ -11198,7 +11200,7 @@ void FLAC::Picture::setData(const ByteVector &data)
 
 using namespace TagLib;
 
-class FLAC::Properties::PropertiesPrivate
+class TagLib::FLAC::Properties::PropertiesPrivate
 {
 public:
   PropertiesPrivate(ByteVector d, long st, ReadStyle s) :
@@ -11228,54 +11230,54 @@ public:
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-FLAC::Properties::Properties(ByteVector data, long streamLength, ReadStyle style) : AudioProperties(style)
+TagLib::FLAC::Properties::Properties(ByteVector data, long streamLength, ReadStyle style) : AudioProperties(style)
 {
   d = new PropertiesPrivate(data, streamLength, style);
   read();
 }
 
-FLAC::Properties::Properties(File *file, ReadStyle style) : AudioProperties(style)
+TagLib::FLAC::Properties::Properties(File *file, ReadStyle style) : AudioProperties(style)
 {
   d = new PropertiesPrivate(file->streamInfoData(), file->streamLength(), style);
   read();
 }
 
-FLAC::Properties::~Properties()
+TagLib::FLAC::Properties::~Properties()
 {
   delete d;
 }
 
-int FLAC::Properties::length() const
+int TagLib::FLAC::Properties::length() const
 {
   return d->length;
 }
 
-int FLAC::Properties::bitrate() const
+int TagLib::FLAC::Properties::bitrate() const
 {
   return d->bitrate;
 }
 
-int FLAC::Properties::sampleRate() const
+int TagLib::FLAC::Properties::sampleRate() const
 {
   return d->sampleRate;
 }
 
-int FLAC::Properties::sampleWidth() const
+int TagLib::FLAC::Properties::sampleWidth() const
 {
   return d->sampleWidth;
 }
 
-int FLAC::Properties::channels() const
+int TagLib::FLAC::Properties::channels() const
 {
   return d->channels;
 }
 
-unsigned long long FLAC::Properties::sampleFrames() const
+unsigned long long TagLib::FLAC::Properties::sampleFrames() const
 {
   return d->sampleFrames;
 }
 
-ByteVector FLAC::Properties::signature() const
+ByteVector TagLib::FLAC::Properties::signature() const
 {
   return d->signature;
 }
@@ -11284,7 +11286,7 @@ ByteVector FLAC::Properties::signature() const
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
-void FLAC::Properties::read()
+void TagLib::FLAC::Properties::read()
 {
   if(d->data.size() < 18) {
 	debug("FLAC::Properties::read() - FLAC properties must contain at least 18 bytes.");
@@ -11365,19 +11367,19 @@ void FLAC::Properties::read()
 
 using namespace TagLib;
 
-class FLAC::MetadataBlock::MetadataBlockPrivate
+class TagLib::FLAC::MetadataBlock::MetadataBlockPrivate
 {
 public:
   MetadataBlockPrivate() {}
 
 };
 
-FLAC::MetadataBlock::MetadataBlock()
+TagLib::FLAC::MetadataBlock::MetadataBlock()
 {
   d = 0;
 }
 
-FLAC::MetadataBlock::~MetadataBlock()
+TagLib::FLAC::MetadataBlock::~MetadataBlock()
 {
 }
 
@@ -11411,7 +11413,7 @@ FLAC::MetadataBlock::~MetadataBlock()
 
 using namespace TagLib;
 
-class FLAC::UnknownMetadataBlock::UnknownMetadataBlockPrivate
+class TagLib::FLAC::UnknownMetadataBlock::UnknownMetadataBlockPrivate
 {
 public:
   UnknownMetadataBlockPrivate() : code(0) {}
@@ -11420,7 +11422,7 @@ public:
   ByteVector data;
 };
 
-FLAC::UnknownMetadataBlock::UnknownMetadataBlock(int code, const ByteVector &data)
+TagLib::FLAC::UnknownMetadataBlock::UnknownMetadataBlock(int code, const ByteVector &data)
 {
   d = new UnknownMetadataBlockPrivate;
   d->code = code;
@@ -11428,32 +11430,32 @@ FLAC::UnknownMetadataBlock::UnknownMetadataBlock(int code, const ByteVector &dat
   d->data = data;
 }
 
-FLAC::UnknownMetadataBlock::~UnknownMetadataBlock()
+TagLib::FLAC::UnknownMetadataBlock::~UnknownMetadataBlock()
 {
   delete d;
 }
 
-int FLAC::UnknownMetadataBlock::code() const
+int TagLib::FLAC::UnknownMetadataBlock::code() const
 {
   return d->code;
 }
 
-void FLAC::UnknownMetadataBlock::setCode(int code)
+void TagLib::FLAC::UnknownMetadataBlock::setCode(int code)
 {
   d->code = code;
 }
 
-ByteVector FLAC::UnknownMetadataBlock::data() const
+ByteVector TagLib::FLAC::UnknownMetadataBlock::data() const
 {
   return d->data;
 }
 
-void FLAC::UnknownMetadataBlock::setData(const ByteVector &data)
+void TagLib::FLAC::UnknownMetadataBlock::setData(const ByteVector &data)
 {
   d->data = data;
 }
 
-ByteVector FLAC::UnknownMetadataBlock::render() const
+ByteVector TagLib::FLAC::UnknownMetadataBlock::render() const
 {
   return d->data;
 }
@@ -11544,7 +11546,7 @@ Ogg::XiphComment *Ogg::FLAC::File::tag() const
   return d->comment;
 }
 
-Properties *Ogg::FLAC::File::audioProperties() const
+TagLib::FLAC::Properties *Ogg::FLAC::File::audioProperties() const
 {
   return d->properties;
 }
