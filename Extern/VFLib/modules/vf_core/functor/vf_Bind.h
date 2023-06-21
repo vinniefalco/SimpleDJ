@@ -70,9 +70,9 @@
   using std::placeholders::_2;
 
 #elif JUCE_LINUX
-  using std::tr1::bind;
-  using std::tr1::placeholders::_1;
-  using std::tr1::placeholders::_2;
+  using std::bind;
+  using std::placeholders::_1;
+  using std::placeholders::_2;
 
 #else
   #error Unknown platform in vf_Bind.h
