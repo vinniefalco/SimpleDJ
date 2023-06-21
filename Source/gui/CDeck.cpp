@@ -109,6 +109,14 @@ CDeck::CDeck (int deckNumber, Deck::Ptr deck)
     CParamToggleButton* c = new CParamToggleButton (
       "Play", m_deck->param ["play"]);
     c->setBounds (4, 276, 80, 20);
+    c->onClick = [this] 
+    {
+        if (m_deck->getIsLoaded())
+        {
+            //Deck should message Mixer to addSource()
+            m_deck->param["play"].setValue(1.0f);
+        }
+    };
     addToLayout (c, anchorBottomLeft);
     addAndMakeVisible (c);
   }
@@ -188,11 +196,14 @@ void CDeck::filesDropped (const StringArray& files, int x, int y)
       {
         m_deck->selectPlayable (playable);
 
-        m_text->setText (String(), juce::dontSendNotification);
+        m_text->setText (playable->getMetadata().title, juce::dontSendNotification);
+
+        m_deck->setIsLoaded(true);
       }
       else
       {
         // display some sort of error message
+        // deck should stay loaded if it was successfully loaded previously
       }
     }
 

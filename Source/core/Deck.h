@@ -79,8 +79,14 @@ public:
   */
   virtual void selectPlayable (Playable::Ptr playable) = 0;
 
+  bool getIsLoaded() { return isLoaded; }
+  void setIsLoaded(bool loaded) { isLoaded = loaded; }
+
 protected:
   Deck (vf::CallQueue& mixerThread, Params& params);
+
+private:
+  bool isLoaded = false;
 };
 
 #endif
