@@ -4,7 +4,9 @@
 
 This should be considered a reference codebase for understanding the lengths
 mid-era C++ developers had to go through prior to the arrival of modern C++.
-(C++'11 and onward). Read the following JUCE forum posts before using this
+(C++'11 and onward), in order to achieve stable concurrent applications. 
+
+Read the following JUCE forum posts prior to using this
 codebase (i.e. VFLib usage) for study:
 
 http://www.juce.com/forum/topic/vflib-significant-defects-found
