@@ -8,6 +8,7 @@ mid-era C++ developers had to go through prior to the arrival of modern C++.
 codebase (i.e. VFLib usage) for study:
 
 http://www.juce.com/forum/topic/vflib-significant-defects-found
+
 https://forum.juce.com/t/vflib-vs-beast/11428
 
 That said, https://forum.juce.com/t/vflib-vs-beast/11428/22 should be a 
