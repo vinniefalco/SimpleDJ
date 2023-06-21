@@ -40,7 +40,7 @@ class MetadataReader
 public:
   MetadataReader (String path)
   {
-#if JUCE_MAC
+#if (JUCE_MAC || JUCE_LINUX)
     TagLib::FileRef f (path.toUTF8 ());
 #else
     TagLib::FileRef f (path.toWideCharPointer ());
