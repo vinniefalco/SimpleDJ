@@ -278,7 +278,7 @@
 #endif
 
 /* Get this early so we can use it. */
-#include "modules/juce_core/system/juce_TargetPlatform.h"
+#include <JuceHeader.h>
 
 // Handy macro that lets pragma warnings be clicked in the output window
 // Usage: #pragma message(VF_LOC_"Advertise here!")
@@ -389,7 +389,7 @@
   #undef _aligned_msize
 #endif
 
-#include "modules/juce_core/juce_core.h"
+#include <JuceHeader.h>
 
 #ifdef _CRTDBG_MAP_ALLOC
   #pragma pop_macro("_aligned_msize")

@@ -1,34 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="dV4aaM" name="SimpleDJ" projectType="guiapp" version="1.0.0"
-              bundleIdentifier="com.vinniefalco.SimpleDJ" jucerVersion="3.0.0">
+              bundleIdentifier="com.vinniefalco.SimpleDJ" jucerFormatVersion="1">
   <EXPORTFORMATS>
-    <VS2010 targetFolder="../VisualStudio2010" libraryType="1" juceFolder="../../Extern/JUCE/modules">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="SimpleDJ" headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="2" targetName="SimpleDJ" headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
-      </CONFIGURATIONS>
-    </VS2010>
-    <XCODE_MAC targetFolder="../MacOSX" objCExtraSuffix="ll8YC7" juceFolder="../../Extern/JUCE/modules">
+    <XCODE_MAC targetFolder="../MacOSX" objCExtraSuffix="ll8YC7">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SimpleDJ"
-                       osxSDK="default" osxCompatibility="default" osxArchitecture="default"
-                       headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+                       osxSDK="default" osxCompatibility="default" headerPath="../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="SimpleDJ"
-                       osxSDK="default" osxCompatibility="default" osxArchitecture="default"
-                       headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+                       osxSDK="default" osxCompatibility="default" headerPath="../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
       </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../Extern/JUCE/modules"/>
+      </MODULEPATHS>
     </XCODE_MAC>
-    <LINUX_MAKE targetFolder="../Linux" juceFolder="../../Extern/JUCE/modules">
+    <LINUX_MAKE targetFolder="../Linux">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
-                       targetName="SimpleDJ" headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+                       targetName="SimpleDJ" headerPath="../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
         <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
-                       targetName="SimpleDJ" headerPath="../../Extern/JUCE&#10;../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
+                       targetName="SimpleDJ" headerPath="../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
       </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../Extern/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../Extern/JUCE/modules"/>
+      </MODULEPATHS>
     </LINUX_MAKE>
+    <VS2022 targetFolder="Builds/VisualStudio2022">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../Extern/VFLib&#10;../../../../Source/gui&#10;../../../../Source/core&#10;"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../Extern/VFLib&#10;../../../../Source/gui&#10;../../../../Source/core&#10;"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+      </MODULEPATHS>
+    </VS2022>
   </EXPORTFORMATS>
   <MAINGROUP id="Bp191K" name="SimpleDJ">
     <GROUP id="{A643C8B7-28F8-DDF5-071F-5CBACFAB7259}" name="Core">
@@ -91,17 +123,16 @@
     </GROUP>
   </MAINGROUP>
   <MODULES>
-    <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>
-    <MODULE id="juce_core" showAllCode="0" useLocalCopy="0"/>
-    <MODULE id="juce_audio_devices" showAllCode="0" useLocalCopy="0"/>
-    <MODULE id="juce_audio_basics" showAllCode="0" useLocalCopy="0"/>
-    <MODULE id="juce_audio_formats" showAllCode="0" useLocalCopy="0"/>
-    <MODULE id="juce_audio_processors" showAllCode="0" useLocalCopy="0"/>
-    <MODULE id="juce_events" showAllCode="0" useLocalCopy="0"/>
-    <MODULE id="juce_data_structures" showAllCode="0" useLocalCopy="0"/>
-    <MODULE id="juce_graphics" showAllCode="0" useLocalCopy="0"/>
-    <MODULE id="juce_gui_basics" showAllCode="0" useLocalCopy="0"/>
-    <MODULE id="juce_gui_extra" showAllCode="0" useLocalCopy="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="0" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_CHECK_MEMORY_LEAKS="disabled"/>
+  <JUCEOPTIONS JUCE_CHECK_MEMORY_LEAKS="0"/>
 </JUCERPROJECT>

@@ -64,11 +64,11 @@ private:
 
     ~ChannelPixelData ();
 
-    LowLevelGraphicsContext* createLowLevelContext();
+    std::unique_ptr<LowLevelGraphicsContext> createLowLevelContext();
 
-    ImagePixelData* clone ();
+    juce::ImagePixelData::Ptr clone ();
 
-    ImageType* createType() const;
+    std::unique_ptr<ImageType> createType() const;
 
     void initialiseBitmapData (Image::BitmapData& bd,
                                int x,

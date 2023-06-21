@@ -142,7 +142,7 @@
 
 #include "../vf_core/vf_core.h"
 
-#include "modules/juce_gui_basics/juce_gui_basics.h"
+#include <JuceHeader.h>
 
 namespace vf
 {
