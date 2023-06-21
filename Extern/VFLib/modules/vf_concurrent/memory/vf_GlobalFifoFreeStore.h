@@ -66,7 +66,7 @@ private:
 		(SingletonLifetime::persistAfterCreation)
   {
   }
-
+public: //TODO: Can/should the Destructor be made public according to new spec?
   ~GlobalFifoFreeStore ()
   {
   }

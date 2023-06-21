@@ -41,14 +41,14 @@ private:
   {
     m_thread.start (vf::bind (&TimerSingleton::run, this));
   }
-
+public: //TODO: Can/should the Destructor be made public according to new spec?
   ~TimerSingleton ()
   {
     m_thread.join ();
 
     jassert (m_list.empty ());
   }
-
+private:
   void run ()
   {
     for(;;)

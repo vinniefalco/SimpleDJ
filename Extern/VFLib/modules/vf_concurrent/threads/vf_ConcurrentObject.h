@@ -68,6 +68,11 @@ public:
       destroyConcurrentObject ();
   }
 
+  //TODO: Verify this is the correct implementation by tracing when it was added to JUCE spec for 'rolling your own'
+  inline bool decReferenceCountWithoutDeleting() noexcept
+  {
+    return m_refs.release();
+  }
 protected:
   ConcurrentObject();
 
