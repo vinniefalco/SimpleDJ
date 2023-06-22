@@ -254,9 +254,9 @@ public:
 
 private:
   class Item;
-  typedef List <Item> Items;
+  typedef std::vector <Item> Items;
 
-  class Item : public Items::Node
+  class Item /*: public Items::Node*/
   {
   public:
     // Make sure every object has a vtable, so we can use dynamic_cast

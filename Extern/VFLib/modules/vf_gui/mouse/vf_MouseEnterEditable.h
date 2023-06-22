@@ -43,7 +43,7 @@
 
     @ingroup vf_gui
 */
-class MouseEnterEditable : Uncopyable
+class MouseEnterEditable /*: Uncopyable */
 {
 private:
   class Helper;
@@ -91,7 +91,7 @@ protected:
 private:
   class Helper
     : private MouseListener
-    , Uncopyable
+    /*, Uncopyable */
   {
   public:
     Helper (Component* component, MouseEnterEditable* editable);

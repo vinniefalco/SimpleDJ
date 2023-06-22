@@ -51,9 +51,9 @@
 
 #if VF_USE_NATIVE_FREETYPE
   // Shared library
-  #include <ft2build.h>
-  #include <freetype/freetype.h>
-  #include <freetype/ftgasp.h>
+  //#include <ft2build.h>
+  //#include <freetype/freetype.h>
+  //#include <freetype/ftgasp.h>
 
 #else
   // Amalgamated

@@ -67,7 +67,7 @@
   @ingroup vf_concurrent
 */
 template <class LockType>
-struct GenericScopedReadLock : Uncopyable
+struct GenericScopedReadLock /*: Uncopyable */
 {
   inline explicit GenericScopedReadLock (LockType const& lock) noexcept
     : m_lock (lock)
@@ -91,7 +91,7 @@ private:
   @ingroup vf_concurrent
 */
 template <class LockType>
-struct GenericScopedWriteLock : Uncopyable
+struct GenericScopedWriteLock /*: Uncopyable */
 {
   inline explicit GenericScopedWriteLock (LockType const& lock) noexcept
     : m_lock (lock)
@@ -148,7 +148,7 @@ public:
   void exitWrite () const noexcept;
 
 private:
-  CriticalSection m_mutex;
+  juce::CriticalSection m_mutex;
 
   mutable CacheLine::Padded <AtomicCounter> m_writes;
   mutable CacheLine::Padded <AtomicCounter> m_readers;

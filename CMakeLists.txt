@@ -129,16 +129,17 @@ target_link_libraries(${TargetName} PRIVATE
         juce::juce_osc
         juce::juce_gui_basics
         juce::juce_gui_extra
+        vf::vf_concurrent
+        vf::vf_core
+        vf::vf_freetype
+        vf::vf_gui
+        vf::vf_taglib
+        #Beyond here is the sandbox
         #vf::vf_audio
         #vf::vf_bzip2
-        #vf::vf_concurrent #Required
-        vf::vf_core #Required
         #vf::vf_db
-        #vf::vf_freetype #Required
-        vf::vf_gui #Required
         #vf::vf_lua
         #vf::vf_luabridge
         #vf::vf_sqlite
-        vf::vf_taglib #Required
         #vf::vf_unfinished
         )
