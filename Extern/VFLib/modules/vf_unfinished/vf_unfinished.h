@@ -48,9 +48,9 @@
   @defgroup vf_unfinished vf_unfinished
 */
 
-#include "modules/juce_audio_basics/juce_audio_basics.h"
-#include "modules/juce_audio_devices/juce_audio_devices.h"
-#include "modules/juce_gui_basics/juce_gui_basics.h"
+#include "juce_audio_basics/juce_audio_basics.h"
+#include "juce_audio_devices/juce_audio_devices.h"
+#include "juce_gui_basics/juce_gui_basics.h"
 
 #include "../vf_core/vf_core.h"
 #include "../vf_concurrent/vf_concurrent.h"

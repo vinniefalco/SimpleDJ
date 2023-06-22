@@ -48,8 +48,8 @@
   @ingroup vf_gui
 */
 class TransparentBorder
-  : private ComponentListener
-  , LeakChecked <TransparentBorder>
+  : private juce::ComponentListener
+  //, LeakChecked <TransparentBorder> //This could be substituted for the equivalent JUCE macro at bottom of class
 {
 public:
   TransparentBorder ();
@@ -60,8 +60,8 @@ public:
     maxBorderSize = 0x1fffffff
   };
 
-  static const BorderSize <int> fullyOpaque;      //!< No transparency
-  static const BorderSize <int> fullyTransparent; //!< Full transparency
+  static const juce::BorderSize <int> fullyOpaque;      //!< No transparency
+  static const juce::BorderSize <int> fullyTransparent; //!< Full transparency
 
   /** Set up a Component to have a transparent border.
 
@@ -71,8 +71,8 @@ public:
 
       @param borderSize The number of transparent pixels on each side.
   */
-  void setComponent (Component *component,
-                     BorderSize <int> borderSize = BorderSize<int>());
+  void setComponent (juce::Component *component,
+                     juce::BorderSize <int> borderSize = juce::BorderSize<int>());
 
   void setAlpha (float alpha);
 
@@ -80,27 +80,27 @@ private:
   bool isAttached ();
   void updateBounds ();
   void updateZOrder ();
-  void componentMovedOrResized (Component& component,
+  void componentMovedOrResized (juce::Component& component,
                                 bool wasMoved,
                                 bool wasResized);
-  void componentVisibilityChanged (Component& component);
-  void componentChildrenChanged (Component& component);
-  void componentParentHierarchyChanged (Component& component);
-  void componentBeingDeleted (Component& component);
+  void componentVisibilityChanged (juce::Component& component);
+  void componentChildrenChanged (juce::Component& component);
+  void componentParentHierarchyChanged (juce::Component& component);
+  void componentBeingDeleted (juce::Component& component);
 
 private:
-  class OpaqueComponent : public Component
+  class OpaqueComponent : public juce::Component
   {
   public:
     OpaqueComponent ();
     ~OpaqueComponent ();
-    void paint (Graphics& g);
+    void paint (juce::Graphics& g);
   };
 
-  Component* m_component;
-  Component* m_parent;
-  ScopedPointer <OpaqueComponent> m_opaque;
-  BorderSize <int> m_borderSize;
+  juce::Component* m_component;
+  juce::Component* m_parent;
+  juce::ScopedPointer <OpaqueComponent> m_opaque;
+  juce::BorderSize <int> m_borderSize;
   bool m_visible;
 };
 

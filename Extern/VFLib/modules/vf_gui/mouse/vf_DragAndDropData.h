@@ -259,7 +259,7 @@ private:
   class Item : public Items::Node
   {
   public:
-    // Make sure every object has a vtable so we can use dynamic_cast
+    // Make sure every object has a vtable, so we can use dynamic_cast
     virtual ~Item() { }
   };
 

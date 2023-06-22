@@ -191,7 +191,7 @@ public:
     jassert (numSamples <= buffer.getNumSamples() - startSample);
     m_numSamples = numSamples;
     for (int i = 0; i < Channels; ++i)
-      m_channels[i] = buffer.getArrayOfChannels()[i] + startSample;
+      m_channels[i] = buffer.getArrayOfReadPointers()[i] + startSample;
   }
 
   /** @return A const array of pointers to the channel data. */

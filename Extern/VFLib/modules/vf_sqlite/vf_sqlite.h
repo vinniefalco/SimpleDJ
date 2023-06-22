@@ -55,7 +55,7 @@
   @ingroup external
 */
 
-#include "modules/juce_core/system/juce_TargetPlatform.h"
+#include "juce_core/system/juce_TargetPlatform.h"
 
 #if JUCE_IOS || JUCE_MAC
 # define VF_HAVE_NATIVE_SQLITE 1

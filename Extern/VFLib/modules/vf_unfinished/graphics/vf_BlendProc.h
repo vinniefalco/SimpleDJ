@@ -100,9 +100,10 @@ namespace BlendProc
         int const m = *mask;
         PixelRGB& d (*((PixelRGB*)dest));
 
-        d.getRed ()   = uint8 (d.getRed ()   + ((m * m_alpha * (mode (m_src [0], d.getRed ())   - d.getRed ())   + 32769) >> 16));
-        d.getGreen () = uint8 (d.getGreen () + ((m * m_alpha * (mode (m_src [1], d.getGreen ()) - d.getGreen ()) + 32769) >> 16));
-        d.getBlue ()  = uint8 (d.getBlue ()  + ((m * m_alpha * (mode (m_src [2], d.getBlue ())  - d.getBlue ())  + 32769) >> 16));
+        d.setARGB(d.getAlpha(),
+                  (uint8) (d.getRed ()   + ((m * m_alpha * (mode (m_src [0], d.getRed ())   - d.getRed ())   + 32769) >> 16)),
+                  (uint8) (d.getGreen () + ((m * m_alpha * (mode (m_src [1], d.getGreen ()) - d.getGreen ()) + 32769) >> 16)),
+                  (uint8) (d.getBlue ()  + ((m * m_alpha * (mode (m_src [2], d.getBlue ())  - d.getBlue ())  + 32769) >> 16)));
       }
 
     private:
@@ -127,9 +128,10 @@ namespace BlendProc
       {
         PixelRGB& d (*((PixelRGB*)dest));
 
-        d.getRed ()   = uint8 (d.getRed ()   + ((m_alpha * (mode (m_src [0], d.getRed ())   - d.getRed ())   + 128) >> 8));
-        d.getGreen () = uint8 (d.getGreen () + ((m_alpha * (mode (m_src [1], d.getGreen ()) - d.getGreen ()) + 128) >> 8));
-        d.getBlue ()  = uint8 (d.getBlue ()  + ((m_alpha * (mode (m_src [2], d.getBlue ())  - d.getBlue ())  + 128) >> 8));
+        d.setARGB(d.getAlpha(),
+                  uint8 (d.getRed ()   + ((m_alpha * (mode (m_src [0], d.getRed ())   - d.getRed ())   + 128) >> 8)),
+                  uint8 (d.getGreen () + ((m_alpha * (mode (m_src [1], d.getGreen ()) - d.getGreen ()) + 128) >> 8)),
+                  uint8 (d.getBlue ()  + ((m_alpha * (mode (m_src [2], d.getBlue ())  - d.getBlue ())  + 128) >> 8)));
       }
 
     private:
@@ -152,9 +154,10 @@ namespace BlendProc
         PixelRGB& d (*((PixelRGB*)dest));
         PixelRGB const& s (*((PixelRGB*)src));
 
-        d.getRed ()   = uint8 (d.getRed ()   + ((m_alpha * (mode (s.getRed (),   d.getRed ())   - d.getRed ())   + 128) >> 8));
-        d.getGreen () = uint8 (d.getGreen () + ((m_alpha * (mode (s.getGreen (), d.getGreen ()) - d.getGreen ()) + 128) >> 8));
-        d.getBlue ()  = uint8 (d.getBlue ()  + ((m_alpha * (mode (s.getBlue (),  d.getBlue ())  - d.getBlue ())  + 128) >> 8));
+        d.setARGB(s.getAlpha(),
+                  uint8 (d.getRed ()   + ((m_alpha * (mode (s.getRed (),   d.getRed ())   - d.getRed ())   + 128) >> 8)),
+                  uint8 (d.getGreen () + ((m_alpha * (mode (s.getGreen (), d.getGreen ()) - d.getGreen ()) + 128) >> 8)),
+                  uint8 (d.getBlue ()  + ((m_alpha * (mode (s.getBlue (),  d.getBlue ())  - d.getBlue ())  + 128) >> 8)));
       }
 
     private:
@@ -170,9 +173,10 @@ namespace BlendProc
       void operator () (uint8* dest, uint8 const* src) const
       {
         PixelRGB* d ((PixelRGB*)dest);
-        d->getRed ()   = *src;
-        d->getGreen () = *src;
-        d->getBlue ()  = *src;
+        d->setARGB(d->getAlpha(), *src, *src, *src);
+        //d->getRed ()   = *src; //how was this ever legal C++?
+        //d->getGreen () = *src;
+        //d->getBlue ()  = *src;
       }
     };
     
@@ -192,9 +196,10 @@ namespace BlendProc
         PixelARGB s (*((PixelARGB*)src));
         int const m = s.getAlpha ();
 
-        d.getRed ()   = uint8 (d.getRed ()   + ((m * m_alpha * (mode (s.getRed (),   d.getRed ())   - d.getRed ())   + 32769) >> 16));
-        d.getGreen () = uint8 (d.getGreen () + ((m * m_alpha * (mode (s.getGreen (), d.getGreen ()) - d.getGreen ()) + 32769) >> 16));
-        d.getBlue ()  = uint8 (d.getBlue ()  + ((m * m_alpha * (mode (s.getBlue (),  d.getBlue ())  - d.getBlue ())  + 32769) >> 16));
+        d.setARGB(m,
+                  uint8 (d.getRed ()   + ((m * m_alpha * (mode (s.getRed (),   d.getRed ())   - d.getRed ())   + 32769) >> 16)),
+                  uint8 (d.getGreen () + ((m * m_alpha * (mode (s.getGreen (), d.getGreen ()) - d.getGreen ()) + 32769) >> 16)),
+                  uint8 (d.getBlue ()  + ((m * m_alpha * (mode (s.getBlue (),  d.getBlue ())  - d.getBlue ())  + 32769) >> 16)));
       }
 
     private:
@@ -221,9 +226,10 @@ namespace BlendProc
         int const m = s.getAlpha ();
 
         s.unpremultiply ();
-        d.getRed ()   = uint8 (d.getRed ()   + ((m * m_alpha * (mode (s.getRed (),   d.getRed ())   - d.getRed ())   + 32769) >> 16));
-        d.getGreen () = uint8 (d.getGreen () + ((m * m_alpha * (mode (s.getGreen (), d.getGreen ()) - d.getGreen ()) + 32769) >> 16));
-        d.getBlue ()  = uint8 (d.getBlue ()  + ((m * m_alpha * (mode (s.getBlue (),  d.getBlue ())  - d.getBlue ())  + 32769) >> 16));
+        d.setARGB(m,
+                  uint8 (d.getRed ()   + ((m * m_alpha * (mode (s.getRed (),   d.getRed ())   - d.getRed ())   + 32769) >> 16)),
+                  uint8 (d.getGreen () + ((m * m_alpha * (mode (s.getGreen (), d.getGreen ()) - d.getGreen ()) + 32769) >> 16)),
+                  uint8 (d.getBlue ()  + ((m * m_alpha * (mode (s.getBlue (),  d.getBlue ())  - d.getBlue ())  + 32769) >> 16)));
       }
 
     private:
@@ -267,10 +273,14 @@ namespace BlendProc
         Colour const& c = m_table [value];
         PixelARGB& d (*((PixelARGB*)dest));
         int const alpha = c.getAlpha ();
-      
-        d.getRed ()   += uint8 (div255 (alpha * (mode (c.getRed (),   d.getRed ())   - d.getRed ())   + 128));
-        d.getGreen () += uint8 (div255 (alpha * (mode (c.getGreen (), d.getGreen ()) - d.getGreen ()) + 128));
-        d.getBlue ()  += uint8 (div255 (alpha * (mode (c.getBlue (),  d.getBlue ())  - d.getBlue ())  + 128));
+        int r = d.getRed();
+        int g = d.getGreen();
+        int b = d.getBlue();
+
+        r += uint8 (div255 (alpha * (mode (c.getRed (),   d.getRed ())   - d.getRed ())   + 128));
+        g += uint8 (div255 (alpha * (mode (c.getGreen (), d.getGreen ()) - d.getGreen ()) + 128));
+        b += uint8 (div255 (alpha * (mode (c.getBlue (),  d.getBlue ())  - d.getBlue ())  + 128));
+        d.setARGB(alpha, r,g,b);
       }
 
     private:

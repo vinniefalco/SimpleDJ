@@ -49,8 +49,8 @@
     @defgroup vf_audio vf_audio
 */
 
-#include "modules/juce_audio_basics/juce_audio_basics.h"
-#include "modules/juce_audio_devices/juce_audio_devices.h"
+#include "juce_audio_basics/juce_audio_basics.h"
+#include "juce_audio_devices/juce_audio_devices.h"
 
 #include "../vf_core/vf_core.h"
 #include "../vf_concurrent/vf_concurrent.h"

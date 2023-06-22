@@ -602,23 +602,23 @@ private:
     {
     }
 
-    LowLevelGraphicsContext* createLowLevelContext()
+    std::unique_ptr<LowLevelGraphicsContext> createLowLevelContext()
     {
       // this image is read-only
       jassertfalse;
       return 0;
     }
 
-    ImagePixelData* clone()
+    juce::ImagePixelData::Ptr clone()
     {
       ImagePixelData* dup = new GlyphImage (width, height, m_lineStride, m_imageData);
       //dup->userData = userData; /* unfortunate */
       return dup;
     }
 
-    ImageType* createType () const
+    std::unique_ptr<ImageType> createType () const
     {
-      return new SoftwareImageType;
+      return std::make_unique<SoftwareImageType>();
     }
 
     void initialiseBitmapData (Image::BitmapData& bitmapData, int x, int y, Image::BitmapData::ReadWriteMode mode)
@@ -874,7 +874,7 @@ public:
 
   Typeface::Ptr createTypefaceForFont (const Font& font)
   {
-    Typeface::Ptr typeFace = 0;
+    Typeface::Ptr typeFace;
 
     for (int i=0; i<m_faces.size(); i++)
     {

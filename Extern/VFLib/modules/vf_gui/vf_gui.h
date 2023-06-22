@@ -61,7 +61,7 @@
 
 namespace vf
 {
-
+using namespace juce; //TODO: This is probably not the best place to try this
 #include "components/vf_ComponentBroadcast.h"
 #include "components/vf_ComponentNotifyParent.h"
 #include "components/vf_TransparentBorder.h"

@@ -40,7 +40,7 @@
 
     @ingroup vf_gui
 */
-class ChannelImageType : vf::Uncopyable
+class ChannelImageType /*: vf::Uncopyable */ //These can also be substituted for JUCE equivalent
 {
 public:
   /** Create an Image that references a channel in the source image.
@@ -57,26 +57,26 @@ public:
   static Image fromImage (Image sourceImage, int channelNumber);
 
 private:
-  class ChannelPixelData : public ImagePixelData, vf::Uncopyable
+  class ChannelPixelData : public ImagePixelData/*, vf::Uncopyable */
   {
   public:
     ChannelPixelData (Image sourceImage, int channelNumber);
 
     ~ChannelPixelData ();
 
-    std::unique_ptr<LowLevelGraphicsContext> createLowLevelContext();
+    std::unique_ptr<juce::LowLevelGraphicsContext> createLowLevelContext();
 
     juce::ImagePixelData::Ptr clone ();
 
-    std::unique_ptr<ImageType> createType() const;
+    std::unique_ptr<juce::ImageType> createType() const;
 
-    void initialiseBitmapData (Image::BitmapData& bd,
+    void initialiseBitmapData (juce::Image::BitmapData& bd,
                                int x,
                                int y,
-                               Image::BitmapData::ReadWriteMode);
+                               juce::Image::BitmapData::ReadWriteMode);
 
   private:
-    Image::BitmapData m_bits;
+    juce::Image::BitmapData m_bits;
     int const m_channelNumber;
   };
 };
