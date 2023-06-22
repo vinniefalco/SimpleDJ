@@ -81,6 +81,9 @@ UpgradeLog*.XML
 
 Build/Jucer/Builds
 Build/Jucer/JuceLibraryCode
+Build/Jucer/JuceLibraryCode/AppConfig.h
+Build/Jucer/JuceLibraryCode/JuceHeader.h
+Build/Jucer/JuceLibraryCode/ReadMe.txt
 Build/Linux
 Build/MacOSX
 .DS_Store
