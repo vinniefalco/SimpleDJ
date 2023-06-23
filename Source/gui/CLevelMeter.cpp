@@ -41,7 +41,7 @@ CLevelMeter::~CLevelMeter ()
 
 void CLevelMeter::paint (Graphics& g)
 {
-  Rectangle <int> r = getLocalBounds ();
+  juce::Rectangle <int> r = getLocalBounds ();
 
   g.setColour (Colours::white);
   g.drawRect (r);

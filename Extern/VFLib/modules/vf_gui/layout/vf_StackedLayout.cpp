@@ -69,7 +69,7 @@ void StackedLayout::recalculateLayout ()
   {
     if (m_vertical)
     {
-      const Rectangle <int> bounds = getLocalBounds ();
+      const juce::Rectangle <int> bounds = getLocalBounds ();
 
       int totalSize = m_borderSize.getTop();
       int lastSize = 0;
@@ -87,7 +87,7 @@ void StackedLayout::recalculateLayout ()
       totalSize += m_borderSize.getBottom ();
 
       Component* lastComponent = 0;
-      Rectangle<int> lastBounds;
+      juce::Rectangle<int> lastBounds;
       lastBounds.setX (bounds.getX() + m_borderSize.getLeft());
       lastBounds.setRight (bounds.getRight() - m_borderSize.getRight());
       lastBounds.setY (bounds.getY() + m_borderSize.getTop());
@@ -117,7 +117,7 @@ void StackedLayout::recalculateLayout ()
     }
     else
     {
-      const Rectangle <int> bounds = getLocalBounds ();
+      const juce::Rectangle <int> bounds = getLocalBounds ();
 
       int totalSize = m_borderSize.getLeft ();
       int lastSize = 0;
@@ -135,7 +135,7 @@ void StackedLayout::recalculateLayout ()
       totalSize += m_borderSize.getBottom ();
 
       Component* lastComponent = 0;
-      Rectangle <int> lastBounds;
+      juce::Rectangle <int> lastBounds;
       lastBounds.setY (bounds.getY () + m_borderSize.getTop ());
       lastBounds.setBottom (bounds.getBottom () - m_borderSize.getBottom ());
       lastBounds.setX (bounds.getX() + m_borderSize.getLeft ());

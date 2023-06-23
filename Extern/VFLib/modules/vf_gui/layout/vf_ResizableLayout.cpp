@@ -268,9 +268,9 @@ void ResizableLayout::componentBeingDeleted (Component& component)
   }
 }
 
-Rectangle<int> ResizableLayout::calcBoundsOfChildren (Component* parent)
+juce::Rectangle<int> ResizableLayout::calcBoundsOfChildren (Component* parent)
 {
-  Rectangle<int> r;
+  juce::Rectangle<int> r;
 
   for (int i=0; i<parent->getNumChildComponents(); i++)
     r = r.getUnion (parent->getChildComponent(i)->getBounds());

@@ -98,7 +98,7 @@ private:
   }
 
   void applyBoundsToComponent (Component* component,
-                               const Rectangle<int>& bounds)
+                               const juce::Rectangle<int>& bounds)
   {
     m_originalConstrainer->applyBoundsToComponent (*component, bounds);
   }

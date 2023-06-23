@@ -135,7 +135,7 @@ CDeck::~CDeck()
 
 void CDeck::paint (Graphics& g)
 {
-  Rectangle <int> r (getLocalBounds ());
+  juce::Rectangle <int> r (getLocalBounds ());
 
   g.setColour (Colours::grey.brighter ());
   g.drawRect (r, 1);
@@ -149,7 +149,7 @@ void CDeck::paintOverChildren (Graphics& g)
 {
   if (m_hasDropFocus)
   {
-    Rectangle <int> r (getLocalBounds ());
+    juce::Rectangle <int> r (getLocalBounds ());
 
     g.setColour (Colours::yellow.withAlpha (0.75f));
     g.drawRect (r, 6);

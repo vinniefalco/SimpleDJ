@@ -45,7 +45,7 @@ public:
   VerticalGradient (
     Colour const& startColour,
     Colour const& endColour,
-    Rectangle <int> const& bounds)
+    juce::Rectangle <int> const& bounds)
     : ColourGradient (
         startColour, float (bounds.getX ()), float (bounds.getY ()) + .5f,
         endColour, float (bounds.getX ()), float (bounds.getBottom ()) -.5f,

@@ -150,7 +150,7 @@ public:
   void updateLayoutFor (Component *component);
 
   // Convenience function
-  static Rectangle <int> calcBoundsOfChildren (Component* parent);
+  static juce::Rectangle <int> calcBoundsOfChildren (Component* parent);
 
 private:
   void handleAsyncUpdate ();
@@ -167,8 +167,8 @@ private:
   {
     Rect() {}
     Rect (int top0, int left0, int bottom0, int right0) { top=top0; left=left0; bottom=bottom0; right=right0; }
-    Rect (const Rectangle<int> &r) { top=int(r.getY()); left=int(r.getX()); bottom=int(r.getBottom()); right=int(r.getRight()); }
-    operator Rectangle<int>() const { return Rectangle<int>( left, top, getWidth(), getHeight() ); }
+    Rect (const juce::Rectangle<int> &r) { top=int(r.getY()); left=int(r.getX()); bottom=int(r.getBottom()); right=int(r.getRight()); }
+    operator Rectangle<int>() const { return juce::Rectangle<int>( left, top, getWidth(), getHeight() ); }
     int getHeight () const { return bottom-top; }
     int getWidth () const { return right-left; }
     void reduce (int dx, int dy) { top+=dy; left+=dx; bottom-=dy; right-=dx; }
