@@ -35,7 +35,7 @@
 
 #include "../diagnostic/vf_SafeBool.h"
 #include "../functor/vf_Function.h"
-
+#include "../../vf_core/memory/vf_AtomicState.h"
 /*============================================================================*/
 /**
   A thread with soft interruption support.
@@ -49,7 +49,7 @@
 class InterruptibleThread
 {
 public:
-  typedef Thread::ThreadID id;
+  typedef juce::Thread::ThreadID id;
 
   /** Construct an interruptible thread.
 
@@ -57,7 +57,7 @@ public:
 
       @param name The name of the thread.
   */
-  explicit InterruptibleThread (String name);
+  explicit InterruptibleThread (juce::String name);
 
   /** Destroy the interruptible thread.
 
@@ -137,7 +137,7 @@ private:
   class ThreadHelper : public juce::Thread
   {
   public:
-    ThreadHelper (String name, InterruptibleThread* owner);
+    ThreadHelper (juce::String name, InterruptibleThread* owner);
 
     InterruptibleThread* getOwner () const;
     
@@ -151,7 +151,7 @@ private:
 
   ThreadHelper m_thread;
   Function <void (void)> m_function;
-  WaitableEvent m_runEvent;
+  juce::WaitableEvent m_runEvent;
   id m_threadId;
 
   enum

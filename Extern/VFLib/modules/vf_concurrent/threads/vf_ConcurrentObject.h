@@ -54,7 +54,7 @@
 
   @ingroup vf_concurrent
 */
-class ConcurrentObject : Uncopyable
+class ConcurrentObject /*: Uncopyable */
 {
 public:
   inline void incReferenceCount() noexcept

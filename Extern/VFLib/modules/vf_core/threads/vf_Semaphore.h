@@ -77,13 +77,13 @@ private:
     void signal ();
 
   private:
-    WaitableEvent m_event;
+  juce::WaitableEvent m_event;
   };
 
-  typedef SpinLock LockType;
+  typedef juce::SpinLock LockType;
 
   LockType m_mutex;
-  Atomic <int> m_counter;
+  juce::Atomic <int> m_counter;
   LockFreeStack <WaitingThread> m_waitingThreads;
   LockFreeStack <WaitingThread> m_deleteList;
 };

@@ -45,7 +45,7 @@
 
     @ingroup vf_core
 */
-class OncePerSecond : Uncopyable
+class OncePerSecond /*: Uncopyable */
 {
 public:
   OncePerSecond ();
@@ -64,7 +64,7 @@ protected:
 private:
   class TimerSingleton;
 
-  typedef ReferenceCountedObjectPtr <TimerSingleton> TimerPtr;
+  typedef juce::ReferenceCountedObjectPtr <TimerSingleton> TimerPtr;
 
   struct Elem : List <Elem>::Node
   {

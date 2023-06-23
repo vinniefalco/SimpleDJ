@@ -149,11 +149,11 @@ namespace vf
 
 #include "memory/vf_AllocatedBy.h"
 #include "memory/vf_FifoFreeStore.h"
-#if VF_USE_BOOST
-#include "memory/vf_FifoFreeStoreWithTLS.h"
-#else
+//#if VF_USE_BOOST
+//#include "memory/vf_FifoFreeStoreWithTLS.h"
+//#else
 #include "memory/vf_FifoFreeStoreWithoutTLS.h"
-#endif
+//#endif
 #include "memory/vf_GlobalFifoFreeStore.h"
 #include "memory/vf_GlobalPagedFreeStore.h"
 #include "memory/vf_PagedFreeStore.h"

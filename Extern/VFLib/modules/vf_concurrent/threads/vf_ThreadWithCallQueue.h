@@ -53,6 +53,8 @@
 
   @ingroup vf_concurrent
 */
+#include "../../vf_core/functor/vf_Function.h"
+#include "../../vf_core/threads/vf_InterruptibleThread.h"
 class ThreadWithCallQueue : public CallQueue
 {
 public:
@@ -65,7 +67,7 @@ public:
       @param name The name of the InterruptibleThread and CallQueue, used
                   for diagnostics when debugging.
   */
-  explicit ThreadWithCallQueue (String name);
+  explicit ThreadWithCallQueue (juce::String name);
 
   /** Destroy a ThreadWithCallQueue.
 
@@ -139,7 +141,7 @@ private:
   bool m_calledStart;
   bool m_calledStop;
   bool m_shouldStop;
-  CriticalSection m_mutex;
+  juce::CriticalSection m_mutex;
   idle_t m_idle;
   init_t m_init;
   exit_t m_exit;

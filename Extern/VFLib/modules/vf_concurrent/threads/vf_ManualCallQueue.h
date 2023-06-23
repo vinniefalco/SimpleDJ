@@ -87,7 +87,7 @@ public:
 	  @param name           A string used to help identify the associated
                             thread for debugging.
   */
-  explicit ManualCallQueue (String name);
+  explicit ManualCallQueue (juce::String name);
 
   /** Close the queue. If calls are placed into a closed queue, an exception
 	  is thrown.

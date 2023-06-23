@@ -34,13 +34,14 @@
 #define VF_GLOBALPAGEDFREESTORE_VFHEADER
 
 #include "vf_PagedFreeStore.h"
-
+#include "../../vf_core/memory/vf_RefCountedSingleton.h"
 /*============================================================================*/
 /**
   A PagedFreeStore singleton.
 
   @ingroup vf_concurrent
 */
+#include "../../vf_core/diagnostic/vf_LeakChecked.h"
 class GlobalPagedFreeStore
   : public RefCountedSingleton <GlobalPagedFreeStore>
   , LeakChecked <GlobalPagedFreeStore>

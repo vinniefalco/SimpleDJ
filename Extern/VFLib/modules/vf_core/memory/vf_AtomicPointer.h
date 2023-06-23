@@ -139,7 +139,7 @@ public:
   }
 
 private:
-  Atomic <P*> m_value;
+  juce::Atomic <P*> m_value;
 };
 
 #endif

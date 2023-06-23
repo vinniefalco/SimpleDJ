@@ -60,7 +60,7 @@
 */
 class MessageThread
   : public GuiCallQueue
-  , private DeletedAtShutdown
+  , private juce::DeletedAtShutdown
   , LeakChecked <MessageThread>
 {
 public:

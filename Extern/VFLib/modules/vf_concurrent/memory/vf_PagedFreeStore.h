@@ -42,6 +42,11 @@
 
   @ingroup vf_concurrent
 */
+//TODO: This shouldn't be necessary, why can the IDE see OncePerSecond, etc. but not the compiler?
+#include "../../vf_core/events/vf_OncePerSecond.h"
+#include "../../vf_core/containers/vf_LockFreeStack.h"
+#include "../../vf_core/memory/vf_AtomicCounter.h"
+#include "../../vf_core/memory/vf_CacheLine.h"
 class PagedFreeStore : private OncePerSecond
 {
 public:

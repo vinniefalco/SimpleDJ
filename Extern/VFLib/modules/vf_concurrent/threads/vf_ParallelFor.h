@@ -65,7 +65,7 @@
 
   @ingroup vf_concurrent
 */
-class ParallelFor : Uncopyable
+class ParallelFor /*: Uncopyable */
 {
 public:
   /** Create a parallel for loop.
@@ -153,7 +153,7 @@ private:
   };
 
   template <class Functor>
-  class IterationType : public Iteration, Uncopyable
+  class IterationType : public Iteration/*, Uncopyable */
   {
   public:
     explicit IterationType (Functor const& f) : m_f (f)
@@ -172,19 +172,19 @@ private:
 private:
   class LoopState
     : public AllocatedBy <ThreadGroup::AllocatorType>
-    , Uncopyable
+    /*, Uncopyable */
   {
   private:
     Iteration& m_iteration;
-    WaitableEvent& m_finishedEvent;
+    juce::WaitableEvent& m_finishedEvent;
     int const m_numberOfIterations;
-    Atomic <int> m_loopIndex;
-    Atomic <int> m_iterationsRemaining;
-    Atomic <int> m_numberOfParallelInstances;
+    juce::Atomic <int> m_loopIndex;
+    juce::Atomic <int> m_iterationsRemaining;
+    juce::Atomic <int> m_numberOfParallelInstances;
 
   public:
     LoopState (Iteration& iteration,
-               WaitableEvent& finishedEvent,
+               juce::WaitableEvent& finishedEvent,
                int numberOfIterations,
                int numberOfParallelInstances)
       : m_iteration (iteration)
@@ -243,15 +243,15 @@ private:
 
 private:
   ThreadGroup& m_pool;
-  WaitableEvent m_finishedEvent;
-  Atomic <int> m_currentIndex;
-  Atomic <int> m_numberOfInstances;
+  juce::WaitableEvent m_finishedEvent;
+  juce::Atomic <int> m_currentIndex;
+  juce::Atomic <int> m_numberOfInstances;
   int m_numberOfIterations;
 };
 
 //------------------------------------------------------------------------------
 
-class ParallelFor2 : Uncopyable
+class ParallelFor2 /*: Uncopyable */
 {
 public:
   /** Create a parallel for loop.
@@ -299,7 +299,7 @@ private:
   //---
 
   template <class Functor>
-  struct IteratorType : public Iterator, Uncopyable
+  struct IteratorType : public Iterator/*, Uncopyable */
   {
     explicit IteratorType (Functor f) : m_f (f)
     {
@@ -340,20 +340,20 @@ private:
 private:
   class LoopState
     : public AllocatedBy <AllocatorType>
-    , Uncopyable
+    /*, Uncopyable */
   {
   private:
     Factory& m_factory;
-    WaitableEvent& m_finishedEvent;
+    juce::WaitableEvent& m_finishedEvent;
     int const m_numberOfIterations;
-    Atomic <int> m_loopIndex;
-    Atomic <int> m_iterationsRemaining;
-    Atomic <int> m_numberOfParallelInstances;
+    juce::Atomic <int> m_loopIndex;
+    juce::Atomic <int> m_iterationsRemaining;
+    juce::Atomic <int> m_numberOfParallelInstances;
     AllocatorType& m_allocator;
 
   public:
     LoopState (Factory& factory,
-               WaitableEvent& finishedEvent,
+               juce::WaitableEvent& finishedEvent,
                int numberOfIterations,
                int numberOfParallelInstances,
                AllocatorType& allocator)
@@ -456,9 +456,9 @@ private:
 
 private:
   ThreadGroup& m_pool;
-  WaitableEvent m_finishedEvent;
-  Atomic <int> m_currentIndex;
-  Atomic <int> m_numberOfInstances;
+  juce::WaitableEvent m_finishedEvent;
+  juce::Atomic <int> m_currentIndex;
+  juce::Atomic <int> m_numberOfInstances;
   int m_numberOfIterations;
 };
 

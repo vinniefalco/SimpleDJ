@@ -54,10 +54,10 @@ struct LockFreeStackDefaultTag;
   @ingroup vf_core intrusive
 */
 template <class Element, class Tag = LockFreeStackDefaultTag>
-class LockFreeStack : Uncopyable
+class LockFreeStack /*: Uncopyable */
 {
 public:
-  class Node : Uncopyable
+  class Node /*: Uncopyable */
   {
   public:
     Node ()

@@ -129,7 +129,7 @@
   @ingroup vf_concurrent
 */
 template <class Object>
-class ConcurrentState : Uncopyable
+class ConcurrentState /*: Uncopyable */
 {
 public:
   class ReadAccess;
@@ -192,7 +192,7 @@ private:
     Use sparingly.
 */
 template <class Object>
-class ConcurrentState <Object>::UnlockedAccess : Uncopyable
+class ConcurrentState <Object>::UnlockedAccess /*: Uncopyable */
 {
 public:
   explicit UnlockedAccess (ConcurrentState const& state)
@@ -212,7 +212,7 @@ private:
 
 /** Read only access to a ConcurrentState */
 template <class Object>
-class ConcurrentState <Object>::ReadAccess : Uncopyable
+class ConcurrentState <Object>::ReadAccess /*: Uncopyable */
 {
 public:
   /** Create a ReadAccess from the specified ConcurrentState */
@@ -240,7 +240,7 @@ private:
 
 /** Read/write access to a ConcurrentState */
 template <class Object>
-class ConcurrentState <Object>::WriteAccess : Uncopyable
+class ConcurrentState <Object>::WriteAccess /*: Uncopyable */
 {
 public:
   explicit WriteAccess (ConcurrentState& state)

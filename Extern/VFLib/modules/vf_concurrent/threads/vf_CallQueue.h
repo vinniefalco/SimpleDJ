@@ -160,6 +160,8 @@ public:
       Custom implementations may derive from this object for efficiency instead
       of using the automatic binding functions.
   */
+#include "../../vf_core/containers/vf_LockFreeQueue.h"
+#include "../../vf_core/memory/vf_AtomicFlag.h"
   class Work : public LockFreeQueue <Work>::Node,
                public AllocatedBy <AllocatorType>
   {
@@ -181,7 +183,7 @@ public:
 
       @param name A string to identify the queue during debugging.
   */
-  explicit CallQueue (String name);
+  explicit CallQueue (juce::String name);
 
   /** Destroy the CallQueue.
   
@@ -502,8 +504,8 @@ private:
   bool doSynchronize ();
 
 private:
-  String const m_name;
-  Thread::ThreadID m_id;
+  juce::String const m_name;
+  juce::Thread::ThreadID m_id;
   LockFreeQueue <Work> m_queue;
   AtomicFlag m_closed;
   AtomicFlag m_isBeingSynchronized;

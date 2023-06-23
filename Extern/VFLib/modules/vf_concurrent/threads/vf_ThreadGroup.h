@@ -41,6 +41,7 @@
 
   @see ParallelFor
 */
+#include "../../vf_core/threads/vf_Semaphore.h"
 class ThreadGroup
 {
 public:
@@ -52,7 +53,7 @@ public:
                              greater than zero. If this parameter is omitted,
                              one thread is created per available CPU.
   */
-  explicit ThreadGroup (int numberOfThreads = SystemStats::getNumCpus ());
+  explicit ThreadGroup (int numberOfThreads = juce::SystemStats::getNumCpus ());
 
   ~ThreadGroup ();
 
@@ -143,11 +144,11 @@ private:
   */
   class Worker
     : public LockFreeStack <Worker>::Node
-    , public Thread
+    , public juce::Thread
     , LeakChecked <Worker>
   {
   public:
-    Worker (String name, ThreadGroup& group);
+    Worker (juce::String name, ThreadGroup& group);
     ~Worker ();
 
     void setShouldExit ();

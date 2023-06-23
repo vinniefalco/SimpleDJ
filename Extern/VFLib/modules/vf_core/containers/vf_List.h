@@ -314,8 +314,11 @@ struct ListDefaultTag;
 
   @ingroup vf_core intrusive
 */
+//TODO: This shouldn't be necessary, why can the IDE see Error but not the compiler?
+#include "../../vf_core/diagnostic/vf_Error.h"
+#include "../../vf_core/diagnostic/vf_Throw.h"
 template <class Element, class Tag = ListDefaultTag>
-class List : Uncopyable
+class List /*: Uncopyable */
 {
 public:
   typedef int size_type;
@@ -326,7 +329,7 @@ public:
   typedef Element*       pointer;
   typedef Element const* const_pointer;
 
-  class Node : Uncopyable
+  class Node /*: Uncopyable */
   {
   public:
     Node () { }

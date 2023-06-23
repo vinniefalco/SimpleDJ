@@ -97,13 +97,13 @@ public:
 
   bool asBoolean () const;
 
-  const String getReasonText () const;
-  const String getSourceFilename () const;
+  const juce::String getReasonText () const;
+  const juce::String getSourceFilename () const;
   int getLineNumber () const;
 
   Error& fail (const char* sourceFileName,
     int lineNumber,
-    const String reasonText,
+    const juce::String reasonText,
     Code errorCode = general);
 
   Error& fail (const char* sourceFileName,
@@ -123,16 +123,16 @@ public:
   // descriptive so ideally you should catch the Error object instead.
   const char* what() const noexcept;
 
-  static const String getReasonTextForCode (Code code);
+  static const juce::String getReasonTextForCode (Code code);
 
 private:
   Code m_code;
-  String m_reasonText;
-  String m_sourceFileName;
+  juce::String m_reasonText;
+  juce::String m_sourceFileName;
   int m_lineNumber;
   mutable bool m_needsToBeChecked;
 
-  mutable String m_what; // created on demand
+  mutable juce::String m_what; // created on demand
   mutable const char* m_szWhat;
 };
 

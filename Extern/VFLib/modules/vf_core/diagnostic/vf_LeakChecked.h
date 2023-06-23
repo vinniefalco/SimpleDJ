@@ -79,7 +79,7 @@ protected:
   protected:
     class Singleton;
 
-    Atomic <int> m_count;
+    juce::Atomic <int> m_count;
   };
 };
 

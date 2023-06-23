@@ -48,16 +48,16 @@ extern void breakPoint ();
 
 // Return only the filename portion of sourceFileName
 // This hides the programmer's directory structure from end-users.
-const String getFileNameFromPath (const char *sourceFileName);
+const juce::String getFileNameFromPath (const char *sourceFileName);
 
 // Convert a String that may contain double quotes and newlines
 // into a String with double quotes escaped as \" and each
 // line as a separate quoted command line argument.
-String stringToCommandLine (const String& s);
+juce::String stringToCommandLine (const juce::String& s);
 
 // Convert a quoted and escaped command line back into a String
 // that can contain newlines and double quotes.
-String commandLineToString (const String& commandLine);
+juce::String commandLineToString (const juce::String& commandLine);
 
 extern void setHeapAlwaysCheck (bool bAlwaysCheck);
 extern void setHeapDelayedFree (bool bDelayedFree);

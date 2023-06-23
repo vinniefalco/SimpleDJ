@@ -83,7 +83,7 @@ class RefCountedSingleton
   , private PerformedAtExit
 {
 protected:
-  typedef SpinLock LockType;
+  typedef juce::SpinLock LockType;
 
   /** Create the singleton.
 
@@ -112,7 +112,7 @@ protected:
   }
 
 public:
-  typedef ReferenceCountedObjectPtr <Object> Ptr;
+  typedef juce::ReferenceCountedObjectPtr <Object> Ptr;
 
   /** Retrieve a reference to the singleton.
   */
