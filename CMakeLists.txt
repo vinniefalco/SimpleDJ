@@ -63,6 +63,7 @@ target_sources(${TargetName} PRIVATE
         Source/core/Param.h
         Source/core/ParamImp.cpp
         Source/core/ParamImp.h
+        Source/core/Params.cpp
         Source/core/Params.h
         Source/core/PeakDetector.h
         Source/core/Playable.h
