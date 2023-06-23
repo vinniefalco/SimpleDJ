@@ -137,10 +137,10 @@
 
     @ingroup vf_gui
 */
-class DragAndDropData : public ReferenceCountedObject
+class DragAndDropData : public juce::ReferenceCountedObject
 {
 public:
-  typedef ReferenceCountedObjectPtr <DragAndDropData> Ptr;
+  typedef juce::ReferenceCountedObjectPtr <DragAndDropData> Ptr;
 
   DragAndDropData ();
 
@@ -203,7 +203,7 @@ public:
 
       @ingroup vf_gui
   */
-  class Target : public DragAndDropTarget
+  class Target : public juce::DragAndDropTarget
   {
   public:
 /** @param data The DragAndDropData.
@@ -213,7 +213,7 @@ public:
     @return `true` if we want to receive further drag notifications.
 */
     virtual bool isInterestedInDragSource (DragAndDropData const& data,
-                                           DragAndDropTarget::SourceDetails const& dragSourceDetails)
+                                           juce::DragAndDropTarget::SourceDetails const& dragSourceDetails)
       { return false; }
 
 /** @param data The DragAndDropData.
@@ -221,35 +221,35 @@ public:
     @param dragSourceDetails The original DragAndDropTarget::SourceDetails
 */
     virtual void itemDragEnter (DragAndDropData const& data,
-                                DragAndDropTarget::SourceDetails const& dragSourceDetails) { }
+                                juce::DragAndDropTarget::SourceDetails const& dragSourceDetails) { }
 
 /** @param data The DragAndDropData.
         
     @param dragSourceDetails The original DragAndDropTarget::SourceDetails
 */
     virtual void itemDragMove (DragAndDropData const& data,
-                               DragAndDropTarget::SourceDetails const& dragSourceDetails) { }
+                               juce::DragAndDropTarget::SourceDetails const& dragSourceDetails) { }
 
 /** @param data The DragAndDropData.
         
     @param dragSourceDetails The original DragAndDropTarget::SourceDetails
 */
     virtual void itemDragExit (DragAndDropData const& data,
-                               DragAndDropTarget::SourceDetails const& dragSourceDetails) { }
+                               juce::DragAndDropTarget::SourceDetails const& dragSourceDetails) { }
 
 /** @param data The DragAndDropData.
         
     @param dragSourceDetails The original DragAndDropTarget::SourceDetails
 */
     virtual void itemDropped (DragAndDropData const& data,
-                              DragAndDropTarget::SourceDetails const& dragSourceDetails) { }
+                              juce::DragAndDropTarget::SourceDetails const& dragSourceDetails) { }
 
   private:
-    bool isInterestedInDragSource (const SourceDetails& dragSourceDetails);
-    void itemDragEnter (const SourceDetails& dragSourceDetails);
-    void itemDragMove (const SourceDetails& dragSourceDetails);
-    void itemDragExit (const SourceDetails& dragSourceDetails);
-    void itemDropped (const SourceDetails& dragSourceDetails);
+    bool isInterestedInDragSource (const juce::DragAndDropTarget::SourceDetails& dragSourceDetails);
+    void itemDragEnter (const juce::DragAndDropTarget::SourceDetails& dragSourceDetails);
+    void itemDragMove (const juce::DragAndDropTarget::SourceDetails& dragSourceDetails);
+    void itemDragExit (const juce::DragAndDropTarget::SourceDetails& dragSourceDetails);
+    void itemDropped (const juce::DragAndDropTarget::SourceDetails& dragSourceDetails);
   };
 
 private:

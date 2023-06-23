@@ -54,13 +54,13 @@ public:
 
       @return The resulting Image.
   */
-  static Image fromImage (Image sourceImage, int channelNumber);
+  static juce::Image fromImage (juce::Image sourceImage, int channelNumber);
 
 private:
-  class ChannelPixelData : public ImagePixelData/*, vf::Uncopyable */
+  class ChannelPixelData : public juce::ImagePixelData/*, vf::Uncopyable */
   {
   public:
-    ChannelPixelData (Image sourceImage, int channelNumber);
+    ChannelPixelData (juce::Image sourceImage, int channelNumber);
 
     ~ChannelPixelData ();
 

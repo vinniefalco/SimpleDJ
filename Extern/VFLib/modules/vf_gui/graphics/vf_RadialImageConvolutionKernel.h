@@ -59,11 +59,11 @@ public:
   void rescaleAllValues (float multiplier);
   
   // creates a convolved image with the same dimensions as the source
-  Image createConvolvedImage (Image const& sourceImage) const;
+  juce::Image createConvolvedImage (juce::Image const& sourceImage) const;
 
   // creates a larger image that fully contains the result
   // of applying the convolution kernel to the source image.
-  Image createConvolvedImageFull (Image const& sourceImage) const;
+  juce::Image createConvolvedImageFull (juce::Image const& sourceImage) const;
 
   //
   // copy a line of color components, performing edge
@@ -71,9 +71,9 @@ public:
   // more components than src.
   //
   static void copy (int pixels,
-                    uint8* dest,
+                    juce::uint8* dest,
                     int destSkip,
-                    const uint8* src,
+                    const juce::uint8* src,
                     int srcSkip,
                     int replicas);
 
@@ -82,9 +82,9 @@ public:
   // values (0) as replicas on either side
   //
   static void copy_alpha (int pixels,
-                          uint8* dest,
+                          juce::uint8* dest,
                           int destSkip,
-                          const uint8* src,
+                          const juce::uint8* src,
                           int srcSkip,
                           int replicas);
 
@@ -93,16 +93,16 @@ public:
   // src must have 2 * (radius - 1) more components than dest
   //
   static void convolve (int pixels,
-                        uint8* dest,
+                        juce::uint8* dest,
                         int destSkip,
-                        uint8 const* src,
+                        juce::uint8 const* src,
                         int srcSkip,
                         int radius,
                         float const* kernel);
 
 private:
   const int m_radius;
-  HeapBlock <float> m_kernel;
+  juce::HeapBlock <float> m_kernel;
 };
 
 #endif

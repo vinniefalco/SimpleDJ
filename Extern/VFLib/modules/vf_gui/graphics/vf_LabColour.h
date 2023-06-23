@@ -74,7 +74,7 @@ public:
   LabColour (float L, float a, float b);
   LabColour (float L, float a, float b, float alpha);
   LabColour (LabColour const& lab);
-  explicit LabColour (Colour const& sRGB);
+  explicit LabColour (juce::Colour const& sRGB);
   explicit LabColour (XYZColour const& xyz);
 
   float getL () const { return m_L; }
@@ -83,7 +83,7 @@ public:
   float getAlpha () const { return m_alpha; }
 
   XYZColour const toXYZ () const;
-  Colour const toRGB () const;
+  juce::Colour const toRGB () const;
 
   LabColour const withLuminance (float L) const; // L [0,1]
   LabColour const withAddedLuminance (float amount) const; // amount [0,1]

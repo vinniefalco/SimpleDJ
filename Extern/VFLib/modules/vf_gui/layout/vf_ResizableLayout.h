@@ -93,8 +93,8 @@ private:
 //
 class ResizableLayout
   : public ResizableChild
-  , private ComponentListener
-  , private AsyncUpdater
+  , private juce::ComponentListener
+  , private juce::AsyncUpdater
 {
 public:
   enum
@@ -108,19 +108,19 @@ public:
     styleFixedAspect
   };
 
-  static const Point <int> anchorNone;
-  static const Point <int> anchorTopLeft;
-  static const Point <int> anchorTopCenter;
-  static const Point <int> anchorTopRight;
-  static const Point <int> anchorMidLeft;
-  static const Point <int> anchorMidCenter;
-  static const Point <int> anchorMidRight;
-  static const Point <int> anchorBottomLeft;
-  static const Point <int> anchorBottomCenter;
-  static const Point <int> anchorBottomRight;
+  static const juce::Point <int> anchorNone;
+  static const juce::Point <int> anchorTopLeft;
+  static const juce::Point <int> anchorTopCenter;
+  static const juce::Point <int> anchorTopRight;
+  static const juce::Point <int> anchorMidLeft;
+  static const juce::Point <int> anchorMidCenter;
+  static const juce::Point <int> anchorMidRight;
+  static const juce::Point <int> anchorBottomLeft;
+  static const juce::Point <int> anchorBottomCenter;
+  static const juce::Point <int> anchorBottomRight;
 
 public:
-  explicit ResizableLayout (Component* owner);
+  explicit ResizableLayout (juce::Component* owner);
   ~ResizableLayout ();
 
   // Add a Component to the Layout.
@@ -130,13 +130,13 @@ public:
   // half the height, you would use bottomRight.x=100, bottomRight.y=50. or
   // use the constant anchorMidRight
   void addToLayout (
-    Component *component,
-    const Point <int> &topLeft,
-    const Point <int> &bottomRight = anchorNone,
+    juce::Component *component,
+    const juce::Point <int> &topLeft,
+    const juce::Point <int> &bottomRight = anchorNone,
     Style style = styleStretch );
 
   // Remove a Component from the Layout.
-  void removeFromLayout (Component* component);
+  void removeFromLayout (juce::Component* component);
 
   // Activate (or deactivate) the Layout. The Layout is initially inactive,
   // to prevent spurious recalculation while a Component and its children are being
@@ -147,10 +147,10 @@ public:
   // Call this to manually update the state information for a single control
   // after it has been moved or resized from elsewhere.
   // UNFINISHED API
-  void updateLayoutFor (Component *component);
+  void updateLayoutFor (juce::Component *component);
 
   // Convenience function
-  static juce::Rectangle <int> calcBoundsOfChildren (Component* parent);
+  static juce::Rectangle <int> calcBoundsOfChildren (juce::Component* parent);
 
 private:
   void handleAsyncUpdate ();
@@ -168,7 +168,7 @@ private:
     Rect() {}
     Rect (int top0, int left0, int bottom0, int right0) { top=top0; left=left0; bottom=bottom0; right=right0; }
     Rect (const juce::Rectangle<int> &r) { top=int(r.getY()); left=int(r.getX()); bottom=int(r.getBottom()); right=int(r.getRight()); }
-    operator Rectangle<int>() const { return juce::Rectangle<int>( left, top, getWidth(), getHeight() ); }
+    operator juce::Rectangle<int>() const { return juce::Rectangle<int>( left, top, getWidth(), getHeight() ); }
     int getHeight () const { return bottom-top; }
     int getWidth () const { return right-left; }
     void reduce (int dx, int dy) { top+=dy; left+=dx; bottom-=dy; right-=dx; }
@@ -182,12 +182,12 @@ private:
   struct Anchor
   {
     Style	style;
-    Component* component;
+    juce::Component* component;
     ResizableChild* child;
-    Point<int> topLeft;
-    Point<int> bottomRight;
+    juce::Point<int> topLeft;
+    juce::Point<int> bottomRight;
 
-    Anchor (Component* component=0);
+    Anchor (juce::Component* component=0);
     bool operator== (Anchor const& rhs) const;
     bool operator>= (Anchor const& rhs) const;
     bool operator<  (Anchor const& rhs) const;
@@ -195,11 +195,11 @@ private:
 
   struct State
   {
-    Component* component;
+    juce::Component* component;
     double aspect;
     Rect margin;
 
-    State (Component* component=0);
+    State (juce::Component* component=0);
     bool operator== (const State& rhs) const;
     bool operator>= (const State& rhs) const;
     bool operator<  (const State& rhs) const;
@@ -211,17 +211,17 @@ public:
   void recalculateLayout ();
 
 private:
-  void componentMovedOrResized (Component& component,
+  void componentMovedOrResized (juce::Component& component,
     bool wasMoved,
     bool wasResized);
 
-  void componentBeingDeleted (Component& component);
+  void componentBeingDeleted (juce::Component& component);
 
 private:
-  Component* m_owner;
+  juce::Component* m_owner;
 
-  SortedSet <Anchor> m_anchors;
-  SortedSet <State> m_states;
+  juce::SortedSet <Anchor> m_anchors;
+  juce::SortedSet <State> m_states;
 
   bool m_bFirstTime;
   bool m_isActive;
@@ -236,10 +236,10 @@ class TopLevelConstrainer
 public:
   explicit TopLevelConstrainer (ResizableChild* owner);
 
-  void setAsConstrainerFor (ResizableWindow* window);
+  void setAsConstrainerFor (juce::ResizableWindow* window);
 
 private:
-  class Constrainer : public ComponentBoundsConstrainer
+  class Constrainer : public juce::ComponentBoundsConstrainer
   {
   public:
     Constrainer (ResizableChild* owner);

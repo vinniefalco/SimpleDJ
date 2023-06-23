@@ -36,10 +36,10 @@
 #include "vf_ResizableLayout.h"
 
 class StackedLayout
-  : public Component
+  : public juce::Component
   , public ResizableChild
-  , private ComponentListener
-  , private AsyncUpdater
+  , private juce::ComponentListener
+  , private juce::AsyncUpdater
 {
 public:
   class Band
@@ -51,16 +51,16 @@ public:
     friend class StackedLayout;
 
     bool m_resizable;
-    Component* m_component;
+    juce::Component* m_component;
   };
 
 public:
   StackedLayout (bool vertical,
-                 BorderSize <int> borderSize,
+                 juce::BorderSize <int> borderSize,
                  int gapSize);
   ~StackedLayout ();
 
-  void addBand (Component* component);
+  void addBand (juce::Component* component);
 
   void setBandVisible (int index, bool visible);
 
@@ -73,26 +73,26 @@ public:
 private:
   void resizeStart ();
 
-  void componentMovedOrResized (Component& component,
+  void componentMovedOrResized (juce::Component& component,
                                 bool wasMoved,
                                 bool wasResized);
 
-  void componentVisibilityChanged (Component& component);
+  void componentVisibilityChanged (juce::Component& component);
 
-  void componentBeingDeleted (Component& component);
+  void componentBeingDeleted (juce::Component& component);
 
   void handleAsyncUpdate ();
 
 private:
   struct Item
   {
-    Component* component;
+    juce::Component* component;
     ResizableChild* resizableChild;
   };
 
   bool const m_vertical;
   bool m_active;
-  const BorderSize<int> m_borderSize;
+  const juce::BorderSize<int> m_borderSize;
   const int m_gapSize;
   std::vector <Item> m_bands; // yuck
 };

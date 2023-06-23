@@ -209,7 +209,7 @@ public:
 
       @return The Typeface, or nullptr if there was no match.
   */
-  static Typeface::Ptr createTypefaceForFont (const Font& font);
+  static juce::Typeface::Ptr createTypefaceForFont (const juce::Font& font);
 };
 
 #endif

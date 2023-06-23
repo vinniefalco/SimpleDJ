@@ -46,7 +46,7 @@
 class MouseEnterGroup
 {
 public:
-  explicit MouseEnterGroup (Component* parentComponent)
+  explicit MouseEnterGroup (juce::Component* parentComponent)
     : m_parentComponent (parentComponent)
     , m_helper (this)
     , m_mouseInside (false)
@@ -66,8 +66,8 @@ public:
   // Called when the mouse enters or exits the group.
   // The event will be relative to the parent Component.
   //
-  virtual void onMouseEnterGroup (MouseEvent const& e) { }
-  virtual void onMouseExitGroup (MouseEvent const& e) { }
+  virtual void onMouseEnterGroup (juce::MouseEvent const& e) { }
+  virtual void onMouseExitGroup (juce::MouseEvent const& e) { }
 
 private:
   void updateState ()
@@ -89,14 +89,14 @@ private:
 
 private:
    // HACK because of Juce
-  inline void setMouseEvent (MouseEvent const& mouseEvent)
+  inline void setMouseEvent (juce::MouseEvent const& mouseEvent)
     { memcpy (m_mouseEvent, &mouseEvent, sizeof (mouseEvent)); }
-  inline MouseEvent const& getMouseEvent () const
-    { return *reinterpret_cast <MouseEvent const*> (m_mouseEvent); }
+  inline juce::MouseEvent const& getMouseEvent () const
+    { return *reinterpret_cast <juce::MouseEvent const*> (m_mouseEvent); }
 
   class Helper
-    : private MouseListener
-    , private AsyncUpdater
+    : private juce::MouseListener
+    , private juce::AsyncUpdater
   {
   public:
     explicit Helper (MouseEnterGroup* const owner)
@@ -110,14 +110,14 @@ private:
       m_owner.m_parentComponent->removeMouseListener (this);
     }
 
-    void mouseEnter (MouseEvent const& e)
+    void mouseEnter (juce::MouseEvent const& e)
     {
       m_owner.m_mouseInsideNext = true;
       m_owner.setMouseEvent (e.getEventRelativeTo (m_owner.m_parentComponent));
       triggerAsyncUpdate ();
     }
 
-    void mouseExit (MouseEvent const& e)
+    void mouseExit (juce::MouseEvent const& e)
     {
       m_owner.m_mouseInsideNext = false;
       m_owner.setMouseEvent (e.getEventRelativeTo (m_owner.m_parentComponent));
@@ -136,37 +136,37 @@ private:
 private:
   struct SavedMouseEvent
   {
-    SavedMouseEvent (MouseEvent& e)
+    SavedMouseEvent (juce::MouseEvent& e)
     {
       source = &e.source;
-      position = Point <int> (e.x, e.y);
+      position = juce::Point <int> (e.x, e.y);
       modifiers = e.mods;
       eventComponent = e.eventComponent;
       originator = e.originalComponent;
       eventTime = e.eventTime;
       mouseDownPos = e.getMouseDownPosition ();
-      mouseDownTime = Time (0); // ???
+      mouseDownTime = juce::Time (0); // ???
       numberOfClicks = e.getNumberOfClicks();
       mouseWasDragged = !e.mouseWasClicked ();
     }
 
-    MouseInputSource* source;
-    Point <int>       position;
-    ModifierKeys      modifiers;
-    Component*        eventComponent;
-    Component*        originator;
-    Time              eventTime;
-    Point <int>       mouseDownPos;
-    Time              mouseDownTime;
+    juce::MouseInputSource* source;
+    juce::Point <int>       position;
+    juce::ModifierKeys      modifiers;
+    juce::Component*        eventComponent;
+    juce::Component*        originator;
+    juce::Time              eventTime;
+    juce::Point <int>       mouseDownPos;
+    juce::Time              mouseDownTime;
     int               numberOfClicks;
     bool              mouseWasDragged;
   };
 
-  Component* const m_parentComponent;
+  juce::Component* const m_parentComponent;
   Helper m_helper;
   bool m_mouseInside;
   bool m_mouseInsideNext;
-  char m_mouseEvent [sizeof (MouseEvent)]; // HACK because of Juce!
+  char m_mouseEvent [sizeof (juce::MouseEvent)]; // HACK because of Juce!
 };
 
 #endif

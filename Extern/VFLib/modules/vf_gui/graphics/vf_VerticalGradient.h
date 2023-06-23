@@ -39,12 +39,12 @@
 
     @ingroup vf_gui
 */
-class VerticalGradient : public ColourGradient
+class VerticalGradient : public juce::ColourGradient
 {
 public:
   VerticalGradient (
-    Colour const& startColour,
-    Colour const& endColour,
+    juce::Colour const& startColour,
+    juce::Colour const& endColour,
     juce::Rectangle <int> const& bounds)
     : ColourGradient (
         startColour, float (bounds.getX ()), float (bounds.getY ()) + .5f,

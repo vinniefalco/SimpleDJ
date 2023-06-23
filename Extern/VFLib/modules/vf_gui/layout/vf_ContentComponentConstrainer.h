@@ -55,15 +55,15 @@
     @ingroup vf_gui
 */
 class ContentComponentConstrainer
-  : private ComponentBoundsConstrainer
-  , private ComponentListener
+  : private juce::ComponentBoundsConstrainer
+  , private juce::ComponentListener
 {
 public:
   /** Attach a new ContentComponentConstrainer to a window.
 
       @param resizableWindow The window to attach to.
   */
-  static void attachTo (ResizableWindow* resizableWindow)
+  static void attachTo (juce::ResizableWindow* resizableWindow)
   {
     ContentComponentConstrainer* contentConstrainer =
       new ContentComponentConstrainer (resizableWindow);
@@ -71,7 +71,7 @@ public:
   }
 
 private:
-  ContentComponentConstrainer (ResizableWindow* resizableWindow)
+  ContentComponentConstrainer (juce::ResizableWindow* resizableWindow)
    : m_resizableWindow (resizableWindow)
    , m_originalConstrainer (0)
   {
@@ -97,13 +97,13 @@ private:
     m_originalConstrainer->resizeEnd();
   }
 
-  void applyBoundsToComponent (Component* component,
+  void applyBoundsToComponent (juce::Component* component,
                                const juce::Rectangle<int>& bounds)
   {
     m_originalConstrainer->applyBoundsToComponent (*component, bounds);
   }
 
-  void copyConstraints (ComponentBoundsConstrainer& from)
+  void copyConstraints (juce::ComponentBoundsConstrainer& from)
   {
     setMinimumWidth (from.getMinimumWidth());
     setMaximumWidth (from.getMaximumWidth());
@@ -138,8 +138,8 @@ private:
   // adjusts the current constraints to take into account decorations
   void adjustConstraints()
   {
-    BorderSize<int> peerFrameBorder = m_resizableWindow->getPeer()->getFrameSize();
-    BorderSize<int> contentCompBorder = m_resizableWindow->getContentComponentBorder();
+    juce::BorderSize<int> peerFrameBorder = m_resizableWindow->getPeer()->getFrameSize();
+    juce::BorderSize<int> contentCompBorder = m_resizableWindow->getContentComponentBorder();
     
     int extraWidth = peerFrameBorder.getLeftAndRight() + contentCompBorder.getLeftAndRight();
     int extraHeight = peerFrameBorder.getTopAndBottom() + contentCompBorder.getTopAndBottom();
@@ -150,14 +150,14 @@ private:
     setMaximumWidth (addWithoutOverflow (m_originalConstrainer->getMaximumWidth(), extraWidth));
   }
 
-  void componentBeingDeleted (Component& component)
+  void componentBeingDeleted (juce::Component& component)
   {
     delete this;
   }
 
 private:
-  ResizableWindow* m_resizableWindow;
-  ComponentBoundsConstrainer* m_originalConstrainer;
+  juce::ResizableWindow* m_resizableWindow;
+  juce::ComponentBoundsConstrainer* m_originalConstrainer;
 };
 
 #endif

@@ -52,7 +52,7 @@ public:
   // A parent component must derive from this. Usually its the top level window.
   //
   class Container
-    : private Timer
+    : private juce::Timer
   {
   public:
     enum
@@ -79,7 +79,7 @@ public:
   };
 
 public:
-  explicit MouseEnterEditable (Component* component);
+  explicit MouseEnterEditable (juce::Component* component);
   virtual ~MouseEnterEditable ();
 
   bool isInMouseEnterEditMode ();
@@ -90,21 +90,21 @@ protected:
 
 private:
   class Helper
-    : private MouseListener
+    : private juce::MouseListener
     /*, Uncopyable */
   {
   public:
-    Helper (Component* component, MouseEnterEditable* editable);
+    Helper (juce::Component* component, MouseEnterEditable* editable);
     ~Helper ();
 
-    Component& getComponent ();
+    juce::Component& getComponent ();
 
   private:
-    void mouseEnter (const MouseEvent& e);
-    void mouseExit (const MouseEvent& e);
+    void mouseEnter (const juce::MouseEvent& e);
+    void mouseExit (const juce::MouseEvent& e);
 
   private:
-    Component* const m_component;
+    juce::Component* const m_component;
     MouseEnterEditable* const m_editable;
   };
 
