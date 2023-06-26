@@ -31,9 +31,9 @@
 
 #include "JuceHeader.h"
 
-#include "modules/vf_core/vf_core.h"
-#include "modules/vf_concurrent/vf_concurrent.h"
-#include "modules/vf_gui/vf_gui.h"
+#include "vf_core/vf_core.h"
+#include "vf_concurrent/vf_concurrent.h"
+#include "vf_gui/vf_gui.h"
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4100)

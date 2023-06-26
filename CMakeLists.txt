@@ -23,18 +23,18 @@ set(TargetName ${PROJECT_NAME})
 include(CPM)
 find_package(JUCE)
 
-juce_add_module(Extern/VFLib/modules/vf_audio ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_bzip2 ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_concurrent ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_core ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_db ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_freetype ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_gui ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_lua ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_luabridge ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_sqlite ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_taglib ALIAS_NAMESPACE vf)
-juce_add_module(Extern/VFLib/modules/vf_unfinished ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_audio ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_bzip2 ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_concurrent ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_core ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_db ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_freetype ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_gui ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_lua ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_luabridge ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_sqlite ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_taglib ALIAS_NAMESPACE vf)
+juce_add_module(lib/vflib/modules/vf_unfinished ALIAS_NAMESPACE vf)
 
 juce_add_gui_app(${TargetName}
         PRODUCT_NAME "SimpleDJ"
@@ -52,49 +52,49 @@ juce_generate_juce_header(${TargetName})
 target_compile_features(${TargetName} PUBLIC cxx_std_17)
 
 target_sources(${TargetName} PRIVATE
-        Source/core/AutoLimiter.h #Add headers so they show up in Xcode
-        Source/core/Deck.cpp
-        Source/core/Deck.h
-        Source/core/FileManager.cpp
-        Source/core/FileManager.h
-        Source/core/Mixer.cpp
-        Source/core/Mixer.h
-        Source/core/Param.cpp
-        Source/core/Param.h
-        Source/core/ParamImp.cpp
-        Source/core/ParamImp.h
-        Source/core/Params.cpp
-        Source/core/Params.h
-        Source/core/PeakDetector.h
-        Source/core/Playable.h
-        Source/core/ReaderPlayable.cpp
-        Source/core/ReaderPlayable.h
-        Source/core/StandardIncludes.h
-        Source/gui/CApp.cpp
-        Source/gui/CApp.h
-        Source/gui/CDeck.cpp
-        Source/gui/CDeck.h
-        Source/gui/CDeckFader.cpp
-        Source/gui/CDeckFader.h
-        Source/gui/CDeckLevelMeter.cpp
-        Source/gui/CDeckLevelMeter.h
-        Source/gui/CDeckMixer.cpp
-        Source/gui/CDeckMixer.h
-        Source/gui/CLevelMeter.cpp
-        Source/gui/CLevelMeter.h
-        Source/gui/CMain.cpp
-        Source/gui/CMain.h
-        Source/gui/CMainWindow.cpp
-        Source/gui/CMainWindow.h
-        Source/gui/CParamToggleButton.cpp
-        Source/gui/CParamToggleButton.h
-        Source/gui/CSpeedControl.cpp
-        Source/gui/CSpeedControl.h)
+        src/core/AutoLimiter.h #Add headers so they show up in Xcode
+        src/core/Deck.cpp
+        src/core/Deck.h
+        src/core/FileManager.cpp
+        src/core/FileManager.h
+        src/core/Mixer.cpp
+        src/core/Mixer.h
+        src/core/Param.cpp
+        src/core/Param.h
+        src/core/ParamImp.cpp
+        src/core/ParamImp.h
+        src/core/Params.cpp
+        src/core/Params.h
+        src/core/PeakDetector.h
+        src/core/Playable.h
+        src/core/ReaderPlayable.cpp
+        src/core/ReaderPlayable.h
+        src/core/StandardIncludes.h
+        src/gui/CApp.cpp
+        src/gui/CApp.h
+        src/gui/CDeck.cpp
+        src/gui/CDeck.h
+        src/gui/CDeckFader.cpp
+        src/gui/CDeckFader.h
+        src/gui/CDeckLevelMeter.cpp
+        src/gui/CDeckLevelMeter.h
+        src/gui/CDeckMixer.cpp
+        src/gui/CDeckMixer.h
+        src/gui/CLevelMeter.cpp
+        src/gui/CLevelMeter.h
+        src/gui/CMain.cpp
+        src/gui/CMain.h
+        src/gui/CMainWindow.cpp
+        src/gui/CMainWindow.h
+        src/gui/CParamToggleButton.cpp
+        src/gui/CParamToggleButton.h
+        src/gui/CSpeedControl.cpp
+        src/gui/CSpeedControl.h)
 
 target_include_directories(${TargetName} PUBLIC
-        Extern/VFLib
-        Extern/VFLib/AppConfigTemplate
-        Source/core)
+        lib/vflib
+        lib/vflib/AppConfigTemplate
+        src/core)
 
 if (CMAKE_SYSTEM_NAME MATCHES "^(Darwin|Linux|Windows)")
     #enables chooser->browseForFileToOpen()
@@ -135,7 +135,7 @@ target_link_libraries(${TargetName} PRIVATE
         vf::vf_freetype
         vf::vf_gui
         vf::vf_taglib
-        #Beyond here is the sandbox
+        #Beyond here be dragons...
         #vf::vf_audio
         #vf::vf_bzip2
         #vf::vf_db

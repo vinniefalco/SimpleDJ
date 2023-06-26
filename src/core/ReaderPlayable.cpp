@@ -29,7 +29,7 @@
 #include "StandardIncludes.h"
 #include "ReaderPlayable.h"
 
-#include "modules/vf_taglib/vf_taglib.h"
+#include "vf_taglib/vf_taglib.h"
 
 //==============================================================================
 

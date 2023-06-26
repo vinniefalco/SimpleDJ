@@ -4,26 +4,6 @@
               bundleIdentifier="com.vinniefalco.SimpleDJ" jucerFormatVersion="1"
               cppLanguageStandard="17">
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="../MacOSX" objCExtraSuffix="ll8YC7">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="SimpleDJ"
-                       osxSDK="default" osxCompatibility="default" headerPath="../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="2" targetName="SimpleDJ"
-                       osxSDK="default" osxCompatibility="default" headerPath="../../Extern/VFLib&#10;../../Source/gui&#10;../../Source/core&#10;"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_gui_extra" path="../../Extern/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../Extern/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../Extern/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../Extern/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../Extern/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../Extern/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../Extern/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../Extern/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../Extern/JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="../../Extern/JUCE/modules"/>
-      </MODULEPATHS>
-    </XCODE_MAC>
     <LINUX_MAKE targetFolder="../Linux">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
@@ -62,65 +42,99 @@
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>
       </MODULEPATHS>
     </VS2022>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../src/core&#10;../../src/gui&#10;../../lib/vflib/modules&#10;"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="src/core&#10;src/gui&#10;lib/vflib/modules&#10;"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="~/repos/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="~/repos/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="~/repos/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="~/repos/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="~/repos/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="~/repos/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="~/repos/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="~/repos/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="~/repos/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="~/repos/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
   </EXPORTFORMATS>
   <MAINGROUP id="Bp191K" name="SimpleDJ">
-    <GROUP id="{A643C8B7-28F8-DDF5-071F-5CBACFAB7259}" name="Core">
-      <FILE id="vInLsu" name="AutoLimiter.h" compile="0" resource="0" file="../../Source/core/AutoLimiter.h"/>
-      <FILE id="NU4Njz" name="Deck.cpp" compile="1" resource="0" file="../../Source/core/Deck.cpp"/>
-      <FILE id="uLqc6N" name="Deck.h" compile="0" resource="0" file="../../Source/core/Deck.h"/>
-      <FILE id="vlbqj2" name="FileManager.cpp" compile="1" resource="0" file="../../Source/core/FileManager.cpp"/>
-      <FILE id="gbhXvU" name="FileManager.h" compile="0" resource="0" file="../../Source/core/FileManager.h"/>
-      <FILE id="ytwU7Q" name="Mixer.cpp" compile="1" resource="0" file="../../Source/core/Mixer.cpp"/>
-      <FILE id="uR0Z5q" name="Mixer.h" compile="0" resource="0" file="../../Source/core/Mixer.h"/>
-      <FILE id="E43lbV" name="Param.cpp" compile="1" resource="0" file="../../Source/core/Param.cpp"/>
-      <FILE id="rqqJY4" name="Param.h" compile="0" resource="0" file="../../Source/core/Param.h"/>
-      <FILE id="e5M7Q2" name="ParamImp.cpp" compile="1" resource="0" file="../../Source/core/ParamImp.cpp"/>
-      <FILE id="KzHuDE" name="ParamImp.h" compile="0" resource="0" file="../../Source/core/ParamImp.h"/>
-      <FILE id="ub6bNt" name="Params.cpp" compile="1" resource="0" file="../../Source/core/Params.cpp"/>
-      <FILE id="pdddUE" name="Params.h" compile="0" resource="0" file="../../Source/core/Params.h"/>
-      <FILE id="DXrByP" name="PeakDetector.h" compile="0" resource="0" file="../../Source/core/PeakDetector.h"/>
-      <FILE id="GPO2UK" name="Playable.h" compile="0" resource="0" file="../../Source/core/Playable.h"/>
-      <FILE id="fpsdGZ" name="ReaderPlayable.cpp" compile="1" resource="0"
-            file="../../Source/core/ReaderPlayable.cpp"/>
-      <FILE id="thRawr" name="ReaderPlayable.h" compile="0" resource="0"
-            file="../../Source/core/ReaderPlayable.h"/>
-      <FILE id="jMyBKu" name="StandardIncludes.h" compile="0" resource="0"
-            file="../../Source/core/StandardIncludes.h"/>
+    <GROUP id="{624A9CB7-4772-05B3-20B5-F91195609D3A}" name="lib">
+      <GROUP id="{4046047F-1EB3-E829-A8DF-E7632762D331}" name="vflib">
+        <GROUP id="{4311CA2C-2BC0-CEEF-0F0B-9D81BABD999C}" name="modules">
+          <GROUP id="{5B6FB4B0-E5DD-4202-6BD1-6D270A2B35B1}" name="vf_taglib">
+            <FILE id="LRk1oX" name="vf_taglib.cpp" compile="1" resource="0" file="lib/vflib/modules/vf_taglib/vf_taglib.cpp"/>
+          </GROUP>
+          <GROUP id="{56773536-0479-4C50-3563-4A8A2878F9E6}" name="vf_gui">
+            <FILE id="Fo5ins" name="vf_gui.cpp" compile="1" resource="0" file="lib/vflib/modules/vf_gui/vf_gui.cpp"/>
+          </GROUP>
+          <GROUP id="{D90F4CE9-D71B-A25E-5C9A-E70AEF5D4125}" name="vf_freetype">
+            <FILE id="QblUpn" name="vf_freetype.c" compile="1" resource="0" file="lib/vflib/modules/vf_freetype/vf_freetype.c"/>
+          </GROUP>
+          <GROUP id="{5D034C92-F0F3-482F-C7B0-88E53281C60F}" name="vf_core">
+            <FILE id="sdBaGh" name="vf_core.cpp" compile="1" resource="0" file="lib/vflib/modules/vf_core/vf_core.cpp"/>
+          </GROUP>
+          <GROUP id="{E0641B80-F54A-22CE-33DB-386451D73210}" name="vf_concurrent">
+            <FILE id="NB0BQF" name="vf_concurrent.cpp" compile="1" resource="0"
+                  file="lib/vflib/modules/vf_concurrent/vf_concurrent.cpp"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
     </GROUP>
-    <GROUP id="{39393AB3-F8BC-4C3E-EE99-A7352D177923}" name="Gui">
-      <FILE id="HFlfTz" name="CApp.h" compile="0" resource="0" file="../../Source/gui/CApp.h"/>
-      <FILE id="MJeqPN" name="CDeck.cpp" compile="1" resource="0" file="../../Source/gui/CDeck.cpp"/>
-      <FILE id="KUgSMB" name="CDeck.h" compile="0" resource="0" file="../../Source/gui/CDeck.h"/>
-      <FILE id="Fjg63Z" name="CDeckFader.cpp" compile="1" resource="0" file="../../Source/gui/CDeckFader.cpp"/>
-      <FILE id="cFPCXK" name="CDeckFader.h" compile="0" resource="0" file="../../Source/gui/CDeckFader.h"/>
-      <FILE id="aHhtmc" name="CDeckLevelMeter.cpp" compile="1" resource="0"
-            file="../../Source/gui/CDeckLevelMeter.cpp"/>
-      <FILE id="BWShSq" name="CDeckLevelMeter.h" compile="0" resource="0"
-            file="../../Source/gui/CDeckLevelMeter.h"/>
-      <FILE id="h2WmFc" name="CDeckMixer.cpp" compile="1" resource="0" file="../../Source/gui/CDeckMixer.cpp"/>
-      <FILE id="BkcgP7" name="CDeckMixer.h" compile="0" resource="0" file="../../Source/gui/CDeckMixer.h"/>
-      <FILE id="IdSCZD" name="CLevelMeter.cpp" compile="1" resource="0" file="../../Source/gui/CLevelMeter.cpp"/>
-      <FILE id="niJQu8" name="CLevelMeter.h" compile="0" resource="0" file="../../Source/gui/CLevelMeter.h"/>
-      <FILE id="kq2y77" name="CMain.cpp" compile="1" resource="0" file="../../Source/gui/CMain.cpp"/>
-      <FILE id="xIlart" name="CMain.h" compile="0" resource="0" file="../../Source/gui/CMain.h"/>
-      <FILE id="eTD7yx" name="CMainWindow.cpp" compile="1" resource="0" file="../../Source/gui/CMainWindow.cpp"/>
-      <FILE id="Ewysu6" name="CMainWindow.h" compile="0" resource="0" file="../../Source/gui/CMainWindow.h"/>
-      <FILE id="tsBWhW" name="CParamToggleButton.cpp" compile="1" resource="0"
-            file="../../Source/gui/CParamToggleButton.cpp"/>
-      <FILE id="GHjjam" name="CParamToggleButton.h" compile="0" resource="0"
-            file="../../Source/gui/CParamToggleButton.h"/>
-      <FILE id="AeVlvR" name="CSpeedControl.cpp" compile="1" resource="0"
-            file="../../Source/gui/CSpeedControl.cpp"/>
-      <FILE id="l4n3eU" name="CSpeedControl.h" compile="0" resource="0" file="../../Source/gui/CSpeedControl.h"/>
-      <FILE id="HMKDMM" name="CApp.cpp" compile="1" resource="0" file="../../Source/gui/CApp.cpp"/>
-    </GROUP>
-    <GROUP id="{D8C87514-5C0A-9A75-D062-EACA241DBAAA}" name="VFLib Modules">
-      <FILE id="X6nX6J" name="vf_core.cpp" compile="1" resource="0" file="../../Extern/VFLib/modules/vf_core/vf_core.cpp"/>
-      <FILE id="iauqsS" name="vf_concurrent.cpp" compile="1" resource="0"
-            file="../../Extern/VFLib/modules/vf_concurrent/vf_concurrent.cpp"/>
-      <FILE id="OCnURi" name="vf_gui.cpp" compile="1" resource="0" file="../../Extern/VFLib/modules/vf_gui/vf_gui.cpp"/>
-      <FILE id="As5IjH" name="vf_freetype.c" compile="1" resource="0" file="../../Extern/VFLib/modules/vf_freetype/vf_freetype.c"/>
-      <FILE id="DUqasD" name="vf_taglib.cpp" compile="1" resource="0" file="../../Extern/VFLib/modules/vf_taglib/vf_taglib.cpp"/>
+    <GROUP id="{A9315F41-F091-1307-D21A-F78B7204AB67}" name="src">
+      <GROUP id="{74970D46-095B-8743-8DE3-9CEA06554430}" name="core">
+        <FILE id="GZ7MFR" name="AutoLimiter.h" compile="0" resource="0" file="src/core/AutoLimiter.h"/>
+        <FILE id="khx8ve" name="Deck.cpp" compile="1" resource="0" file="src/core/Deck.cpp"/>
+        <FILE id="S7b1xz" name="Deck.h" compile="0" resource="0" file="src/core/Deck.h"/>
+        <FILE id="NbY3Go" name="FileManager.cpp" compile="1" resource="0" file="src/core/FileManager.cpp"/>
+        <FILE id="mCMznT" name="FileManager.h" compile="0" resource="0" file="src/core/FileManager.h"/>
+        <FILE id="YVzWnG" name="Mixer.cpp" compile="1" resource="0" file="src/core/Mixer.cpp"/>
+        <FILE id="qGBBs5" name="Mixer.h" compile="0" resource="0" file="src/core/Mixer.h"/>
+        <FILE id="QUB1JU" name="Param.cpp" compile="1" resource="0" file="src/core/Param.cpp"/>
+        <FILE id="QplTg8" name="Param.h" compile="0" resource="0" file="src/core/Param.h"/>
+        <FILE id="sPjE8a" name="ParamImp.cpp" compile="1" resource="0" file="src/core/ParamImp.cpp"/>
+        <FILE id="cdAcVT" name="ParamImp.h" compile="0" resource="0" file="src/core/ParamImp.h"/>
+        <FILE id="KRXpim" name="Params.cpp" compile="1" resource="0" file="src/core/Params.cpp"/>
+        <FILE id="b7Npnw" name="Params.h" compile="0" resource="0" file="src/core/Params.h"/>
+        <FILE id="wopXei" name="PeakDetector.h" compile="0" resource="0" file="src/core/PeakDetector.h"/>
+        <FILE id="Y8lDmp" name="Playable.h" compile="0" resource="0" file="src/core/Playable.h"/>
+        <FILE id="g9DJ0y" name="ReaderPlayable.cpp" compile="1" resource="0"
+              file="src/core/ReaderPlayable.cpp"/>
+        <FILE id="q6lBcH" name="ReaderPlayable.h" compile="0" resource="0"
+              file="src/core/ReaderPlayable.h"/>
+        <FILE id="PGmmv4" name="StandardIncludes.h" compile="0" resource="0"
+              file="src/core/StandardIncludes.h"/>
+      </GROUP>
+      <GROUP id="{B60A403B-542E-5D1B-58B1-804549E902E9}" name="gui">
+        <FILE id="kDdtoL" name="CApp.cpp" compile="1" resource="0" file="src/gui/CApp.cpp"/>
+        <FILE id="AmwevG" name="CApp.h" compile="0" resource="0" file="src/gui/CApp.h"/>
+        <FILE id="PXxZZM" name="CDeck.cpp" compile="1" resource="0" file="src/gui/CDeck.cpp"/>
+        <FILE id="wGP0FM" name="CDeck.h" compile="0" resource="0" file="src/gui/CDeck.h"/>
+        <FILE id="UmEHHg" name="CDeckFader.cpp" compile="1" resource="0" file="src/gui/CDeckFader.cpp"/>
+        <FILE id="PnD291" name="CDeckFader.h" compile="0" resource="0" file="src/gui/CDeckFader.h"/>
+        <FILE id="eAkM79" name="CDeckLevelMeter.cpp" compile="1" resource="0"
+              file="src/gui/CDeckLevelMeter.cpp"/>
+        <FILE id="YhGKzW" name="CDeckLevelMeter.h" compile="0" resource="0"
+              file="src/gui/CDeckLevelMeter.h"/>
+        <FILE id="RPu42s" name="CDeckMixer.cpp" compile="1" resource="0" file="src/gui/CDeckMixer.cpp"/>
+        <FILE id="I5wvlj" name="CDeckMixer.h" compile="0" resource="0" file="src/gui/CDeckMixer.h"/>
+        <FILE id="tAsP9o" name="CLevelMeter.cpp" compile="1" resource="0" file="src/gui/CLevelMeter.cpp"/>
+        <FILE id="V3kAWl" name="CLevelMeter.h" compile="0" resource="0" file="src/gui/CLevelMeter.h"/>
+        <FILE id="P4cPLJ" name="CMain.cpp" compile="1" resource="0" file="src/gui/CMain.cpp"/>
+        <FILE id="e4MLBB" name="CMain.h" compile="0" resource="0" file="src/gui/CMain.h"/>
+        <FILE id="BGmi38" name="CMainWindow.cpp" compile="1" resource="0" file="src/gui/CMainWindow.cpp"/>
+        <FILE id="eMO5oa" name="CMainWindow.h" compile="0" resource="0" file="src/gui/CMainWindow.h"/>
+        <FILE id="USbKay" name="CParamToggleButton.cpp" compile="1" resource="0"
+              file="src/gui/CParamToggleButton.cpp"/>
+        <FILE id="d3sl1q" name="CParamToggleButton.h" compile="0" resource="0"
+              file="src/gui/CParamToggleButton.h"/>
+        <FILE id="od2zru" name="CSpeedControl.cpp" compile="1" resource="0"
+              file="src/gui/CSpeedControl.cpp"/>
+        <FILE id="EjxrgN" name="CSpeedControl.h" compile="0" resource="0" file="src/gui/CSpeedControl.h"/>
+      </GROUP>
     </GROUP>
   </MAINGROUP>
   <MODULES>
