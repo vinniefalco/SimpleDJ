@@ -19,5 +19,10 @@ RUN apt-get update \
       automake \
       libtool \
       valgrind \
+      locales-all \
+      dos2unix \
+      rsync \
       tar \
+      python \
+      python-dev \
   && apt-get clean
