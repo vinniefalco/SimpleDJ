@@ -5,6 +5,10 @@ FROM ubuntu:20.04
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get update && apt-get -y install tzdata
 
+ARG UID=1000
+RUN useradd -m -u ${UID} -s /bin/bash builder
+USER builder
+
 RUN apt-get update \
   && apt-get install -y build-essential \
       gcc \
